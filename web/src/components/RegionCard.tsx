@@ -8,8 +8,11 @@ import WhatIfPanel from "@/components/WhatIf";
 const PROG_LABEL: Record<string, string> = { breast: "Breast screening", bowel: "Colorectal screening" };
 
 const STAGE_LABEL: Record<string, string> = {
-  context: "Who lives here", detection: "Detection · screening", referral: "Referral · access to specialised care",
-  treatment: "Treatment", outcome: "Outcome",
+  detection: "Detection", referral: "Referral", treatment: "Treatment", outcome: "Outcome", context: "Context",
+};
+const STAGE_QUESTION: Record<string, string> = {
+  detection: "Do people come to screening?", referral: "Do they get to a specialist in time?",
+  treatment: "Does treatment start in time?", outcome: "How does it end?", context: "Who lives here?",
 };
 
 export function Src({ s }: { s: { url: string; org: string; indicator?: number | null; year?: number | null; period?: string } }) {
@@ -113,7 +116,10 @@ export default function RegionCard({ p, gaps, active, onPick, onClose }: {
         if (!items.length) return null;
         return (
           <div key={st} className="mb-2">
-            <div className="text-[11px] uppercase tracking-wide text-white/40 px-2.5 mt-2 mb-0.5">{STAGE_LABEL[st]}</div>
+            <div className="px-2.5 mt-2 mb-0.5">
+              <span className="text-[11px] uppercase tracking-wide text-white/40">{STAGE_LABEL[st]}</span>
+              <span className="text-[10.5px] text-white/30 italic ml-1.5">{STAGE_QUESTION[st]}</span>
+            </div>
             {items.map((it) => <Row key={it.key} it={it} onPick={onPick} active={it.key === active} />)}
           </div>
         );

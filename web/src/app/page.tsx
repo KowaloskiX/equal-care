@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import RegionCard, { Src } from "@/components/RegionCard";
-import { SimPill } from "@/components/RecommendBlock";
+import { DataChip, DRIVER_BADGE, people, RoadmapChip, SimChip, SimPill, SplitBar, splitEngine, splitSentence } from "@/components/RecommendBlock";
 import { engineName, fmt, getBrief, getGap, getGeo, getMeta, getPathway, getSim, getValues,
          type Brief, type FC, type Gap, type Meta, type Pathway, type SimLevel, type Values } from "@/lib/api";
 
@@ -15,7 +15,7 @@ type Prog = (typeof PROGS)[number]["id"];
 export default function Home() {
   const [meta, setMeta] = useState<Meta | null>(null);
   const [geo, setGeo] = useState<{ county: FC | null; municipality: FC | null }>({ county: null, municipality: null });
-  const [key, setKey] = useState("surv_bowel");
+  const [key, setKey] = useState("screen_breast");
   const [county, setCounty] = useState<Values | null>(null);
   const [muni, setMuni] = useState<{ county: string; vals: Values | null }>({ county: "", vals: null });
   const [sel, setSel] = useState<string | null>(null);
@@ -71,6 +71,8 @@ export default function Home() {
   }, [shown]);
 
   const briefProg = brief?.programmes.find((p) => p.programme === prog);
+  // Programme toggle also steers the map: the coloured layer follows the programme's screening indicator.
+  const pickProg = (p: Prog) => { setProg(p); if (mode === "data") setKey(p === "breast" ? "screen_breast" : "screen_bowel"); };
 
   return (
     <main className="relative h-screen w-screen overflow-hidden">
@@ -118,7 +120,7 @@ export default function Home() {
             <div className="text-[10.5px] uppercase tracking-wide text-white/35 px-1 mb-1">Screening programme</div>
             <div className="flex gap-1.5">
               {PROGS.map((p) => (
-                <button key={p.id} onClick={() => setProg(p.id)} className={`chip ${prog === p.id ? "chip-primary" : ""}`}>{p.label}</button>
+                <button key={p.id} onClick={() => pickProg(p.id)} className={`chip ${prog === p.id ? "chip-primary" : ""}`}>{p.label}</button>
               ))}
             </div>
           </div>
@@ -147,11 +149,30 @@ export default function Home() {
               ))}
             </div>
             <div className="text-[10.5px] text-white/35 mt-1.5">
-              {mode === "data" ? `Weakest six of ${ranked.length}. Red on the map = worse than Finland.` : `Largest unexplained gap of ${ranked.length}. Red = below 0.`}
+              {mode === "data" ? `Weakest six of ${ranked.length}.` : `Largest unexplained gap of ${ranked.length}.`}
             </div>
           </div>
         )}
       </div>
+
+      {shown && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 glass px-3 py-2 text-[11px] text-white/70 flex items-center gap-3 pointer-events-none">
+          <span className="font-semibold text-white/85">Map: {shown.label}</span>
+          {mode === "data" ? (
+            <>
+              <span className="inline-flex items-center gap-1"><i className="inline-block w-2.5 h-2.5 rounded-sm bg-emerald-400/80" />better than Finland</span>
+              <span className="inline-flex items-center gap-1"><i className="inline-block w-2.5 h-2.5 rounded-sm bg-rose-400/80" />worse</span>
+              <span>stronger colour = bigger difference</span>
+              <span className="inline-flex items-center gap-1"><i className="inline-block w-2.5 h-2.5 rounded-sm bg-white/15" />no data</span>
+            </>
+          ) : (
+            <>
+              <span className="inline-flex items-center gap-1"><i className="inline-block w-2.5 h-2.5 rounded-sm bg-rose-400/80" />gap the population does not explain</span>
+              <span>stronger colour = bigger gap</span>
+            </>
+          )}
+        </div>
+      )}
 
       {path && sel ? (
         <div className="absolute right-4 top-4">
@@ -164,53 +185,62 @@ export default function Home() {
               <div className="text-[13px] font-semibold">2-minute brief</div>
               <div className="flex gap-1.5">
                 {PROGS.map((p) => (
-                  <button key={p.id} onClick={() => setProg(p.id)} className={`chip ${prog === p.id ? "chip-primary" : ""}`}>{p.label}</button>
+                  <button key={p.id} onClick={() => pickProg(p.id)} className={`chip ${prog === p.id ? "chip-primary" : ""}`}>{p.label}</button>
                 ))}
               </div>
             </div>
             <div className="text-[11px] text-white/45 mt-1">
-              Counties with the most people short of the 80 % attendance target.
-              {briefProg.validation?.counties_weighted?.r != null && <span> Simulation validated vs 2024 county rates (r = {briefProg.validation.counties_weighted.r}).</span>}
+              Where are the most people missing from screening, why, and what would help.
+            </div>
+            <div className="text-[10px] text-white/40 mt-1 leading-snug">
+              <span className="text-white/60 font-semibold">DATA</span> = public statistics ·{" "}
+              <span className="text-sky-300/80 font-semibold">SIMULATION</span> = model of residents, checked against real 2024 rates
+              {briefProg.validation?.counties_weighted?.r != null && <> (r = {briefProg.validation.counties_weighted.r})</>} ·{" "}
+              <span className="text-amber-300/80 font-semibold">ROADMAP</span> = numbered action in the national cancer strategy roadmap
             </div>
             <div className="mt-2 space-y-2">
               {briefProg.counties.map((c) => {
                 const sp = c.split; const ts = c.top_scenario; const act = ts?.actions[0];
-                const tot = Math.abs(sp.composition_gap ?? 0) + Math.abs(sp.other_gap ?? 0);
+                const who = people(prog);
                 return (
                   <button key={c.code} onClick={() => setSel(c.code)} className="w-full text-left rounded-xl border border-white/10 bg-white/[0.03] p-3 hover:border-amber-300/40">
                     <div className="flex items-baseline justify-between gap-2">
                       <span className="text-[13.5px] font-semibold">{c.name}</span>
-                      {c.screening && (
-                        <span className="tabular-nums text-[12px] text-white/70">
-                          {fmt(c.screening.rate, "%")} · <b className="text-rose-300">{fmt(c.screening.missing_per_year)} people/yr</b> short
-                        </span>
-                      )}
+                      <span className="pill text-white/70 border-white/25 shrink-0">{DRIVER_BADGE[sp.driver] ?? sp.driver}</span>
                     </div>
-                    {sp.composition_gap != null && sp.other_gap != null && (
+                    {c.screening && (
                       <div className="mt-1.5">
-                        <div className="flex h-1.5 overflow-hidden rounded-full bg-white/10">
-                          <div className="bg-sky-400/70" style={{ width: `${tot ? (100 * Math.abs(sp.composition_gap)) / tot : 0}%` }} />
-                          <div className="bg-rose-400/70 flex-1" />
-                        </div>
-                        <div className="text-[10.5px] text-white/50 mt-1 flex items-center gap-1.5">
-                          <span>population explains {fmt(Math.abs(sp.composition_gap))} pts · not explained {fmt(Math.abs(sp.other_gap))} pts</span>
-                          <SimPill text={sp.note} />
-                        </div>
+                        <DataChip s={c.screening.source} />
+                        <p className="text-[11.5px] text-white/75 mt-1 leading-relaxed">
+                          {fmt(c.screening.rate, "%")} of invited {who} attend. Target {fmt(c.screening.target, "%")}.{" "}
+                          About <b className="text-rose-300">{fmt(c.screening.missing_per_year)} {who}</b> a year are missing.
+                        </p>
+                        {c.survival?.below_national && (
+                          <p className="text-[11px] text-white/55 mt-0.5">
+                            <span className="pill text-amber-300 border-amber-300/40 mr-1">Goal 3</span>
+                            5-year survival {fmt(c.survival.value, "%")} (Finland {fmt(c.survival.national, "%")})
+                          </p>
+                        )}
                       </div>
                     )}
+                    <div className="mt-1.5">
+                      <SimChip eng={splitEngine(sp)} />
+                      <p className="text-[11.5px] text-white/70 mt-1 leading-relaxed">
+                        {splitSentence(sp, fmt(c.screening?.target ?? 80, "%"))}
+                      </p>
+                      {(sp.composition_gap != null && sp.other_gap != null) && <SplitBar split={sp} />}
+                    </div>
                     {ts && act && (
-                      <div className="text-[11.5px] text-white/65 mt-1.5">
-                        {ts.extra_people_per_year != null && ts.extra_people_per_year > 0 && <span className="text-emerald-300 font-semibold">+{fmt(ts.extra_people_per_year)} people/yr</span>}
-                        {" — "}
-                        <a href={act.url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}
-                           className="text-amber-300/90 underline decoration-dotted">Roadmap {act.id}, p.{act.page}</a>
-                        <span className="text-white/40" title={act.title}> {act.title_en ?? ts.label}</span>
-                      </div>
-                    )}
-                    {c.survival?.below_national && (
-                      <div className="text-[11px] text-white/55 mt-1">
-                        <span className="pill text-amber-300 border-amber-300/40 mr-1">Goal 3</span>
-                        5-yr survival {fmt(c.survival.value, "%")} vs Finland {fmt(c.survival.national, "%")}
+                      <div className="mt-1.5">
+                        <RoadmapChip />
+                        <p className="text-[11.5px] text-white/65 mt-1 leading-relaxed">
+                          Best step: {ts.label} → about <b className="text-emerald-300">+{fmt(ts.extra_people_per_year)} {who}</b> a
+                          year (simulated).{" "}
+                          <a href={act.url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}
+                             className="text-amber-300/90 underline decoration-dotted" title={act.title}>
+                            Action {act.id}, p.{act.page}: {act.title_en ?? ts.label}
+                          </a>
+                        </p>
                       </div>
                     )}
                   </button>

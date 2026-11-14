@@ -5,9 +5,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  fmt, getBrief, getCorrelation, getRecommend, getValues, getWhatif,
+  engineName, fmt, getBrief, getCorrelation, getRecommend, getValues, getWhatif,
   type Brief, type Correlation, type Recommend, type Source, type Values, type WhatIf,
 } from "@/lib/api";
+import { DataChip, RoadmapChip, SimChip } from "@/components/RecommendBlock";
 
 const STAGE_REPORT_URL = "https://syoparekisteri.fi/assets/themes/ssy3/factsheets/syopa_2024_tilastoraportti.html";
 
@@ -19,9 +20,6 @@ const SrcName = ({ s }: { s?: Source | null }) =>
 
 const Big = ({ v, u }: { v: number | null | undefined; u?: string }) => (
   <span className="text-[96px] leading-none font-semibold tabular-nums text-amber-300">{fmt(v)}{u && <span className="text-[40px] text-amber-300/80"> {u}</span>}</span>
-);
-const SimTag = ({ note }: { note?: string | null }) => (
-  <span className="pill text-amber-300 border-amber-300/40">{note ?? "Simulation"}</span>
 );
 const Kicker = ({ children }: { children: React.ReactNode }) => (
   <div className="text-[12px] uppercase tracking-[0.2em] text-white/40 mb-4">{children}</div>
@@ -92,7 +90,7 @@ export default function Story() {
 
     // 2 — Helsinki is furthest behind
     <div key={1} className="w-full max-w-3xl">
-      <Kicker>Breast cancer screening attendance, 2024</Kicker>
+      <Kicker>Breast cancer screening attendance, 2024 · <DataChip s={hel?.screening?.source} /></Kicker>
       <div className="glass p-8 text-center">
         <div className="text-[16px] text-white/55">The county furthest from the {fmt(hel?.screening?.target, "%")} target is not in the countryside.</div>
         <div className="mt-4"><Big v={hel?.screening?.rate} u="%" /></div>
@@ -114,7 +112,7 @@ export default function Story() {
 
     // 3 — The gap is services, not residents
     <div key={2} className="w-full max-w-3xl">
-      <Kicker>Where the gap comes from — simulated residents <SimTag note={split?.note} /></Kicker>
+      <Kicker>Where the gap comes from — simulated residents <SimChip eng={split?.note?.replace("Simulation · ", "")} /></Kicker>
       <div className="glass p-8">
         <div className="text-[16px] text-white/60">Helsinki&apos;s gap to the national rate, in points:</div>
         <div className="mt-5 space-y-3">
@@ -141,7 +139,7 @@ export default function Story() {
 
     // 4 — Actions and the live what-if
     <div key={3} className="w-full max-w-3xl">
-      <Kicker>What to do — every recommendation cites a roadmap action</Kicker>
+      <Kicker>What to do — every recommendation cites a roadmap action <RoadmapChip /></Kicker>
       <div className="glass p-7">
         <div className="space-y-2">
           {rec?.scenarios.map((s) => (
@@ -161,13 +159,13 @@ export default function Story() {
           ))}
         </div>
         <div className="mt-5 rounded-xl border border-emerald-300/25 bg-emerald-300/[0.06] p-4">
-          <div className="text-[11px] uppercase tracking-wide text-emerald-300/80">Live simulation · combine interventions</div>
+          <div className="text-[11px] uppercase tracking-wide text-emerald-300/80">Live simulation · combine interventions <SimChip eng={engineName(wi?.engine)} /></div>
           <div className="mt-1.5 text-[20px] font-semibold text-emerald-300 tabular-nums">
             +{fmt(wi?.extra_people_per_year)} people/yr
             <span className="text-white/60 font-normal text-[14px]"> · closes {fmt(wi?.gap_closed_pct, "%")} of the gap · {wi?.delta_points != null && wi.delta_points > 0 ? "+" : ""}{wi?.delta_points} pts</span>
           </div>
           <div className="text-[11.5px] text-white/40 mt-1">
-            {wi?.name}: own language + SMS reminder · live calls {wi?.asked_live ?? "…"} · cached {wi?.from_cache ?? "…"} · <SimTag note={wi?.note} /> · an upper bound from the model, not a forecast
+            {wi?.name}: own language + SMS reminder · live calls {wi?.asked_live ?? "…"} · cached {wi?.from_cache ?? "…"} · an upper bound from the model, not a forecast
           </div>
         </div>
       </div>

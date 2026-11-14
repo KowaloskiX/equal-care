@@ -3,7 +3,7 @@
 // Every number comes back from /api/whatif; nothing is computed here.
 import { useState } from "react";
 import { engineName, fmt, getWhatif, type Recommend, type WhatIf } from "@/lib/api";
-import { Assumption, Cite, SimPill } from "@/components/RecommendBlock";
+import { Assumption, Cite, people, RoadmapChip, SimChip } from "@/components/RecommendBlock";
 
 const PROGS = [{ id: "breast", label: "Breast" }, { id: "bowel", label: "Colorectal" }];
 
@@ -57,19 +57,22 @@ export default function WhatIfPanel({ code, recs }: { code: string; recs: Recomm
       {res && !busy && (
         <div className="mt-2">
           <div className="flex items-baseline justify-between gap-2">
-            <span className="text-[12.5px] text-white/80">combined effect in {res.name}</span>
-            <SimPill text={res.note} />
+            <SimChip eng={engineName(res.engine) ?? eng} />
           </div>
-          <div className="text-[15px] font-semibold text-emerald-300 tabular-nums mt-0.5">
-            {res.extra_people_per_year != null ? `+${fmt(res.extra_people_per_year)} people/yr` : "–"}
-            {res.gap_closed_pct != null && <span className="text-white/70 font-normal"> · closes {res.gap_closed_pct} % of the gap</span>}
-            {res.delta_points != null && <span className="text-white/70 font-normal"> · {res.delta_points > 0 ? "+" : ""}{res.delta_points} pts</span>}
-          </div>
+          <p className="text-[12.5px] text-white/80 leading-relaxed mt-1">
+            If {res.name} did {(() => { const ls = res.scenarios.map((s) => s.label.toLowerCase());
+              return ls.length > 1 ? `${ls.slice(0, -1).join(", ")} and ${ls[ls.length - 1]}` : ls[0]; })()}:{" "}
+            about <b className="text-emerald-300">+{fmt(res.extra_people_per_year)} {people(prog)}</b> a year (simulated)
+            {res.gap_closed_pct != null && res.missing_per_year != null && (
+              <>, {res.gap_closed_pct} % of the {fmt(res.missing_per_year)} missing</>)}
+            {res.delta_points != null && <> · {res.delta_points > 0 ? "+" : ""}{res.delta_points} pts</>}.
+          </p>
           <div className="text-[10.5px] text-white/45 mt-0.5">
             {res.baseline_rate != null && <>simulated rate {fmt(res.baseline_rate, "%")} → {fmt(res.new_rate, "%")} · </>}
             live calls: {res.asked_live} · cached: {res.from_cache}
             {res.validation?.counties_weighted?.r != null && <> · validation r {res.validation.counties_weighted.r}</>}
           </div>
+          <div className="mt-1.5"><RoadmapChip /></div>
           <div className="mt-1 space-y-0.5">
             {res.scenarios.map((s) => (
               <div key={s.scenario} className="px-1 py-0.5">

@@ -36,7 +36,7 @@ export type Feature = { type: "Feature"; properties: { code: string; name: strin
 export type FC = { type: "FeatureCollection"; features: Feature[] };
 
 export type Validation = {
-  programme?: string; year?: number; raw_national?: number; real_national?: number;
+  programme?: string; engine?: string; year?: number; raw_national?: number; real_national?: number;
   anchor_logit_shift?: number; municipalities?: { n: number; r: number; mae?: number };
   municipalities_300plus?: { n: number; r: number }; counties_weighted?: { n: number; r: number };
 };
@@ -57,7 +57,9 @@ export type PathwayAction = ActionRef & { why?: string; assumption?: string | nu
 export type Recommend = {
   programme: string; code: string; name: string;
   screening: { rate: number; target: number; missing_per_year: number; invited: number; source: Source } | null;
-  split: { composition_gap: number | null; other_gap: number | null; driver: "services" | "population" | "national" | "on_target"; assumption: string | null; note: string; validation: Validation | null };
+  split: { composition_gap: number | null; other_gap: number | null;
+    total_gap: number | null; comp_pts: number | null; other_pts: number | null; total_pts: number | null;
+    driver: "services" | "population" | "national" | "on_target"; assumption: string | null; note: string; validation: Validation | null };
   scenarios: ScenarioRow[];
   pathway_actions: PathwayAction[];
   survival: { key: string; value: number; national: number; delta: number; below_national: boolean; year: number; source: Source } | null;

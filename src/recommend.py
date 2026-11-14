@@ -161,7 +161,12 @@ def recommend(prog, code):
 
     return {"programme": prog, "code": code, "name": ds.short_names().get(code, code),
             "screening": {k: gap[k] for k in ("rate", "target", "missing_per_year", "invited")} | {"source": gap["source"]} if gap else None,
-            "split": {"composition_gap": comp, "other_gap": other, "driver": driver,
+            "split": {"composition_gap": comp, "other_gap": other,
+                      "total_gap": round(real - nat_real, 1) if real is not None and nat_real is not None else None,
+                      "comp_pts": round(abs(comp), 1) if comp is not None else None,
+                      "other_pts": round(abs(other), 1) if other is not None else None,
+                      "total_pts": round(abs(real - nat_real), 1) if real is not None and nat_real is not None else None,
+                      "driver": driver,
                       "assumption": driver_assumption, "note": _note(s), "validation": validation},
             "scenarios": scenarios,
             "pathway_actions": pathway_actions,
