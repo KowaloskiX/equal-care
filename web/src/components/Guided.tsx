@@ -260,8 +260,7 @@ function Step4({ prog, code, name, path, rec, activeInd, onInd, onCode, onTl }: 
     let on = true;
     getValues("onc_wait_90").then((v) => {
       if (!on) return;
-      const worse = v.higher_is_better === false ? -1 : 1;
-      setTops(Object.entries(v.values).sort((a, b) => worse * (b[1].value - a[1].value))
+      setTops(Object.entries(v.values).sort((a, b) => b[1].value - a[1].value)
                 .slice(0, 3).map(([c, r]) => ({ code: c, name: r.name, value: r.value })));
     }).catch(() => null);
     return () => { on = false; };
