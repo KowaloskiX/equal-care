@@ -53,6 +53,15 @@ check("brief: 3 counties per programme, missing desc",
       len(b["programmes"]) == 2 and all(len(p["counties"]) == 3 for p in b["programmes"]) and
       all([x["screening"]["missing_per_year"] for x in p["counties"]] ==
           sorted((x["screening"]["missing_per_year"] for x in p["counties"]), reverse=True) for p in b["programmes"]))
+b5 = c.get("/api/brief?prog=breast&n=5").json()["programmes"]
+check("brief n=5: up to five rows, all short of target, missing desc, programme-level national/target",
+      len(b5) == 1 and 1 <= len(b5[0]["counties"]) <= 5 and
+      all(x["screening"]["missing_per_year"] > 0 for x in b5[0]["counties"]) and b5[0]["national"] is not None and b5[0]["target"] is not None and
+      [x["screening"]["missing_per_year"] for x in b5[0]["counties"]] ==
+      sorted((x["screening"]["missing_per_year"] for x in b5[0]["counties"]), reverse=True))
+check("scenarios carry share_of_missing consistent with missing_per_year",
+      all(s["share_of_missing"] == round(100 * s["extra_people_per_year"] / r["screening"]["missing_per_year"])
+          for s in r["scenarios"] if s["extra_people_per_year"]))
 # oncology care-queue indicators (THL Hoitoon pääsy, specialty Syöpätaudit)
 nat = c.get("/api/values?key=onc_wait_90&level=country").json()["values"]["358"]
 check("oncology queue anchor reproduced: 486 waiting, 3.5 % over 90 d",

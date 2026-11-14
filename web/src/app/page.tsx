@@ -2,7 +2,8 @@
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import RegionCard, { Src } from "@/components/RegionCard";
-import { DataChip, DRIVER_BADGE, people, RoadmapChip, SimChip, SimPill, SplitBar, splitEngine, splitSentence } from "@/components/RecommendBlock";
+import BriefPanel from "@/components/BriefPanel";
+import { SimPill } from "@/components/RecommendBlock";
 import { engineName, fmt, getBrief, getGap, getGeo, getMeta, getPathway, getSim, getValues,
          type Brief, type FC, type Gap, type Meta, type Pathway, type SimLevel, type Values } from "@/lib/api";
 
@@ -18,7 +19,8 @@ export default function Home() {
   const [key, setKey] = useState("screen_breast");
   const [county, setCounty] = useState<Values | null>(null);
   const [muni, setMuni] = useState<{ county: string; vals: Values | null }>({ county: "", vals: null });
-  const [sel, setSel] = useState<string | null>(null);
+  const [sel, setSel] = useState<string | null>(null);      // open county card
+  const [focus, setFocus] = useState<string | null>(null);  // brief selection: map highlight only
   const [path, setPath] = useState<Pathway | null>(null);
   const [gaps, setGaps] = useState<Gap[]>([]);
   const [err, setErr] = useState<string | null>(null);
@@ -30,7 +32,7 @@ export default function Home() {
   useEffect(() => {
     getMeta().then(setMeta).catch((e) => setErr(String(e)));
     Promise.all([getGeo("county"), getGeo("municipality")]).then(([c, m]) => setGeo({ county: c, municipality: m })).catch((e) => setErr(String(e)));
-    getBrief().then(setBrief).catch(() => null);
+    getBrief(undefined, 5).then(setBrief).catch(() => null);
   }, []);
   useEffect(() => { getValues(key).then(setCounty).catch((e) => setErr(String(e))); }, [key]);
   useEffect(() => {
@@ -72,12 +74,15 @@ export default function Home() {
 
   const briefProg = brief?.programmes.find((p) => p.programme === prog);
   // Programme toggle also steers the map: the coloured layer follows the programme's screening indicator.
-  const pickProg = (p: Prog) => { setProg(p); if (mode === "data") setKey(p === "breast" ? "screen_breast" : "screen_bowel"); };
+  const pickProg = (p: Prog) => {
+    setProg(p); setFocus(null);
+    if (mode === "data") setKey(p === "breast" ? "screen_breast" : "screen_bowel");
+  };
 
   return (
     <main className="relative h-screen w-screen overflow-hidden">
       <ChoroplethMap counties={geo.county} municipalities={geo.municipality} county={shown}
-                     muni={mode === "data" && sel === muni.county ? muni.vals : null} selected={sel} onSelect={setSel} />
+                     muni={mode === "data" && sel === muni.county ? muni.vals : null} selected={sel ?? focus} onSelect={setSel} />
 
       <div className="absolute left-4 top-4 bottom-4 w-[340px] flex flex-col gap-3 pointer-events-none">
         <div className="glass p-4 pointer-events-auto">
@@ -178,77 +183,9 @@ export default function Home() {
         <div className="absolute right-4 top-4">
           <RegionCard p={path} gaps={gaps} active={key} onPick={setKey} onClose={() => setSel(null)} />
         </div>
-      ) : briefProg && (
-        <div className="absolute right-4 top-4 w-[380px] max-h-[calc(100vh-32px)] flex flex-col gap-3">
-          <div className="glass p-4 overflow-y-auto">
-            <div className="flex items-baseline justify-between gap-2">
-              <div className="text-[13px] font-semibold">2-minute brief</div>
-              <div className="flex gap-1.5">
-                {PROGS.map((p) => (
-                  <button key={p.id} onClick={() => pickProg(p.id)} className={`chip ${prog === p.id ? "chip-primary" : ""}`}>{p.label}</button>
-                ))}
-              </div>
-            </div>
-            <div className="text-[11px] text-white/45 mt-1">
-              Where are the most people missing from screening, why, and what would help.
-            </div>
-            <div className="text-[10px] text-white/40 mt-1 leading-snug">
-              <span className="text-white/60 font-semibold">DATA</span> = public statistics ·{" "}
-              <span className="text-sky-300/80 font-semibold">SIMULATION</span> = model of residents, checked against real 2024 rates
-              {briefProg.validation?.counties_weighted?.r != null && <> (r = {briefProg.validation.counties_weighted.r})</>} ·{" "}
-              <span className="text-amber-300/80 font-semibold">ROADMAP</span> = numbered action in the national cancer strategy roadmap
-            </div>
-            <div className="mt-2 space-y-2">
-              {briefProg.counties.map((c) => {
-                const sp = c.split; const ts = c.top_scenario; const act = ts?.actions[0];
-                const who = people(prog);
-                return (
-                  <button key={c.code} onClick={() => setSel(c.code)} className="w-full text-left rounded-xl border border-white/10 bg-white/[0.03] p-3 hover:border-amber-300/40">
-                    <div className="flex items-baseline justify-between gap-2">
-                      <span className="text-[13.5px] font-semibold">{c.name}</span>
-                      <span className="pill text-white/70 border-white/25 shrink-0">{DRIVER_BADGE[sp.driver] ?? sp.driver}</span>
-                    </div>
-                    {c.screening && (
-                      <div className="mt-1.5">
-                        <DataChip s={c.screening.source} />
-                        <p className="text-[11.5px] text-white/75 mt-1 leading-relaxed">
-                          {fmt(c.screening.rate, "%")} of invited {who} attend. Target {fmt(c.screening.target, "%")}.{" "}
-                          About <b className="text-rose-300">{fmt(c.screening.missing_per_year)} {who}</b> a year are missing.
-                        </p>
-                        {c.survival?.below_national && (
-                          <p className="text-[11px] text-white/55 mt-0.5">
-                            <span className="pill text-amber-300 border-amber-300/40 mr-1">Goal 3</span>
-                            5-year survival {fmt(c.survival.value, "%")} (Finland {fmt(c.survival.national, "%")})
-                          </p>
-                        )}
-                      </div>
-                    )}
-                    <div className="mt-1.5">
-                      <SimChip eng={splitEngine(sp)} />
-                      <p className="text-[11.5px] text-white/70 mt-1 leading-relaxed">
-                        {splitSentence(sp, fmt(c.screening?.target ?? 80, "%"))}
-                      </p>
-                      {(sp.composition_gap != null && sp.other_gap != null) && <SplitBar split={sp} />}
-                    </div>
-                    {ts && act && (
-                      <div className="mt-1.5">
-                        <RoadmapChip />
-                        <p className="text-[11.5px] text-white/65 mt-1 leading-relaxed">
-                          Best step: {ts.label} → about <b className="text-emerald-300">+{fmt(ts.extra_people_per_year)} {who}</b> a
-                          year (simulated).{" "}
-                          <a href={act.url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}
-                             className="text-amber-300/90 underline decoration-dotted" title={act.title}>
-                            Action {act.id}, p.{act.page}: {act.title_en ?? ts.label}
-                          </a>
-                        </p>
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+      ) : (
+        <BriefPanel briefProg={briefProg} prog={prog} onProg={pickProg}
+                    focus={focus} onFocus={setFocus} onOpen={setSel} />
       )}
     </main>
   );

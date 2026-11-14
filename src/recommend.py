@@ -22,10 +22,10 @@ SURVIVAL = {"breast": "surv_breast", "bowel": "surv_bowel"}
 SERVICE_ASSUMPTION = ("The roadmap does not name SMS reminders / evening slots / mobile units; 2.4.1 is the "
                       "action through which a county sets such service requirements in procurement.")
 SCENARIO_ACTIONS = {
-    "own_language": {"actions": ["1.3.1"], "assumption": None},          # direct match: targeted communication for language groups
-    "sms_reminder": {"actions": ["2.4.1", "1.1.1"], "assumption": SERVICE_ASSUMPTION},
-    "evening_slots": {"actions": ["2.4.1", "1.1.1"], "assumption": SERVICE_ASSUMPTION},
-    "mobile_unit": {"actions": ["2.4.1", "1.1.1"], "assumption": SERVICE_ASSUMPTION},
+    "own_language": {"actions": ["1.3.1"], "assumption": None, "short": "Own language"},
+    "sms_reminder": {"actions": ["2.4.1", "1.1.1"], "assumption": SERVICE_ASSUMPTION, "short": "SMS reminder"},
+    "evening_slots": {"actions": ["2.4.1", "1.1.1"], "assumption": SERVICE_ASSUMPTION, "short": "Evening slots"},
+    "mobile_unit": {"actions": ["2.4.1", "1.1.1"], "assumption": SERVICE_ASSUMPTION, "short": "Mobile unit"},
 }
 MONITORING_ACTION = "2.4.5"     # monthly county-level screening data / real-time status from the Cancer Registry
 # ASSUMPTION: a county within 1 point of the national rate is treated as a national-level gap, not a local one.
@@ -125,8 +125,11 @@ def recommend(prog, code):
                           key=lambda kv: -(kv[1]["levels"]["county"].get(code, {}).get("extra_people_per_year") or 0)):
         m = SCENARIO_ACTIONS[sc]
         per = res["levels"]["county"].get(code, {})
-        scenarios.append({"scenario": sc, "label": res["label"],
-                          "delta_points": per.get("delta_points"), "extra_people_per_year": per.get("extra_people_per_year"),
+        extra = per.get("extra_people_per_year")
+        missing = (gap or {}).get("missing_per_year")
+        scenarios.append({"scenario": sc, "label": res["label"], "short": m["short"],
+                          "delta_points": per.get("delta_points"), "extra_people_per_year": extra,
+                          "share_of_missing": round(100 * extra / missing) if extra and missing else None,
                           "actions": [cite(aid, by_id) for aid in m["actions"]], "assumption": m["assumption"],
                           "note": _note(s)})
 
@@ -173,20 +176,22 @@ def recommend(prog, code):
             "survival": surv}
 
 
-def brief(progs=("breast", "bowel")):
-    """The 3 counties with the largest missing_per_year per programme, trimmed to top scenario + driver."""
+def brief(progs=("breast", "bowel"), n=3):
+    """The n counties with the largest missing_per_year per programme, trimmed to top scenario + driver."""
     out = []
     for prog in progs:
         ind = PROGRAMMES[prog]
         v = ds.values(ind, "county")
-        ranked = sorted((g for c in v["values"] if (g := ds.screening_gap(ind, c))), key=lambda g: -g["missing_per_year"])
+        ranked = sorted((g for c in v["values"] if (g := ds.screening_gap(ind, c)) and g["missing_per_year"] > 0),
+                        key=lambda g: -g["missing_per_year"])
         counties = []
-        for g in ranked[:3]:
+        for g in ranked[:n]:
             r = recommend(prog, g["code"])
             counties.append({"code": r["code"], "name": r["name"], "screening": r["screening"],
                              "split": r["split"], "top_scenario": r["scenarios"][0] if r["scenarios"] else None,
                              "survival": r["survival"]})
         s = _sim(prog)
         out.append({"programme": prog, "validation": s["validation"] if s else None,
+                    "national": v["national"], "target": v["target"],
                     "counties": counties, "note": _note(s)})
     return {"programmes": out}

@@ -175,9 +175,9 @@ def recommend_endpoint(prog: str, code: str):
 
 
 @app.get("/api/brief")
-def brief_endpoint(prog: str | None = None):
+def brief_endpoint(prog: str | None = None, n: int = 3):
     progs = (prog,) if prog else ("breast", "bowel")   # cervix is out of the story: much testing happens privately
     for p in progs:
         if p not in rec.PROGRAMMES:
             raise HTTPException(404, f"unknown programme {p!r}")
-    return rec.brief(progs)
+    return rec.brief(progs, max(1, min(n, 23)))

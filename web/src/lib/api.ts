@@ -50,8 +50,8 @@ export type SimLevel = {
 };
 export type ActionRef = { id: string; title: string; title_en?: string | null; page: number; url: string; responsible: string | null; metric: string | null };
 export type ScenarioRow = {
-  scenario: string; label: string; delta_points: number | null; extra_people_per_year: number | null;
-  actions: ActionRef[]; assumption: string | null; note: string;
+  scenario: string; label: string; short?: string; delta_points: number | null; extra_people_per_year: number | null;
+  share_of_missing?: number | null; actions: ActionRef[]; assumption: string | null; note: string;
 };
 export type PathwayAction = ActionRef & { why?: string; assumption?: string | null };
 export type Recommend = {
@@ -68,7 +68,8 @@ export type BriefCounty = {
   code: string; name: string; screening: Recommend["screening"]; split: Recommend["split"];
   top_scenario: ScenarioRow | null; survival: Recommend["survival"];
 };
-export type Brief = { programmes: { programme: string; validation: Validation | null; counties: BriefCounty[]; note: string }[] };
+export type Brief = { programmes: { programme: string; validation: Validation | null; national: number | null;
+  target: number | null; counties: BriefCounty[]; note: string }[] };
 export type WhatIf = {
   programme: string; engine: string; code: string; name: string; scenarios_selected: string[];
   baseline_rate: number | null; new_rate: number | null; delta_points: number | null;
@@ -93,7 +94,8 @@ export const getPathway = (code: string) => get<Pathway>(`/api/region/${code}`);
 export const getGap = (key: string, code: string) => get<Gap>(`/api/gap?key=${key}&code=${code}`).catch(() => null);
 export const getSim = (prog: string) => get<SimLevel>(`/api/sim/${prog}`);
 export const getRecommend = (prog: string, code: string) => get<Recommend>(`/api/recommend/${prog}/${code}`);
-export const getBrief = () => get<Brief>("/api/brief");
+export const getBrief = (prog?: string, n = 3) =>
+  get<Brief>(`/api/brief?${prog ? `prog=${prog}&` : ""}n=${n}`);
 export const getWhatif = (prog: string, code: string, s: string[]) =>
   get<WhatIf>(`/api/whatif?prog=${prog}&code=${code}&s=${s.join(",")}`);
 export const getCorrelation = (a: string, b: string, level = "county") =>
