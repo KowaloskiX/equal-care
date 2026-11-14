@@ -82,6 +82,8 @@ export type WhatIf = {
 export type ResidentRow = {
   key: Record<string, string>; people: number;
   jev_attend: number; jev_attend_before?: number;
+  p_cal?: number; p_cal_before?: number;
+  munis?: [string, number][]; dots?: [string, number][];
   reason: string | null; reason_label: string | null; reason_short: string | null;
   reasons: Record<string, number>; borrowed: boolean; answer_key: string[];
   file: string; line: number | null;
@@ -91,7 +93,7 @@ export type Replay = {
   programme: string; code: string; name: string; engine: string;
   mode: "baseline" | "scenario"; scenarios_selected: string[];
   files: { path: string; answers: number }[];
-  asked_live: number; people_total: number; rows: ResidentRow[];
+  asked_live: number; people_total: number; per_dot?: number; rows: ResidentRow[];
   final: { rate: number | null; real: number | null; national_real: number | null;
            target: number | null; baseline_rate?: number | null };
   anchor: { logit_shift: number; real_national: number | null };
@@ -123,6 +125,16 @@ export const getWhatif = (prog: string, code: string, s: string[]) =>
   get<WhatIf>(`/api/whatif?prog=${prog}&code=${code}&s=${s.join(",")}`);
 export const getResidents = (prog: string, code: string, s?: string[]) =>
   get<Replay>(`/api/residents/${prog}/${code}${s?.length ? `?s=${s.join(",")}` : ""}`);
+
+// Baseline replay is pure cache content — the same payload backs step 2 and step 3 (dot positions
+// must be identical when the scenario recolours them), so it is fetched once per prog:code.
+const BASELINE_REPLAY = new Map<string, Promise<Replay>>();
+export const getBaselineReplay = (prog: string, code: string) => {
+  const k = `${prog}:${code}`;
+  let p = BASELINE_REPLAY.get(k);
+  if (!p) { p = getResidents(prog, code); BASELINE_REPLAY.set(k, p); }
+  return p;
+};
 export const getResidentAnswer = (prog: string, key: string[], s?: string[]) =>
   get<ResidentAnswer>(`/api/residents/${prog}/answer?key=${encodeURIComponent(JSON.stringify(key))}${s?.length ? `&s=${s.join(",")}` : ""}`);
 export const getCorrelation = (a: string, b: string, level = "county") =>

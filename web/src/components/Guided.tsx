@@ -3,7 +3,8 @@
 // the recorded engine answers — no simulated numbers before the user clicks Run (see SimReplay).
 import { useEffect, useMemo, useState } from "react";
 import { engineName, fmt, getGap, getPathway, getRecommend,
-         type Brief, type Gap, type Pathway, type PathwayItem, type Recommend } from "@/lib/api";
+         type Brief, type FC, type Gap, type Pathway, type PathwayItem, type Recommend } from "@/lib/api";
+import type { Crowd } from "@/lib/dots";
 import { axisPos, BaselineStep, ScenarioStep } from "@/components/SimReplay";
 import { Assumption, Cite, DataChip, people, RoadmapChip, SimChip } from "@/components/RecommendBlock";
 import { Row, Src, STAGE_LABEL, STAGE_QUESTION } from "@/components/RegionCard";
@@ -26,12 +27,16 @@ function Chip({ step, eng, src }: { step: number; eng: string | null; src?: Para
 }
 
 export default function Guided({ prog, code, step, seen, briefProg, activeInd,
-                                 onStep, onCode, onProg, onExplore, onInd, onLive }: {
+                                 onStep, onCode, onProg, onExplore, onInd, onLive,
+                                 munis, crowd, onCrowd }: {
   prog: Prog; code: string; step: number; seen: number[]; briefProg?: Brief["programmes"][number];
   activeInd: string | null;
   onStep: (n: number) => void; onCode: (c: string) => void; onProg: (p: Prog) => void;
   onExplore: () => void; onInd: (k: string) => void;
   onLive?: (v: { code: string; value: number } | null) => void;
+  munis?: FC | null;
+  crowd?: Crowd | null;
+  onCrowd?: (c: Crowd | null | ((p: Crowd | null) => Crowd | null)) => void;
 }) {
   const who = people(prog);
   const counties = useMemo(() => briefProg?.counties ?? [], [briefProg]);
@@ -154,13 +159,15 @@ export default function Guided({ prog, code, step, seen, briefProg, activeInd,
         )}
 
         {step === 2 && (
-          <BaselineStep key={`${prog}:${code}`} prog={prog} code={code} rec={recF} who={who} onLive={onLive} />
+          <BaselineStep key={`${prog}:${code}`} prog={prog} code={code} rec={recF} who={who} onLive={onLive}
+                        munis={munis} crowd={crowd} onCrowd={onCrowd} />
         )}
 
         {step === 3 && (
           <>
             {!recF ? <Skel className="h-24 mt-2" />
-                   : <ScenarioStep key={`${prog}:${code}`} prog={prog} code={code} rec={recF} who={who} onLive={onLive} />}
+                   : <ScenarioStep key={`${prog}:${code}`} prog={prog} code={code} rec={recF} who={who}
+                                   onLive={onLive} munis={munis} crowd={crowd} onCrowd={onCrowd} />}
           </>
         )}
 

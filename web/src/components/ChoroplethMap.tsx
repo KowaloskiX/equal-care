@@ -4,13 +4,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import DeckGL from "@deck.gl/react";
 import { FlyToInterpolator, Layer, WebMercatorViewport, type PickingInfo } from "@deck.gl/core";
-import { GeoJsonLayer } from "@deck.gl/layers";
+import { GeoJsonLayer, ScatterplotLayer } from "@deck.gl/layers";
 import { Map } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { setWorkerUrl } from "maplibre-gl";
 import type { FeatureCollection } from "geojson";
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");   // Turbopack does not bundle MapLibre's module worker (see postinstall)
-import { fmt, type FC, type Feature, type Values } from "@/lib/api";
+import { fmt, getResidentAnswer, type FC, type Feature, type ResidentAnswer, type Values } from "@/lib/api";
+import type { Crowd, CrowdDot } from "@/lib/dots";
+import { Asked } from "@/components/SimReplay";
 
 const STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json";
 // centre shifted west so Finland sits in the map area visible right of the 456 px story column
@@ -42,8 +44,9 @@ export default function ChoroplethMap(props: {
   counties: FC | null; municipalities: FC | null; county: Values | null; muni: Values | null;
   selected: string | null; onSelect: (code: string | null) => void;
   live?: { code: string; value: number } | null;   // running simulated rate for one county (replay animation)
+  crowd?: Crowd | null;                            // simulated residents as dots (replay)
 }) {
-  const { counties, municipalities, county, muni, selected, onSelect, live } = props;
+  const { counties, municipalities, county, muni, selected, onSelect, live, crowd } = props;
   const [view, setView] = useState<ViewState>(HOME);
   const wrap = useRef<HTMLDivElement>(null);
   const wasLive = useRef(false);
@@ -74,6 +77,23 @@ export default function ChoroplethMap(props: {
     return () => clearTimeout(t);
   }, [liveCode, counties]);
   const [hover, setHover] = useState<{ x: number; y: number; name: string; value: string; n?: string; src?: string } | null>(null);
+  const [pick, setPick] = useState<{ x: number; y: number; d: CrowdDot } | null>(null);
+  const [ans, setAns] = useState<ResidentAnswer | null>(null);
+  const muniName = useMemo(() => {
+    const m = new globalThis.Map<string, string>();   // "Map" is the react-map-gl component here
+    for (const f of municipalities?.features ?? []) m.set(f.properties.code, f.properties.name);
+    return m;
+  }, [municipalities]);
+  useEffect(() => {   // Esc closes the dot card
+    if (!pick) return;
+    const h = (e: KeyboardEvent) => { if (e.key === "Escape") setPick(null); };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, [pick]);
+  useEffect(() => {   // a new county's crowd closes the open dot card (async — lint forbids sync setState in effects)
+    const t = setTimeout(() => { setPick(null); setAns(null); }, 0);
+    return () => clearTimeout(t);
+  }, [crowd?.prog, crowd?.code]);
 
   const muniFeatures = useMemo(() => {
     if (!municipalities || !muni) return null;
@@ -111,8 +131,8 @@ export default function ChoroplethMap(props: {
         const c = code === live?.code ? colorFor(live?.value, county)
                                      : colorFor(county?.values[code]?.value, county);
         const focus = selected ?? live?.code;
-        const dim = live ? 60 : 90;                    // during a replay the rest of Finland fades harder
-        return focus && code !== focus ? [c[0], c[1], c[2], dim] : c;
+        if (focus && code !== focus) return [c[0], c[1], c[2], live ? 60 : 90];   // rest of Finland fades
+        return [c[0], c[1], c[2], crowd && code === crowd.code ? 90 : c[3]];      // dots are the hero
       },
       getLineColor: (f: unknown) => {
         const code = (f as Feature).properties.code;
@@ -126,6 +146,7 @@ export default function ChoroplethMap(props: {
       updateTriggers: { getFillColor: [county, selected, live], getLineColor: [selected, live], getLineWidth: [selected, live] },
       onHover: tip(county),
       onClick: (info: PickingInfo) => {
+        setPick(null); setAns(null);
         const f = info.object as Feature; const code = f.properties.code === selected ? null : f.properties.code;
         onSelect(code); fly(code ? f : null);
       },
@@ -137,6 +158,29 @@ export default function ChoroplethMap(props: {
       getFillColor: (f: unknown) => colorFor(muni?.values[(f as Feature).properties.code]?.value, muni),
       getLineColor: [12, 13, 18, 200], getLineWidth: 0.6, lineWidthUnits: "pixels",
       updateTriggers: { getFillColor: [muni] }, onHover: tip(muni),
+    }));
+  }
+  if (crowd) {
+    layers.push(new ScatterplotLayer({
+      id: "crowd", data: crowd.dots, pickable: true,
+      getPosition: (d: CrowdDot) => [d.lon, d.lat],
+      getRadius: (d: CrowdDot) => (d.row < crowd.revealed ? 3 : 0), radiusUnits: "pixels",
+      getFillColor: (d: CrowdDot) => (d.u < crowd.pRow[d.row] ? [74, 222, 128, 235] : [248, 113, 113, 235]),
+      stroked: true, getLineColor: [255, 255, 255, 90], getLineWidth: 0.5, lineWidthUnits: "pixels",
+      transitions: { getRadius: 400 },     // dots grow from zero as their row is revealed
+      updateTriggers: { getRadius: [crowd.revealed], getFillColor: [crowd.pRow, crowd.flip] },
+      onHover: (info: PickingInfo) => {
+        const d = info.object as CrowdDot | undefined;
+        if (!d || d.row >= crowd.revealed) return setHover(null);
+        const r = crowd.flip[d.row] ?? crowd.rows[d.row];
+        setHover({ x: info.x, y: info.y, name: d.tip,
+                   value: `Jev ${Math.round(r.jev_attend * 100)} % takes part`,
+                   src: `simulation · ${crowd.engine}` });
+      },
+      onClick: (info: PickingInfo) => {
+        const d = info.object as CrowdDot | undefined;
+        if (d && d.row < crowd.revealed) { setAns(null); setPick({ x: info.x, y: info.y, d }); }
+      },
     }));
   }
 
@@ -156,6 +200,44 @@ export default function ChoroplethMap(props: {
           {hover.src && <div className="t-micro mt-0.5">{hover.src}</div>}
         </div>
       )}
+      {crowd && (
+        <div className="glass pointer-events-none absolute bottom-3 left-[472px] px-3 py-1.5 flex items-center gap-3" style={{ borderRadius: 8 }}>
+          <span className="t-micro whitespace-nowrap flex items-center gap-1.5">
+            <i className="inline-block w-2 h-2 rounded-full" style={{ background: "#4ade80" }} />takes part
+            <i className="inline-block w-2 h-2 rounded-full ml-2" style={{ background: "#f87171" }} />skips
+          </span>
+          <span className="t-micro whitespace-nowrap">1 dot ≈ {crowd.perDot} {crowd.who} · Simulation · {crowd.engine}</span>
+        </div>
+      )}
+      {pick && crowd && (() => {
+        const r = crowd.rows[pick.d.row], f = crowd.flip[pick.d.row];
+        const left = Math.min(pick.x + 14, window.innerWidth - 296);   // the map fills the viewport
+        const top = Math.min(pick.y + 10, window.innerHeight - 236);
+        return (
+          <div className="glass absolute z-20 w-[264px] p-2.5" style={{ left, top, borderRadius: 10 }}>
+            <div className="flex items-start justify-between gap-2">
+              <div className="t-caption leading-tight text-white/80">{r.key.sex_label}, {r.key.age5}</div>
+              <button onClick={() => setPick(null)} className="text-white/50 hover:text-white leading-none px-1">×</button>
+            </div>
+            <div className="t-body text-white/70 mt-0.5 leading-snug">
+              {r.key.lang_label} · {r.key.activity} · lives in {muniName.get(pick.d.muni) ?? pick.d.muni} · one of ~{crowd.perDot} similar {crowd.who}
+            </div>
+            <div className="text-[11px] mt-1 leading-snug">
+              <span className="text-sky-300/90 tabular-nums">
+                {f ? `Jev ${Math.round((f.jev_attend_before ?? 0) * 100)} % → ${Math.round(f.jev_attend * 100)} % take part`
+                    : `Jev ${Math.round(r.jev_attend * 100)} % take part`}
+              </span>
+              {r.reason_short && <span className="text-white/55"> · main factor: {r.reason_short}</span>}
+            </div>
+            <button onClick={() => getResidentAnswer(crowd.prog, (f ?? r).answer_key,
+                            crowd.scenarios.length ? crowd.scenarios : undefined).then(setAns).catch(() => null)}
+                    className="t-micro mt-1.5 underline decoration-dotted text-sky-300/90 hover:text-sky-200">
+              See what {crowd.engine} was asked
+            </button>
+            {ans && <div className="mt-1.5 max-h-[38vh] overflow-y-auto"><Asked ans={ans} onClose={() => setAns(null)} /></div>}
+          </div>
+        );
+      })()}
     </div>
   );
 }

@@ -37,12 +37,35 @@ def _county_of():
 
 
 def _groups(prog, scenario, c, county_of, code):
-    """simulate.frame filtered to the county, collapsed to one row per archetype key (w summed)."""
+    """simulate.frame filtered to the county, collapsed to one row per archetype key (w summed),
+    plus each group's weight split by municipality so the UI can place one map dot per `per_dot` people."""
     E = simulate.frame(prog, scenario, c, county_of)
     E = E[E.county == code]
-    return E.groupby(js.KEY, as_index=False).agg(
+    G = E.groupby(js.KEY, as_index=False).agg(
         w=("w", "sum"), p=("p", "first"), pa=("pa", "first"), reason=("reason", "first"),
         reasons=("reasons", "first"), akey=("akey", "first"))
+    munis = {}
+    for k, d in E.groupby(js.KEY):
+        mm = d.groupby("muni").w.sum().sort_values(ascending=False)
+        munis[k] = [[str(m), int(round(w))] for m, w in mm.items()]
+    G["munis"] = [munis.get(tuple(k), []) for k in G[js.KEY].itertuples(index=False, name=None)]
+    return G
+
+
+NICE = (1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000)
+
+
+def _per_dot(total):
+    """A 'nice' people-per-dot value so a county's baseline gives at most ~1 500 map dots."""
+    for n in NICE:
+        if total / n <= 1500:
+            return n
+    return NICE[-1]
+
+
+def _dots(munis, per_dot):
+    """[[muni, k]] — one dot per `per_dot` people of this group living in the municipality; zeros dropped."""
+    return [[m, k] for m, w in munis if (k := int(round(w / per_dot))) > 0]
 
 
 def _line_index(path):
@@ -118,6 +141,8 @@ def replay(prog, code, scenarios=None, engine=None):
             "note": f"Simulation · {rec.ENGINE_LABEL.get(js.engine_name(e), js.engine_name(e))}",
             "source": (s or {}).get("levels", {}).get("county", {}).get("source")}
 
+    per_dot = _per_dot(float(G0.w.sum()))
+
     if not scenarios:
         rows, cum_w, cum_pa, skip, skip_tot = [], 0.0, 0.0, {}, 0.0
         for _, g in G0.sort_values("w", ascending=False).iterrows():
@@ -127,9 +152,11 @@ def replay(prog, code, scenarios=None, engine=None):
             skip_tot += (1 - float(g.pa)) * w
             rows.append(_row(k, g, g.akey, bidx, brel, w, int(round(cum_w)),
                              round(100 * cum_pa / cum_w, 2),
-                             {"cum_reasons": {r: round(x / skip_tot, 3) for r, x in
+                             {"p_cal": round(float(g.pa), 4), "munis": g.munis,
+                              "dots": _dots(g.munis, per_dot),
+                              "cum_reasons": {r: round(x / skip_tot, 3) for r, x in
                                               sorted(skip.items(), key=lambda kv: -kv[1])}}))
-        base.update({"people_total": int(round(float(G0.w.sum()))), "rows": rows,
+        base.update({"people_total": int(round(float(G0.w.sum()))), "per_dot": per_dot, "rows": rows,
                      "files": _files(bpath), "asked_live": 0,
                      "final": {"rate": rows[-1]["cum_rate"] if rows else None, "real": real,
                                "national_real": v["national"], "target": v["target"]},
@@ -153,8 +180,10 @@ def replay(prog, code, scenarios=None, engine=None):
                          sidx if in_combo else bidx,
                          str((spath if in_combo else bpath).relative_to(ROOT)), w, int(round(cum_w)),
                          round(100 * (base_sum + cum_d) / W, 2),
-                         {"jev_attend_before": round(float(g.p), 4)}))
-    base.update({"people_total": int(round(float(M.w.sum()))), "rows": rows,
+                         {"jev_attend_before": round(float(g.p), 4),
+                          "p_cal": round(float(g.pa_new), 4), "p_cal_before": round(float(g.pa), 4),
+                          "munis": g.munis, "dots": _dots(g.munis, per_dot)}))
+    base.update({"people_total": int(round(float(M.w.sum()))), "per_dot": per_dot, "rows": rows,
                  "files": _files(spath, bpath), "asked_live": wres["asked_live"],
                  "final": {"rate": wres["new_rate"], "real": real,
                            "national_real": v["national"], "target": v["target"],

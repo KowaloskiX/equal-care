@@ -123,6 +123,14 @@ check("every replay row's file/line resolves to its answer_key",
 check("replay answer endpoint returns the asked state and raw line",
       c.get(f"/api/residents/breast/answer?key={json.dumps(rb['rows'][0]['answer_key'])}").json()["answer"]["key"]
       == rb["rows"][0]["answer_key"])
+# map dots: one dot per `per_dot` people of a row's municipality share; scenario uses the baseline's per_dot
+check("baseline replay carries per_dot and row munis/dots",
+      rb.get("per_dot") and all(r.get("munis") and "dots" in r and "p_cal" in r for r in rb["rows"]))
+ndots = sum(k for r in rb["rows"] for _, k in r["dots"])
+check("dots x per_dot tracks people_total within one per_dot per row",
+      abs(ndots * rb["per_dot"] - rb["people_total"]) <= rb["per_dot"] * len(rb["rows"]))
+check("scenario replay uses the baseline's per_dot and carries p_cal_before",
+      rs["per_dot"] == rb["per_dot"] and all("p_cal" in r and "p_cal_before" in r for r in rs["rows"]))
 check("cervix replay is out of the story (404)", c.get("/api/residents/cervix/90").status_code == 404)
 big = c.get("/api/residents/bowel/90")
 check("largest replay payload stays under ~1.5 MB", len(big.content) < 1_500_000)

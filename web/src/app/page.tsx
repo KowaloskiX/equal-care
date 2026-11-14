@@ -7,6 +7,7 @@ import Tour, { type TourStep } from "@/components/Tour";
 import { Skel, StepNo, Tag } from "@/components/ui";
 import { fmt, getBrief, getGap, getGeo, getMeta, getPathway, getValues,
          type Brief, type FC, type Gap, type Meta, type Pathway, type Values } from "@/lib/api";
+import type { Crowd } from "@/lib/dots";
 
 const ChoroplethMap = dynamic(() => import("@/components/ChoroplethMap"), { ssr: false });
 const SCREENING = ["screen_breast", "screen_cervix", "screen_bowel"];
@@ -60,6 +61,7 @@ export default function Home() {
   const [pathKey, setPathKey] = useState<string | null>(null);   // guided step 4: which indicator colours the map
   const [key, setKey] = useState("screen_breast");               // explore: which indicator colours the map
   const [live, setLive] = useState<{ code: string; value: number } | null>(null);   // replay's running sim rate
+  const [crowd, setCrowd] = useState<Crowd | null>(null);                           // simulated residents as map dots
 
   useEffect(() => {
     getMeta().then(setMeta).catch((e) => setErr(String(e)));
@@ -95,9 +97,10 @@ export default function Home() {
   }, [shown]);
 
   // every change of context (county, programme, step) clears the live simulation overlay
-  const goStep = (n: number) => { setStep(n); setLive(null); setSeen((s) => (s.includes(n) ? s : [...s, n])); };
-  const pickProg = (p: Prog) => { setProg(p); setPicked(null); setPathKey(null); setLive(null); setStep(1); setSeen([1]); };
-  const pickCode = (c: string) => { setPicked(c); setLive(null); setPathKey(null); };
+  const goStep = (n: number) => { setStep(n); setLive(null); setSeen((s) => (s.includes(n) ? s : [...s, n]));
+                                  if (n === 1) setCrowd(null); };
+  const pickProg = (p: Prog) => { setProg(p); setPicked(null); setPathKey(null); setLive(null); setCrowd(null); setStep(1); setSeen([1]); };
+  const pickCode = (c: string) => { setPicked(c); setLive(null); setPathKey(null); setCrowd(null); };
   const explore = () => { setMode("explore"); setLive(null); };
   const guided = () => { setMode("guided"); setSel(null); setLive(null); };
   const explain = (c: string) => { setPicked(c); setSel(null); setMode("guided"); setLive(null); setStep(2); setSeen([1, 2]); };
@@ -114,7 +117,7 @@ export default function Home() {
                        muni={sel === muni.county && mode === "explore" ? muni.vals : null}
                        selected={mode === "guided" ? code : sel}
                        onSelect={(c) => (mode === "guided" ? (c ? pickCode(c) : null) : setSel(c))}
-                       live={live} />
+                       live={live} crowd={crowd} />
       </div>
 
       {/* top bar */}
@@ -139,7 +142,8 @@ export default function Home() {
           <Guided prog={prog} code={code} step={step} seen={seen} briefProg={briefProg}
                   activeInd={step === 4 ? pathKey : null}
                   onStep={goStep} onCode={pickCode} onProg={pickProg} onExplore={explore}
-                  onInd={setPathKey} onLive={setLive} />
+                  onInd={setPathKey} onLive={setLive}
+                  munis={geo.municipality} crowd={crowd} onCrowd={setCrowd} />
         ) : mode === "guided" ? (
           briefErr
             ? <div className="t-body text-rose-300 mt-4">Can&apos;t reach the data API — start it with <code className="text-rose-200">make app</code>.</div>

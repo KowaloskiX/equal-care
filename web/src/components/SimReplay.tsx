@@ -3,8 +3,9 @@
 // story (and the county card): every number comes from /api/residents — the API replays lines from the
 // committed data/jev/*.jsonl caches; a scenario goes through /api/whatif first for uncached combos.
 import { useEffect, useRef, useState } from "react";
-import { engineName, fmt, getResidentAnswer, getResidents,
-         type Recommend, type Replay, type ResidentAnswer, type ResidentRow } from "@/lib/api";
+import { engineName, fmt, getBaselineReplay, getResidentAnswer, getResidents,
+         type FC, type Recommend, type Replay, type ResidentAnswer, type ResidentRow } from "@/lib/api";
+import { buildCrowd, scenarioRowIndex, type Crowd } from "@/lib/dots";
 import { Assumption, Cite, DRIVER_HEADLINE, GapSplitBar, SimChip } from "@/components/RecommendBlock";
 import { Skel, Tag } from "@/components/ui";
 
@@ -87,7 +88,7 @@ function Reasons({ cum, shorts, labels, big }: { cum?: Record<string, number>; s
 }
 
 // The popover behind a tile: the exact JSON state and questions sent to Jev, and the raw recorded answer.
-function Asked({ ans, onClose }: { ans: ResidentAnswer; onClose: () => void }) {
+export function Asked({ ans, onClose }: { ans: ResidentAnswer; onClose: () => void }) {
   const pre = (x: unknown) => JSON.stringify(x, null, 1);
   return (
     <div className="rounded-lg border border-sky-300/30 bg-[#0c0e16]/95 backdrop-blur shadow-xl p-2.5">
@@ -107,9 +108,10 @@ function Asked({ ans, onClose }: { ans: ResidentAnswer; onClose: () => void }) {
   );
 }
 
-export function ReplayPlayer({ replay, who, onLive, onDone, duration = 7000 }: {
+export function ReplayPlayer({ replay, who, onLive, onProgress, onDone, duration = 7000 }: {
   replay: Replay; who: string;
   onLive?: (v: { code: string; value: number } | null) => void;
+  onProgress?: (n: number) => void;         // rows revealed so far — drives the map dots
   onDone?: () => void; duration?: number;
 }) {
   const rows = replay.rows;
@@ -120,8 +122,9 @@ export function ReplayPlayer({ replay, who, onLive, onDone, duration = 7000 }: {
   const [ans, setAns] = useState<ResidentAnswer | null>(null);
   const liveRef = useRef(onLive);
   const doneRef = useRef(onDone);
+  const progRef = useRef(onProgress);
   const iRef = useRef(i);
-  useEffect(() => { liveRef.current = onLive; doneRef.current = onDone; });
+  useEffect(() => { liveRef.current = onLive; doneRef.current = onDone; progRef.current = onProgress; });
 
   useEffect(() => {
     if (instant) return;
@@ -129,7 +132,7 @@ export function ReplayPlayer({ replay, who, onLive, onDone, duration = 7000 }: {
     const tick = (t: number) => {
       const x = Math.min(1, (t - t0) / duration);
       const n = Math.round(Math.pow(x, 1.5) * rows.length);   // ease — faster at the tail
-      iRef.current = n; setI(n);
+      iRef.current = n; setI(n); progRef.current?.(n);
       const r = n ? rows[n - 1] : null;                     // live map rate emitted from the tick —
       liveRef.current?.(r ? { code: replay.code, value: r.cum_rate } : null);   // not an effect, so no nested updates
       if (x < 1) raf = requestAnimationFrame(tick); else setDone(true);
@@ -151,7 +154,7 @@ export function ReplayPlayer({ replay, who, onLive, onDone, duration = 7000 }: {
 
   const cur = i ? rows[i - 1] : null;
   useEffect(() => {   // reduced-motion path skips the tick — emit the final rate once
-    if (instant && i) liveRef.current?.({ code: replay.code, value: rows[i - 1].cum_rate });
+    if (instant && i) { liveRef.current?.({ code: replay.code, value: rows[i - 1].cum_rate }); progRef.current?.(i); }
   }, [instant, i, rows, replay.code]);
   useEffect(() => { if (done) doneRef.current?.(); }, [done]);
 
@@ -167,7 +170,7 @@ export function ReplayPlayer({ replay, who, onLive, onDone, duration = 7000 }: {
           Asked {i} / {rows.length} resident types · {fmt(cur?.cum_people ?? 0)} of {fmt(replay.people_total)} {who}
         </div>
         <button onClick={() => { const last = rows[rows.length - 1];
-                               iRef.current = rows.length; setI(rows.length);
+                               iRef.current = rows.length; setI(rows.length); progRef.current?.(rows.length);
                                if (last) liveRef.current?.({ code: replay.code, value: last.cum_rate });
                                setDone(true); }}
                 className="t-micro underline decoration-dotted hover:text-white/80 shrink-0">Skip</button>
@@ -270,9 +273,12 @@ function ReplayDetails({ replay, who }: { replay: Replay; who: string }) {
 }
 
 // Step 2 — "Why?": nothing simulated is shown until the user asks the county's resident types.
-export function BaselineStep({ prog, code, rec, who, onLive }: {
+export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
   prog: string; code: string; rec: Recommend | null; who: string;
   onLive?: (v: { code: string; value: number } | null) => void;
+  munis?: FC | null;                                     // municipality shapes for the resident dots
+  crowd?: Crowd | null;
+  onCrowd?: (c: Crowd | null | ((p: Crowd | null) => Crowd | null)) => void;
 }) {
   const [replay, setReplay] = useState<Replay | null>(null);
   const [ran, setRan] = useState(false);
@@ -284,11 +290,18 @@ export function BaselineStep({ prog, code, rec, who, onLive }: {
   }, [done]);
   useEffect(() => {   // callers key this component by prog:code, so a change remounts it
     let live = true;
-    getResidents(prog, code)
+    getBaselineReplay(prog, code)
       .then((r) => { if (live) setReplay(r); })
       .catch((e) => { if (live) setErr(String(e instanceof Error ? e.message : e)); });
     return () => { live = false; };
   }, [prog, code]);
+  // crowd dots appear only when the run starts; they stay until county/programme changes
+  useEffect(() => {
+    if (!ran || !replay || !munis) return;
+    onCrowd?.((p) => (p && p.prog === replay.programme && p.code === replay.code ? p
+                     : buildCrowd(replay, munis, who, engineName(replay.engine) ?? "Jev")));
+  }, [ran, replay, munis]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const onProgress = (n: number) => onCrowd?.((p) => (p ? { ...p, revealed: n } : p));
 
   if (err) return <div className="t-body text-rose-300 mt-2">{err}</div>;
   const split = done ? rec?.split : null;
@@ -310,7 +323,7 @@ export function BaselineStep({ prog, code, rec, who, onLive }: {
         </>
       )}
       {ran && replay && !done && (
-        <ReplayPlayer replay={replay} who={who} onLive={onLive} onDone={() => setDone(true)} />)}
+        <ReplayPlayer replay={replay} who={who} onLive={onLive} onProgress={onProgress} onDone={() => setDone(true)} />)}
       {done && !split && <Skel className="h-24 mt-3" />}
       {split && replay && (
         <div ref={resRef} className="mt-2.5 pt-2.5 border-t border-white/10 slide">
@@ -354,9 +367,12 @@ export function BaselineStep({ prog, code, rec, who, onLive }: {
 }
 
 // Step 3 — "What would help?": pick interventions, run the residents again, compare attempts.
-export function ScenarioStep({ prog, code, rec, who, onLive }: {
+export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
   prog: string; code: string; rec: Recommend | null; who: string;
   onLive?: (v: { code: string; value: number } | null) => void;
+  munis?: FC | null;
+  crowd?: Crowd | null;
+  onCrowd?: (c: Crowd | null | ((p: Crowd | null) => Crowd | null)) => void;
 }) {
   const [sel, setSel] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
@@ -379,11 +395,30 @@ export function ScenarioStep({ prog, code, rec, who, onLive }: {
   const run = () => {
     if (!sel.size || busy) return;
     setBusy(true); setErr(null); setDone(false);
+    // baseline crowd must exist before the scenario flips dots — show it fully revealed at once
+    getBaselineReplay(prog, code).then((b) => onCrowd?.((p) => {
+      if (p && p.prog === b.programme && p.code === b.code)
+        return { ...p, revealed: b.rows.length, flip: {}, scenarios: [...sel],
+                 pRow: b.rows.map((r) => r.p_cal ?? r.jev_attend) };
+      return { ...buildCrowd(b, munis ?? null, who, engineName(b.engine) ?? "Jev"),
+               revealed: b.rows.length, scenarios: [...sel] };
+    })).catch(() => null);
     getResidents(prog, code, [...sel])
       .then((r) => { setReplay(r); setRunId((x) => x + 1); })
       .catch((e) => setErr(String(e instanceof Error ? e.message : e)))
       .finally(() => setBusy(false));
   };
+  // scenario progress n -> flip the dots of revealed scenario rows to their new p_cal
+  const onProgress = (n: number) => onCrowd?.((p) => {
+    if (!p || !replay) return p;
+    const idx = scenarioRowIndex(p);
+    const pRow = [...p.pRow]; const flip = { ...p.flip };
+    for (let j = 0; j < Math.min(n, replay.rows.length); j++) {
+      const i = idx.get(rowKey(replay.rows[j]));
+      if (i != null) { pRow[i] = replay.rows[j].p_cal ?? pRow[i]; flip[i] = replay.rows[j]; }
+    }
+    return { ...p, pRow, flip };
+  });
   const w = done ? replay?.whatif : null;
   const onDone = () => {
     setDone(true);
@@ -411,7 +446,7 @@ export function ScenarioStep({ prog, code, rec, who, onLive }: {
       </button>
       {err && <div className="t-body text-rose-300 mt-1.5">{err}</div>}
       {replay && !busy && !done && (
-        <ReplayPlayer key={runId} replay={replay} who={who} onLive={onLive} onDone={onDone} />)}
+        <ReplayPlayer key={runId} replay={replay} who={who} onLive={onLive} onProgress={onProgress} onDone={onDone} />)}
       {w && replay && (
         <div ref={resRef} className="mt-2.5 slide">
           <div className="t-panel text-emerald-300">
