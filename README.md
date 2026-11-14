@@ -74,6 +74,6 @@ needs the active engine's key or the API returns 503 — simulated numbers are n
 | `src/datastore.py` | Values with sources, screening gap arithmetic, correlations, trends |
 | `src/residents.py`, `simulate.py`, `whatif.py` | Synthetic residents answered by a switchable decision engine (`SIM_ENGINE`: Jev/TypeSafe or Gemini Decisions), anchored and aggregated into `data/sim/`; `whatif.py` runs live combined scenarios |
 | `src/recommend.py` | Recommendations: gap split + scenarios mapped to cited roadmap actions (`/api/recommend`, `/api/brief`) |
-| `src/grounding.py` | Flags numbers in generated text that do not come from the data (from krakow-sim) |
+| `src/grounding.py` | Flags numbers in generated text that do not come from the data |
 | `app/server.py` | FastAPI |
 | `web/` | Next.js, deck.gl and MapLibre map; `/story` presentation route |

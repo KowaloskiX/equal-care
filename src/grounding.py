@@ -1,6 +1,6 @@
 """Every number in a generated text must come from the tool results it was written from.
 
-Ported from krakow-sim (src/data_agent.py: unverified). A number in the answer passes if it matches a number in the
+A number in the answer passes if it matches a number in the
 results (2 % tolerance), a percentage in the results, or a share of two result numbers. Anything else is returned as
 unverified and the UI marks it. Years, small counts (<= 12) and numbers from the question itself are exempt.
 """

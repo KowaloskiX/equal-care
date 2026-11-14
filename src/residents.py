@@ -1,6 +1,6 @@
 """Decision-engine answers for synthetic residents: will this person take part in cancer screening, and why not?
 
-Ported from krakow-sim (src/jev_sim.py, src/archetypes.py). Two interchangeable engines, selected by
+Two interchangeable engines, selected by
 SIM_ENGINE in .env / environment or the --engine flag (default jev):
 - jev    Jev (TypeSafe System One) — cache data/jev/, the committed answers, needs TYPESAFE_API_KEY only for new calls
 - gemini Gemini Decisions API (model gemini-decision-1, https://aistudio.google.com/docs/decisions-api)
