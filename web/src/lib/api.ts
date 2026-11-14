@@ -7,7 +7,7 @@ export const API = process.env.NEXT_PUBLIC_API ?? "";
 export type Source = { indicator: number | null; title: string; url: string; year: number | null; org: string;
   updated: string | null; cube_url?: string; period?: string };
 export type Indicator = {
-  key: string; sotkanet_id: number | null; label: string; stage: string; goal: number | null; unit: string;
+  key: string; sotkanet_id: number | null; label: string; short?: string | null; stage: string; goal: number | null; unit: string;
   higher_is_better: boolean | null; target: number | null; target_note: string | null; url: string; latest_year: number | null;
   title_en: string; description: string | null; updated: string;
 };

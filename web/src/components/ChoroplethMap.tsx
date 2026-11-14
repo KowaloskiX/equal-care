@@ -43,7 +43,7 @@ export default function ChoroplethMap(props: {
 }) {
   const { counties, municipalities, county, muni, selected, onSelect } = props;
   const [view, setView] = useState<ViewState>(HOME);
-  const [hover, setHover] = useState<{ x: number; y: number; name: string; value: string } | null>(null);
+  const [hover, setHover] = useState<{ x: number; y: number; name: string; value: string; n?: string; src?: string } | null>(null);
 
   const muniFeatures = useMemo(() => {
     if (!municipalities || !muni) return null;
@@ -62,7 +62,14 @@ export default function ChoroplethMap(props: {
 
   const tip = (vals: Values | null) => (info: PickingInfo) => {
     const f = info.object as Feature | undefined;
-    setHover(f ? { x: info.x, y: info.y, name: f.properties.name, value: fmt(vals?.values[f.properties.code]?.value, vals?.unit) } : null);
+    if (!f) return setHover(null);
+    const v = vals?.values[f.properties.code];
+    setHover({
+      x: info.x, y: info.y, name: f.properties.name,
+      value: fmt(v?.value, vals?.unit),
+      n: v?.abs_value != null ? `n = ${fmt(v.abs_value)}` : undefined,
+      src: vals?.source ? `${vals.source.org}${vals.source.period || vals.source.year ? `, ${vals.source.period ?? vals.source.year}` : ""}` : undefined,
+    });
   };
 
   const layers: Layer[] = [];
@@ -99,8 +106,13 @@ export default function ChoroplethMap(props: {
         <Map mapStyle={STYLE} />
       </DeckGL>
       {hover && (
-        <div className="glass pointer-events-none absolute px-3 py-2 text-[12.5px]" style={{ left: hover.x + 12, top: hover.y + 12 }}>
-          <div className="text-white/70">{hover.name}</div><div className="font-semibold">{hover.value}</div>
+        <div className="glass pointer-events-none absolute px-3 py-2 max-w-[240px]" style={{ left: hover.x + 12, top: hover.y + 12, borderRadius: 8 }}>
+          <div className="t-caption text-white/70 leading-tight">{hover.name}</div>
+          <div className="flex items-baseline gap-2">
+            <span className="t-section tabular-nums">{hover.value}</span>
+            {hover.n && <span className="t-micro">{hover.n}</span>}
+          </div>
+          {hover.src && <div className="t-micro mt-0.5">{hover.src}</div>}
         </div>
       )}
     </div>

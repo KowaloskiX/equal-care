@@ -146,13 +146,11 @@ export default function Story() {
             <div key={s.scenario} className="flex items-baseline gap-3 border-b border-white/5 pb-2">
               <span className="flex-1 text-[13.5px] text-white/80 leading-tight">{s.label}</span>
               <span className="tabular-nums text-emerald-300 font-semibold w-24 text-right">+{fmt(s.extra_people_per_year)}/yr</span>
-              <span className="w-44 text-right">
+              <span className="w-44 text-right space-x-1.5">
                 {s.actions.map((a) => (
                   <a key={a.id} href={a.url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}
-                     title={a.title}
-                     className="text-amber-300/90 underline decoration-dotted text-[12px] mr-2 hover:text-amber-200">
-                    Roadmap {a.id}, p.{a.page}
-                  </a>
+                     title={a.title_en ?? a.title}
+                     className="tag tag-roadmap">{a.id} · p.{a.page}</a>
                 ))}
               </span>
             </div>
@@ -189,7 +187,7 @@ export default function Story() {
               <div className="flex-1 h-4 rounded bg-white/5 overflow-hidden">{bar(w.value, waitMax, "#f43f5e99")}</div>
               <span className="w-14 text-left tabular-nums text-white/80">{fmt(w.value)} %</span>
               <span className="w-28 text-[11px] text-white/40">
-                n = {fmt(w.abs_value)}{w.abs_value != null && w.abs_value < 30 && <span className="pill ml-1 text-amber-300 border-amber-300/40">small</span>}
+                n = {fmt(w.abs_value)}{w.abs_value != null && w.abs_value < 30 && <span className="tag tag-warn ml-1"><i>small n</i></span>}
                 {w.shared_producer && <span title={`reported under ${w.shared_producer}`}> ·{w.shared_producer}</span>}
               </span>
             </div>
@@ -254,7 +252,7 @@ export default function Story() {
           Public data, a source behind every number,<br />and an action a county can put in its next procurement.
         </p>
         <div className="mt-6 text-center">
-          <Link href="/" onClick={(e) => e.stopPropagation()} className="pill text-amber-300 border-amber-300/50 hover:bg-amber-300/10 px-4 py-2 inline-block">Open the live map →</Link>
+          <Link href="/" onClick={(e) => e.stopPropagation()} className="rounded-full border border-white/20 bg-white/5 px-5 py-2 text-[13px] text-white/85 hover:bg-white/10 inline-block">Open the live map →</Link>
         </div>
       </div>
       <SrcLine>equal-care · Junction 2026</SrcLine>
@@ -264,18 +262,18 @@ export default function Story() {
   return (
     <main className="relative h-screen w-screen overflow-hidden flex items-center justify-center cursor-pointer select-none"
           onClick={next}>
-      {err && <div className="absolute top-5 left-1/2 -translate-x-1/2 pill text-rose-300 border-rose-300/50 z-10">API error: {err}</div>}
+      {err && <div className="absolute top-5 left-1/2 -translate-x-1/2 tag tag-warn z-10">API error: {err}</div>}
       <div key={i} className="slide px-6 flex justify-center w-full">{slides[i]}</div>
       <div className="absolute bottom-5 right-7 flex items-center gap-3 z-10" onClick={(e) => e.stopPropagation()}>
-        {i > 0 && <button onClick={prev} className="pill text-white/50 hover:text-white">←</button>}
+        {i > 0 && <button onClick={prev} className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-white/60 hover:text-white">←</button>}
         <div className="flex gap-1.5">
           {slides.map((_, k) => (
             <button key={k} onClick={() => setI(k)} aria-label={`slide ${k + 1}`}
-                    className={`w-2 h-2 rounded-full ${k === i ? "bg-amber-300" : "bg-white/20 hover:bg-white/40"}`} />
+                    className={`w-2 h-2 rounded-full ${k === i ? "bg-white" : "bg-white/20 hover:bg-white/40"}`} />
           ))}
         </div>
         <span className="text-[11px] text-white/35 tabular-nums">{i + 1} / {N}</span>
-        {i < N - 1 && <button onClick={next} className="pill text-white/50 hover:text-white">→</button>}
+        {i < N - 1 && <button onClick={next} className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-white/60 hover:text-white">→</button>}
       </div>
       <Link href="/" onClick={(e) => e.stopPropagation()}
             className="absolute top-5 left-6 text-[11px] uppercase tracking-wide text-white/35 hover:text-amber-300 z-10">← map</Link>

@@ -35,6 +35,7 @@ class Indicator:
     target_note: str | None = None
     source_page: str | None = None   # human-readable source page when the indicator is not in Sotkanet
     abs_is_denominator: bool = False # abs_value is the denominator behind the %, so the UI can flag tiny counts
+    short: str | None = None   # even shorter name for compact pickers (defaults to label)
 
     @property
     def url(self) -> str:
@@ -52,42 +53,42 @@ class Indicator:
 INDICATORS = [
     # detection: screening programmes. Strategy goal 2: 80 % attendance in every wellbeing services county (p. 5)
     Indicator("screen_breast", 3621, "Breast cancer screening attendance", "detection", 2, "%", "female",
-              target=80.0, target_note="Strategy 2026-2035, goal 2: 80 % attendance in every wellbeing services county"),
+              target=80.0, target_note="Strategy 2026-2035, goal 2: 80 % attendance in every wellbeing services county", short="Breast screening"),
     Indicator("screen_cervix", 3620, "Cervical cancer screening attendance", "detection", 2, "%", "female",
-              target=80.0, target_note="Strategy 2026-2035, goal 2: 80 % attendance in every wellbeing services county"),
+              target=80.0, target_note="Strategy 2026-2035, goal 2: 80 % attendance in every wellbeing services county", short="Cervical screening"),
     Indicator("screen_bowel", 6103, "Colorectal cancer screening attendance", "detection", 2, "%", "total",
-              target=80.0, target_note="Strategy 2026-2035, goal 2: 80 % attendance in every wellbeing services county"),
+              target=80.0, target_note="Strategy 2026-2035, goal 2: 80 % attendance in every wellbeing services county", short="Colorectal screening"),
     # referral: access to specialised care (all specialties; there is no cancer-only waiting indicator in Sotkanet)
     Indicator("wait_6m", 3336, "Waited over 6 months for specialised care, per 10 000", "referral", 3, "per 10 000", "total",
-              higher_is_better=False),
+              higher_is_better=False, short="Waited >6 months, all specialties"),
     # referral/treatment: cancer-specific access to specialised care, THL Hoitoon pääsy cube (src/fetch_thl_queue.py)
     Indicator("onc_ref_21", None, "Oncology: referrals processed in over 21 days", "referral", 3, "%", "total",
               higher_is_better=False, target=0.0,
               target_note="Health Care Act 3-week rule on the THL Hoitoon pääsy page: care must start within three "
                           "weeks of the care-need assessment, so over-21-day referral processing should be zero",
               source_page="https://thl.fi/data-ja-tilastot/hoitoon-paasy/erikoissairaanhoito",
-              abs_is_denominator=True),
+              abs_is_denominator=True, short="Oncology referrals >21 days"),
     Indicator("onc_wait_90", None, "Oncology: share of patients waiting over 90 days for treatment", "treatment", 3, "%", "total",
               higher_is_better=False,
               source_page="https://thl.fi/data-ja-tilastot/hoitoon-paasy/erikoissairaanhoito",
-              abs_is_denominator=True),
+              abs_is_denominator=True, short="Oncology wait >90 days"),
     # treatment
     Indicator("onc_visits", 2475, "Outpatient visits, oncology and radiotherapy", "treatment", 3, "visits", "total",
-              higher_is_better=None),
+              higher_is_better=None, short="Oncology outpatient visits"),
     Indicator("cancer_meds", 5093, "Special refund for cancer medicines, age-standardised", "treatment", 3, "%", "total",
-              higher_is_better=None),
+              higher_is_better=None, short="Cancer medicine refunds"),
     # outcome: strategy goal 3 (equal and effective care)
-    Indicator("surv_breast", 3625, "5-year relative survival, breast cancer", "outcome", 3, "%", "female"),
-    Indicator("surv_cervix", 3626, "5-year relative survival, cervical cancer", "outcome", 3, "%", "female"),
-    Indicator("surv_bowel", 3627, "5-year relative survival, colorectal cancer", "outcome", 3, "%", "total"),
+    Indicator("surv_breast", 3625, "5-year relative survival, breast cancer", "outcome", 3, "%", "female", short="5-yr survival · breast"),
+    Indicator("surv_cervix", 3626, "5-year relative survival, cervical cancer", "outcome", 3, "%", "female", short="5-yr survival · cervical"),
+    Indicator("surv_bowel", 3627, "5-year relative survival, colorectal cancer", "outcome", 3, "%", "total", short="5-yr survival · colorectal"),
     Indicator("cancer_index", 5643, "Cancer morbidity index, age-standardised (Finland = 100)", "outcome", 3, "index", "total",
-              higher_is_better=False),
+              higher_is_better=False, short="Cancer morbidity index"),
     # context: who lives there
-    Indicator("population", 127, "Population at year end", "context", None, "people", "total", higher_is_better=None),
-    Indicator("age65_share", 1068, "Population aged 65+, % of total", "context", None, "%", "total", higher_is_better=None),
+    Indicator("population", 127, "Population at year end", "context", None, "people", "total", higher_is_better=None, short="Population"),
+    Indicator("age65_share", 1068, "Population aged 65+, % of total", "context", None, "%", "total", higher_is_better=None, short="Aged 65+ share"),
     Indicator("foreign_lang", 187, "Native language other than Finnish, Swedish or Sami, per 1000", "context", None,
-              "per 1000", "total", higher_is_better=None),
-    Indicator("edu_level", 180, "Measure of educational level", "context", None, "index", "total", higher_is_better=None),
+              "per 1000", "total", higher_is_better=None, short="Other native language"),
+    Indicator("edu_level", 180, "Measure of educational level", "context", None, "index", "total", higher_is_better=None, short="Education level"),
 ]
 
 BY_KEY = {i.key: i for i in INDICATORS}

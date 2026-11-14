@@ -22,23 +22,23 @@ export const people = (prog: string) => (prog === "bowel" ? "people" : "women");
 export function DataChip({ s }: { s?: Source | null }) {
   const org = s?.org?.includes("/") ? s.org.split("/")[1].trim() : s?.org;
   return (
-    <span className="pill text-white/60 border-white/20">
-      DATA{org || s?.year ? <span className="text-white/35"> · {[org, s?.period ?? s?.year].filter(Boolean).join(" ")}</span> : null}
+    <span className="tag tag-data">
+      DATA{org || s?.year ? <i>· {[org, s?.period ?? s?.year].filter(Boolean).join(" ")}</i> : null}
     </span>
   );
 }
 
 export function SimChip({ eng }: { eng?: string | null }) {
-  return <span className="pill text-sky-300 border-sky-300/40">SIMULATION{eng ? <span className="text-sky-300/60"> · {eng}</span> : null}</span>;
+  return <span className="tag tag-sim">SIMULATION{eng ? <i>· {eng}</i> : null}</span>;
 }
 
 export function RoadmapChip() {
-  return <span className="pill text-amber-300 border-amber-300/40">ROADMAP</span>;
+  return <span className="tag tag-roadmap">ROADMAP</span>;
 }
 
 // Kept for existing callers (map sim-mode label etc.).
 export function SimPill({ text = "Simulation" }: { text?: string }) {
-  return <span className="pill text-sky-300 border-sky-300/40">{text}</span>;
+  return <span className="tag tag-sim"><i className="normal-case">{text}</i></span>;
 }
 
 export const splitEngine = (split: Recommend["split"] | undefined | null) =>
@@ -56,7 +56,7 @@ export function Cite({ a }: { a: ActionRef }) {
 export function Assumption({ text }: { text: string }) {
   return (
     <details className="mt-0.5">
-      <summary className="inline-block pill text-violet-300 border-violet-300/40 cursor-pointer select-none">ASSUMPTION</summary>
+      <summary className="inline-block tag tag-note select-none">ASSUMPTION</summary>
       <p className="text-[11px] text-white/50 mt-1">{text}</p>
     </details>
   );
@@ -85,7 +85,7 @@ export function GapSplitBar({ split }: { split: Recommend["split"] }) {
   const tot = comp + other;
   return (
     <div className="mt-1.5">
-      <div className="flex h-6 overflow-hidden rounded-md bg-white/5 border border-white/10">
+      <div className="flex h-3.5 overflow-hidden rounded-md bg-white/5 border border-white/10">
         <div className="bg-sky-400/60 h-full flex items-center justify-end pr-1 overflow-hidden whitespace-nowrap"
              style={{ width: `${tot ? (100 * comp) / tot : 0}%` }}>
           {tot && comp / tot > 0.14 ? <span className="text-[9.5px] text-sky-950 font-semibold">{split.comp_pts} pts</span> : null}
@@ -132,8 +132,8 @@ export function GapCloseBars({ scenarios, missing, who, combined }: {
                   <a key={a.id} href={a.url} target="_blank" rel="noreferrer"
                      title={s.actions.map((x) => `${x.id} p.${x.page}: ${x.title_en ?? x.title}`).join("\n")}
                      onClick={(e) => e.stopPropagation()}
-                     className="text-amber-300/90 hover:text-amber-300 underline decoration-dotted text-[10px] whitespace-nowrap">
-                    {a.id} p.{a.page}{s.actions.length > 1 && ` +${s.actions.length - 1}`}
+                     className="tag tag-roadmap">
+                    {a.id} · p.{a.page}{s.actions.length > 1 && ` +${s.actions.length - 1}`}
                   </a>
                 ))}
               </span>

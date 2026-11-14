@@ -5,10 +5,7 @@ import { useState } from "react";
 import { engineName, fmt, getWhatif, type Recommend, type WhatIf } from "@/lib/api";
 import { Assumption, Cite, people, RoadmapChip, SimChip } from "@/components/RecommendBlock";
 
-const PROGS = [{ id: "breast", label: "Breast" }, { id: "bowel", label: "Colorectal" }];
-
-export default function WhatIfPanel({ code, recs }: { code: string; recs: Recommend[] }) {
-  const [prog, setProg] = useState("breast");
+export default function WhatIfPanel({ code, recs, prog }: { code: string; recs: Recommend[]; prog: string }) {
   const [sel, setSel] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
   const [res, setRes] = useState<WhatIf | null>(null);
@@ -33,15 +30,7 @@ export default function WhatIfPanel({ code, recs }: { code: string; recs: Recomm
 
   return (
     <div className="mb-3 rounded-xl border border-emerald-300/25 bg-emerald-300/[0.05] p-3">
-      <div className="flex items-center justify-between gap-2 mb-1.5">
-        <div className="text-[11px] uppercase tracking-wide text-emerald-300/80">What if this county…</div>
-        <div className="flex gap-1">
-          {PROGS.map((p) => (
-            <button key={p.id} onClick={() => { setProg(p.id); setRes(null); }}
-                    className={`chip text-[10.5px] ${prog === p.id ? "chip-primary" : ""}`}>{p.label}</button>
-          ))}
-        </div>
-      </div>
+      <div className="t-caption mb-1.5">Pick interventions — the simulated residents answer for this county.</div>
       <div className="flex flex-wrap gap-1.5 mb-2">
         {scenarioOpts.map((s) => (
           <button key={s.id} onClick={() => toggle(s.id)} title={s.label}
