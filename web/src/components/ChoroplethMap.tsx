@@ -49,22 +49,24 @@ export default function ChoroplethMap(props: {
   const { counties, municipalities, county, muni, selected, onSelect, live, crowd } = props;
   const [view, setView] = useState<ViewState>(HOME);
   const wrap = useRef<HTMLDivElement>(null);
-  const wasLive = useRef(false);
-  const liveCode = live?.code ?? null;
+  const wasFocus = useRef(false);
+  // The crowd outlives `live` (cleared on every step change), so driving the camera off the
+  // crowd keeps the county framed through the whole step 2 -> step 3 run, incl. fetch waits.
+  const focusCode = live?.code ?? crowd?.code ?? null;
 
-  // "the map comes alive": while a replay runs, the camera fits the replayed county inside the
-  // free area right of the 440 px story column; when it ends, back to all of Finland.
+  // "the map comes alive": while a replay crowd exists, the camera fits that county inside the
+  // free area right of the 440 px story column; when the crowd clears, back to all of Finland.
   useEffect(() => {
     const t = setTimeout(() => {
-      if (liveCode == null) {
-        if (wasLive.current)
+      if (focusCode == null) {
+        if (wasFocus.current)
           setView({ ...HOME, transitionDuration: 800, transitionInterpolator: new FlyToInterpolator() });
-        wasLive.current = false;
+        wasFocus.current = false;
         return;
       }
-      wasLive.current = true;
+      wasFocus.current = true;
       const el = wrap.current;
-      const f = counties?.features.find((x) => x.properties.code === liveCode);
+      const f = counties?.features.find((x) => x.properties.code === focusCode);
       if (!el || !f) return;
       const pts = coords(f);
       const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
@@ -75,7 +77,7 @@ export default function ChoroplethMap(props: {
                 transitionDuration: 900, transitionInterpolator: new FlyToInterpolator() });
     }, 0);
     return () => clearTimeout(t);
-  }, [liveCode, counties]);
+  }, [focusCode, counties]);
   const [hover, setHover] = useState<{ x: number; y: number; name: string; value: string; n?: string; src?: string } | null>(null);
   const [pick, setPick] = useState<{ x: number; y: number; d: CrowdDot } | null>(null);
   const [ans, setAns] = useState<ResidentAnswer | null>(null);
@@ -148,7 +150,11 @@ export default function ChoroplethMap(props: {
       onClick: (info: PickingInfo) => {
         setPick(null); setAns(null);
         const f = info.object as Feature; const code = f.properties.code === selected ? null : f.properties.code;
-        onSelect(code); fly(code ? f : null);
+        onSelect(code);
+        // while a replay crowd holds the camera, a stray click (a missed dot) must not fly away —
+        // the focus effect only fires when focusCode changes, so a fly(null) here would strand
+        // the view on Finland with the dots left behind.
+        if (!crowd) fly(code ? f : null);
       },
     }));
   }

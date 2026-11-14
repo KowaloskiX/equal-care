@@ -7,7 +7,7 @@ import { fmt } from "@/lib/api";
 import type { ItemVisuals, Slide, VFeature } from "@/lib/report";
 
 // Font floor in cqw: inside the 16:9 deck a slide at 1280x720 makes 1 cqw ~ 11.3 px, so the deck
-// renders visuals with MinFs=1.15 (~13 px effective); the inline briefing block leaves the floor at 0.
+// renders visuals with MinFs=1.25 (~14 px effective); the inline briefing block leaves the floor at 0.
 export const MinFs = createContext(0);
 const useFs = () => {
   const m = useContext(MinFs);

@@ -102,20 +102,22 @@ export default function Home() {
     return xs.sort((a, b) => (better ? a.value - b.value : b.value - a.value));   // worst first
   }, [shown]);
 
-  // every change of context (county, programme, step) clears the live simulation overlay
+  // every change of context (county, programme, step) clears the live simulation overlay; the crowd
+  // (and its camera focus) survives between steps 2 and 3 so the map stays on the county, and is
+  // cleared leaving the sim steps — the map flies back to Finland once.
   const goStep = (n: number) => { setStep(n); setLive(null); setTl(null); setPreRun(null);
                                   setSeen((s) => (s.includes(n) ? s : [...s, n]));
-                                  if (n === 1) setCrowd(null); };
+                                  if (n === 1 || n === 4) setCrowd(null); };
   const pickProg = (p: Prog) => { setProg(p); setPicked(null); setPathKey(null); setLive(null); setCrowd(null);
                                   setTl(null); setPreRun(null); setStep(1); setSeen([1]); };
   const markVisited = (p: string, c: string) =>
     setVisited((v) => (v.includes(`${p}:${c}`) ? v : [...v, `${p}:${c}`]));
   const pickCode = (c: string) => { setPicked(c); setLive(null); setPathKey(null); setCrowd(null); setTl(null); setPreRun(null);
                                     markVisited(prog, c); };
-  const explore = () => { setMode("explore"); setLive(null); setTl(null); };
-  const guided = () => { setMode("guided"); setSel(null); setLive(null); setTl(null); setPreRun(null); };
+  const explore = () => { setMode("explore"); setLive(null); setTl(null); setCrowd(null); };
+  const guided = () => { setMode("guided"); setSel(null); setLive(null); setTl(null); setPreRun(null); setCrowd(null); };
   const explain = (c: string) => { setPicked(c); setSel(null); setMode("guided"); setLive(null); setTl(null);
-                                   setPreRun(null); setStep(2); setSeen([1, 2]); markVisited(prog, c); };
+                                   setCrowd(null); setPreRun(null); setStep(2); setSeen([1, 2]); markVisited(prog, c); };
   const restartTour = () => { guided(); setStep(1); setSeen([1]); setPreRun(null); setTour(true); };
   const tourDone = () => { setTour(false); localStorage.setItem("ec_tour_done", "1"); };
   // analyst drawer actions: jump into the guided story at the answered county
@@ -267,10 +269,11 @@ export default function Home() {
         )}
       </div>
 
-      {/* map legend — centred in the free area right of the column */}
+      {/* map legend — centred in the free area right of the column, bounded so it never leaves the viewport */}
       {shown && (
-        <div className="absolute bottom-4 left-[calc(50%+236px)] -translate-x-1/2 glass px-4 py-2 flex items-center gap-3 pointer-events-none">
-          <span className="t-caption font-semibold text-white/85 whitespace-nowrap max-w-[330px] truncate">
+        <div className="absolute bottom-4 left-[472px] right-4 flex justify-center pointer-events-none">
+          <div className="glass px-4 py-2 flex items-center gap-3 min-w-0 overflow-hidden">
+          <span className="t-caption font-semibold text-white/85 whitespace-nowrap max-w-[300px] truncate">
             {live ? `Simulated attendance · ${liveName}` : (ind?.short ?? shown.label)}
             {crowd ? ` · Simulation · ${engineName(crowd.engine) ?? crowd.engine}` : ""}</span>
           <span className="t-micro whitespace-nowrap">worse</span>
@@ -287,6 +290,7 @@ export default function Home() {
               <span className="ml-1">1 dot ≈ {crowd.perDot}</span>
             </span>
           )}
+          </div>
         </div>
       )}
 

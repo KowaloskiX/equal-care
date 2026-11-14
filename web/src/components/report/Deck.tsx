@@ -59,7 +59,7 @@ export function Deck({ data, cover, scenes, onExit }: { data: ReportResponse; co
                  style={{ background: "linear-gradient(90deg, #0b0c10 0%, rgba(11,12,16,0.82) 45%, rgba(11,12,16,0.15) 100%)" }} />
           </>
         )}
-        <MinFs.Provider value={1.15}>
+        <MinFs.Provider value={1.25}>
         <div key={i} className="slide absolute inset-0 flex flex-col" style={{ padding: "5.5cqw 6.5cqw 4.5cqw" }}>
           <div className="uppercase text-white/45" style={{ fontSize: "1.15cqw", letterSpacing: "0.22em" }}>
             {isTitle ? "Equal Care Across Finland · generated briefing" : KICKER[s.kind] ?? s.kind}
@@ -80,11 +80,11 @@ export function Deck({ data, cover, scenes, onExit }: { data: ReportResponse; co
             </div>
           ) : vis ? (
             <div className="flex-1 flex items-center gap-[3cqw] min-h-0">
-              {/* the visual keeps >= ~55 % of the slide width; the text column takes the rest */}
-              <div className="flex-1 min-w-0 h-full flex flex-col justify-center" style={{ containerType: "inline-size" }}>
-                <SlideVisual slide={s} v={vis} minFs={1.15} />
+              {/* the visual keeps >= 58 % of the slide width; the text column takes the rest */}
+              <div className="flex-1 min-w-0 h-full flex flex-col justify-center" style={{ minWidth: "58cqw", containerType: "inline-size" }}>
+                <SlideVisual slide={s} v={vis} minFs={1.25} />
               </div>
-              <div className="w-[33%] shrink-0">
+              <div className="w-[28%] shrink-0">
                 <h2 className="font-semibold leading-[1.15]" style={{ fontSize: "3cqw" }}>{s.headline}</h2>
                 <ul className="mt-[1.8cqw] space-y-[1cqw]">
                   {s.bullets.slice(0, 3).map((b, j) => (

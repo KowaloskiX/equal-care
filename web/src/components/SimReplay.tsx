@@ -472,7 +472,7 @@ export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
 }
 
 // Step 3 — "What would help?": pick interventions, run the residents again, compare attempts.
-export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, preselect, autoRun, onRanCombo }: {
+export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCrowd, preselect, autoRun, onRanCombo }: {
   prog: string; code: string; rec: Recommend | null; who: string;
   onLive?: (v: { code: string; value: number } | null) => void;
   munis?: FC | null;
@@ -521,6 +521,14 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, pre
   useEffect(() => {   // analyst drawer "Play it on the map" starts the run immediately
     if (autoRun && !ranOnce.current && sel.size && !busy) { ranOnce.current = true; run(); }
   });
+  useEffect(() => {   // a crowd built before municipalities loaded has zero dots — rebuild it once
+    if (!munis || !crowd || crowd.dots.length || crowd.prog !== prog || crowd.code !== code) return;
+    getBaselineReplay(prog, code).then((b) => {
+      const c = buildCrowd(b, munis, who, engineName(b.engine) ?? b.engine);
+      onCrowd?.((p) => (p && p.prog === prog && p.code === code && !p.dots.length
+        ? { ...c, revealed: p.revealed, scenarios: p.scenarios, flip: p.flip, pRow: p.pRow } : p));
+    }).catch(() => null);
+  }, [crowd, munis, prog, code]);   // eslint-disable-line react-hooks/exhaustive-deps
   // scenario progress n -> flip the dots of revealed scenario rows to their new p_cal
   const onProgress = (n: number) => onCrowd?.((p) => {
     if (!p || !replay) return p;
