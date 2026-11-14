@@ -573,25 +573,54 @@ def build_visuals(items):
         except Exception as e:
             V["who"] = {"error": str(e)}
 
-        # what — cached what-if per combo (item scenarios, else each single scenario), both engines
+        # what — every intervention for this county: each single scenario from recommend (its own
+        # simulated effect + cited actions) plus every combination the item carries; both engines,
+        # cached answers only — the report never asks an engine live.
         try:
             gap = ds.screening_gap(ind, code)
-            combos = [scen] if scen else [[s["scenario"]] for s in r.get("scenarios", [])]
+            missing = (gap or {}).get("missing_per_year")
+            combos = [[s["scenario"]] for s in r.get("scenarios", [])]
+            if scen:
+                combo = sorted(set(scen))
+                if combo not in combos:                # a single-scenario item is already a single row
+                    combos.append(combo)
+
+            def _cached(combo, engine=None):
+                try:
+                    return whatif.whatif(prog, code, combo, engine=engine, cache_only=True)
+                except Exception:
+                    return None
+
+            def _acts(acts):
+                return [{"id": a["id"], "page": a.get("page"),
+                         "title_en": a.get("title_en") or a.get("title"),
+                         "score": a.get("score"), "partial": bool(a.get("partial_match"))}
+                        for a in acts]
+
             rows = []
             for combo in combos:
-                w = whatif.whatif(prog, code, combo, cache_only=True)
-                row = {"scenarios": combo,
-                       "label": " + ".join(rec.SCENARIO_ACTIONS[x]["short"] for x in combo),
-                       "actions": _combo_actions(r, combo)}
-                if w:
-                    row["main"] = {"engine": w["engine"], "extra_people_per_year": w["extra_people_per_year"],
-                                   "gap_closed_pct": w["gap_closed_pct"], "new_rate": w["new_rate"]}
-                    row["other"] = w.get("other_engine")
+                w = _cached(combo)
+                if w and w.get("engine") == "jev":     # the deployed sim engine is Jev: it fills the jev side
+                    w, jev_w = None, w
                 else:
+                    jev_w = (w or {}).get("other_engine") or _cached(combo, engine="jev")
+                rec_s = next((s for s in r.get("scenarios", []) if s["scenario"] == combo[0]), None) \
+                    if len(combo) == 1 else None
+                row = {"label": " + ".join(rec.SCENARIO_ACTIONS[x]["short"] for x in combo),
+                       "scenarios": combo, "missing": missing,
+                       "gemini_extra": (rec_s["extra_people_per_year"] if rec_s
+                                        else (w or {}).get("extra_people_per_year")),
+                       "jev_extra": (jev_w or {}).get("extra_people_per_year"),
+                       "gemini_pct": (rec_s["share_of_missing"] if rec_s
+                                      else (w or {}).get("gap_closed_pct")),
+                       "jev_pct": (jev_w or {}).get("gap_closed_pct"),
+                       "actions": _acts(rec_s["actions"] if rec_s else _combo_actions(r, combo))}
+                if row["gemini_extra"] is None and row["jev_extra"] is None:
                     row["note"] = "combination not cached — the report never asks the engine live"
                 rows.append(row)
-            V["what"] = {"missing_per_year": (gap or {}).get("missing_per_year"), "combos": rows,
-                         "source": {"title": "Simulated residents (src/whatif.py, cached answers only)"}}
+            rows.sort(key=lambda x: (x["gemini_extra"] is None, -(x["gemini_extra"] or 0)))
+            V["what"] = {"missing_per_year": missing, "rows": rows,
+                         "source": {"title": "Simulated residents (data/sim + src/whatif.py, cached answers only)"}}
         except Exception as e:
             V["what"] = {"error": str(e)}
 

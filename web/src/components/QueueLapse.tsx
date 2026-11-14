@@ -4,7 +4,6 @@
 // drawn as a small SVG line chart; n (patients) and shared-producer warnings stay visible.
 import { useEffect, useRef, useState } from "react";
 import { fmt, getTimeline, getValues, type Timeline, type Values } from "@/lib/api";
-import { Src } from "@/components/RegionCard";
 import { Skel } from "@/components/ui";
 
 const PERIOD = (p: number) => `${String(p).slice(4, 6)}.${String(p).slice(0, 4)}`;   // 202609 -> "09.2026"
@@ -85,8 +84,8 @@ export default function QueueLapse({ kkey, code, onValues }: {
                            flex items-center justify-center hover:bg-sky-400/25">
           {playing ? "❚❚" : "▶"}
         </button>
-        <div className="t-caption leading-tight">
-          {tl.label} · <span className="text-white/80">{PERIOD(p)}</span>
+        <div className="t-micro leading-tight">
+          {tl.label} · <span className="text-white/75">{PERIOD(p)}</span>
         </div>
       </div>
       <input type="range" min={0} max={tl.periods.length - 1} value={pi} disabled={playing}
@@ -121,9 +120,12 @@ export default function QueueLapse({ kkey, code, onValues }: {
       <div className="t-micro mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5">
         <span><span className="text-sky-300">—</span> {cur ? fmt(cur.value, tl.unit) : "no data"}</span>
         <span><span className="text-white/50">┅</span> Finland {fmt(tl.national[String(p)], tl.unit)}</span>
-        {cur?.abs_value != null && <span>n = {fmt(cur.abs_value)} patients{smallN && <span className="text-amber-300"> · small numbers</span>}</span>}
+        {smallN && <span className="text-amber-300">small numbers</span>}
         {cur?.shared && <span>shared producer {cur.shared}</span>}
-        <span className="ml-auto"><Src s={tl.source} /></span>
+        <a href={tl.source.url} target="_blank" rel="noreferrer" title={tl.source.title}
+           className="tag tag-data ml-auto">
+          {tl.source.org.split("/")[0].trim()} · care queue{cur?.abs_value != null && ` · n = ${fmt(cur.abs_value)}`}
+        </a>
       </div>
     </div>
   );

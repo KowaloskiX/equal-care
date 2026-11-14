@@ -54,6 +54,13 @@ export type VCombo = { scenarios: string[]; label: string; actions: VAction[];
                        other?: { engine?: string; extra_people_per_year?: number | null;
                                  gap_closed_pct?: number | null } | null;
                        note?: string };
+// One intervention row of the 'what' visual: a single scenario (effect from recommend's committed
+// simulation) or an item combination (cached what-if). jev_* is the second engine's cached answer —
+// null means only the Gemini Decisions run exists for it.
+export type VWhatRow = { label: string; scenarios?: string[];
+                         gemini_extra?: number | null; jev_extra?: number | null;
+                         gemini_pct?: number | null; jev_pct?: number | null;
+                         missing?: number | null; actions?: VAction[]; note?: string };
 export type VNode = { id: string; status: "worse" | "better" | "close" | "gap" | string;
                       value?: number | null; national?: number | null; unit?: string | null;
                       abs_value?: number | null; small_n?: boolean };
@@ -73,7 +80,8 @@ export type ItemVisuals = {
           simulated_rate?: number | null; real_rate?: number | null; expected_skip_per_100?: number | null;
           people_total?: number; per_dot?: number; engine?: string; note?: string;
           source?: FactSource | null; error?: string };
-  what?: { missing_per_year?: number | null; combos?: VCombo[]; source?: unknown; error?: string };
+  what?: { missing_per_year?: number | null; rows?: VWhatRow[]; combos?: VCombo[];
+           source?: unknown; error?: string };
   pathway?: { nodes?: VNode[]; queue?: VQueue | null; source?: FactSource | null; error?: string };
   limits?: string[];
   next?: { scenario?: string | null; label?: string | null; actions?: VAction[]; steps?: string[] };

@@ -178,7 +178,7 @@ export default function Home() {
         {mode === "guided" && code ? (
           <Guided prog={prog} code={code} step={step} seen={seen} briefProg={briefProg}
                   activeInd={step === 4 ? pathKey : null}
-                  onStep={goStep} onCode={pickCode} onProg={pickProg} onExplore={explore}
+                  onStep={goStep} onCode={pickCode} onProg={pickProg}
                   onInd={setPathKey} onLive={setLive} onTl={setTl}
                   munis={geo.municipality} crowd={crowd} onCrowd={setCrowd} preRun={preRun}
                   reportHref={reportHref} onRanCombo={addReportRun} />

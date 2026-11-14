@@ -3,8 +3,8 @@
 // payload (built in src/report.py from the same sources as FACTS); these components only draw.
 // Font sizes use cqw so the same component scales inside the 16:9 slide and the inline briefing block.
 import { createContext, useContext, useMemo } from "react";
-import { engineName, fmt } from "@/lib/api";
-import type { ItemVisuals, Slide, VCombo, VFeature } from "@/lib/report";
+import { fmt } from "@/lib/api";
+import type { ItemVisuals, Slide, VFeature } from "@/lib/report";
 
 // Font floor in cqw: inside the 16:9 deck a slide at 1280x720 makes 1 cqw ~ 11.3 px, so the deck
 // renders visuals with MinFs=1.15 (~13 px effective); the inline briefing block leaves the floor at 0.
@@ -248,76 +248,94 @@ function Who({ v, prog }: { v: NonNullable<ItemVisuals["who"]>; prog?: string })
 
 function What({ v }: { v: NonNullable<ItemVisuals["what"]> }) {
   const F = useFs();
-  const combos = v.combos ?? [];
+  const minFs = useContext(MinFs);
+  const rows = v.rows ?? [];
   const missing = v.missing_per_year;
+  // One shared axis for every row so band proportions stay comparable between interventions.
+  // A negative share keeps a real position left of the zero tick — it is labelled "+/−", never clamped.
+  const pcts = rows.flatMap((c) => [c.gemini_pct, c.jev_pct].filter((x): x is number => x != null));
+  let lo = Math.min(0, ...pcts);
+  if (lo < 0) lo -= Math.max(3, -lo * 0.4);      // small pad so a negative marker is not on the track edge
+  const hi = Math.max(100, ...pcts);
+  const span = hi - lo || 1;
+  const X = (p: number) => ((p - lo) / span) * 100;
+  const lx = (p: number) => Math.max(2, Math.min(98, X(p)));   // label position, clamped for legibility only
+  const minH = minFs ? (rows.length > 4 ? "11cqw" : "14cqw") : undefined;
   return (
-    <div className="flex flex-col justify-center h-full" style={{ gap: combos.length > 4 ? "0.9cqw" : "1.5cqw" }}>
+    <div className="flex flex-col h-full" style={{ gap: "1cqw" }}>
       {missing != null && (
-        <div className="text-white/45" style={F(1.05)}>
+        <div className="text-white/45 shrink-0" style={F(1.05)}>
           <span className="uppercase tracking-[0.18em]">Simulated reach per year</span>
           {" — "}{fmt(missing)} people a year short of the target
         </div>
       )}
-      {combos.map((c: VCombo, i) => {
-        const m = c.main, o = c.other;
-        const ex = m?.extra_people_per_year;
-        const lo = o?.extra_people_per_year != null && ex != null ? Math.min(ex, o.extra_people_per_year) : ex;
-        const hi = o?.extra_people_per_year != null && ex != null ? Math.max(ex, o.extra_people_per_year) : ex;
-        const pcts = [m?.gap_closed_pct, o?.gap_closed_pct].filter((x): x is number => x != null);
-        const loP = pcts.length ? Math.min(...pcts) : null, hiP = pcts.length ? Math.max(...pcts) : null;
-        const bandL = loP != null ? Math.max(0, Math.min(100, loP)) : 0;
-        const bandW = hiP != null ? Math.min(100, Math.max(0, hiP)) - bandL : 0;
+      {rows.map((c, i) => {
+        const g = c.gemini_pct ?? null, j = c.jev_pct ?? null;
+        const ends = [g, j].filter((x): x is number => x != null);
+        const bandL = ends.length ? X(Math.min(...ends)) : 0;   // band runs from the lower engine share
+        const bandR = ends.length ? X(Math.max(...ends)) : bandL;
+        const neg = ends.some((x) => x < 0);
         return (
-          <div key={i} className="rounded-xl border border-white/10 bg-white/[0.04] px-[1.2cqw] py-[0.8cqw] min-w-0">
-            <div className="flex items-baseline justify-between gap-[1.5cqw]" style={F(1.35)}>
-              <span className="text-white/90 font-medium min-w-0 leading-snug">{c.label}</span>
-              <span className="tabular-nums text-emerald-300 shrink-0 whitespace-nowrap">
-                {m
-                  ? lo != null && hi != null && lo !== hi
-                    ? `+${fmt(lo)} to +${fmt(hi)} a year`
-                    : `+${fmt(ex)} a year`
-                  : "no cached run"}
-              </span>
+          <div key={i} className="flex-1 min-h-0 flex items-center gap-[1.6cqw] rounded-xl border border-white/10
+                                  bg-white/[0.04] px-[1.2cqw] py-[0.5cqw]"
+               style={minH ? { minHeight: minH } : undefined}>
+            <div className="w-[16cqw] shrink-0 min-w-0">
+              <div className="text-white/90 font-medium leading-snug" style={F(1.25)}>{c.label}</div>
+              <div className="tabular-nums text-emerald-300 mt-[0.25cqw]" style={F(1.1)}>
+                {c.gemini_extra != null ? `${c.gemini_extra >= 0 ? "+" : "−"}${fmt(Math.abs(c.gemini_extra))} a year`
+                  : (c.note ?? "no cached run")}
+              </div>
             </div>
-            <div className="relative rounded-full bg-white/[0.07] mt-[0.5cqw]" style={{ height: "1.3cqw" }}>
-              {loP != null && hiP != null && (
-                <div className="absolute inset-y-0 rounded-full bg-emerald-400/30"
-                     style={{ left: `${bandL}%`, width: `${bandW}%` }} />
-              )}
-              {m?.gap_closed_pct != null && (
-                <div className="absolute inset-y-0 w-[0.3cqw] rounded bg-emerald-300"
-                     title={`${engineName(m.engine)}: ${m.gap_closed_pct} % of the gap`}
-                     style={{ left: `calc(${Math.max(0, Math.min(100, m.gap_closed_pct))}% - 0.15cqw)` }} />
-              )}
-              {o?.gap_closed_pct != null && (
-                <div className="absolute inset-y-0 w-[0.3cqw] rounded bg-sky-300/80"
-                     title={`${engineName(o.engine)}: ${o.gap_closed_pct} % of the gap`}
-                     style={{ left: `calc(${Math.max(0, Math.min(100, o.gap_closed_pct))}% - 0.15cqw)` }} />
-              )}
-              {bandW > 0 && bandL + bandW < 88 && (
-                <span className="absolute right-[0.6cqw] inset-y-0 flex items-center text-white/40 whitespace-nowrap" style={F(0.95)}>
-                  share of the gap →
+            <div className="flex-1 min-w-0">
+              <div className="relative rounded-full bg-white/[0.07]" style={{ height: "1.5cqw" }}>
+                {lo < 0 && (
+                  <div className="absolute inset-y-0 w-px bg-white/50" style={{ left: `${X(0)}%` }}>
+                    {neg && <span className="absolute -top-[1.15cqw] left-1/2 -translate-x-1/2 text-white/45"
+                                  style={F(0.85)}>+/−</span>}
+                  </div>
+                )}
+                {ends.length > 1 && bandR > bandL && (
+                  <div className="absolute inset-y-0 rounded-full bg-emerald-400/30"
+                       style={{ left: `${bandL}%`, width: `${bandR - bandL}%` }} />
+                )}
+                {j != null && (
+                  <div className="absolute inset-y-0 w-[0.3cqw] rounded bg-sky-300/80"
+                       title={`Jev: ${j} % of the gap`}
+                       style={{ left: `calc(${X(j)}% - 0.15cqw)` }} />
+                )}
+                {g != null && (
+                  <div className="absolute inset-y-0 w-[0.3cqw] rounded bg-emerald-300"
+                       title={`Gemini Decisions: ${g} % of the gap`}
+                       style={{ left: `calc(${X(g)}% - 0.15cqw)` }} />
+                )}
+                {g != null && (
+                  <span className="absolute bottom-full mb-[0.15cqw] -translate-x-1/2 whitespace-nowrap tabular-nums
+                                   text-emerald-300/90" style={{ ...F(0.95), left: `${lx(g)}%` }}>{fmt(g)} %</span>
+                )}
+              </div>
+              <div className="flex items-baseline justify-between mt-[0.6cqw] tabular-nums" style={F(0.95)}>
+                <span className="text-sky-300/85 whitespace-nowrap">
+                  {c.jev_extra != null
+                    ? `Jev ${c.jev_extra >= 0 ? "+" : "−"}${fmt(Math.abs(c.jev_extra))} a year` +
+                      (j != null ? ` · ${fmt(j)} %` : "")
+                    : "Gemini Decisions only"}
                 </span>
-              )}
+                <span className="text-white/35" style={F(0.85)}>share of the gap · simulated upper bound</span>
+                <span className="text-emerald-300/80 whitespace-nowrap">
+                  {c.gemini_extra != null
+                    ? `Gemini Decisions ${c.gemini_extra >= 0 ? "+" : "−"}${fmt(Math.abs(c.gemini_extra))} a year` +
+                      (g != null ? ` · ${fmt(g)} %` : "")
+                    : "not cached"}
+                </span>
+              </div>
             </div>
-            <div className="flex items-center gap-[0.7cqw] mt-[0.5cqw] flex-wrap" style={F(1.05)}>
-              <span className="text-white/50 min-w-0">
-                {m
-                  ? <>
-                      {engineName(m.engine) ?? m.engine} +{fmt(m.extra_people_per_year)}
-                      {o?.extra_people_per_year != null && <> · {engineName(o.engine) ?? o.engine} +{fmt(o.extra_people_per_year)}</>}
-                      {missing != null && ex != null && ` · ${ex >= missing ? "up to the whole gap" : `${m.gap_closed_pct ?? "?"} % of the gap`}`}
-                      {" · simulated upper bound"}
-                    </>
-                  : (c.note ?? "combination not cached — the report never asks the engine live")}
-              </span>
-              <span className="flex-1" />
+            <div className="shrink-0 flex flex-wrap justify-end content-center gap-[0.45cqw] max-w-[24cqw]">
               {(c.actions ?? []).slice(0, 3).map((a) => <ActionChip key={a.id} a={a} />)}
             </div>
           </div>
         );
       })}
-      {!combos.length && <div className="text-white/50" style={F(1.2)}>No intervention runs for this item.</div>}
+      {!rows.length && <div className="text-white/50" style={F(1.2)}>No intervention runs for this item.</div>}
     </div>
   );
 }

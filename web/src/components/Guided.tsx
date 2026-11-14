@@ -7,7 +7,7 @@ import { engineName, fmt, getGap, getPathway, getRecommend, getValues,
 import type { Crowd } from "@/lib/dots";
 import { axisPos, BaselineStep, ScenarioStep } from "@/components/SimReplay";
 import QueueLapse from "@/components/QueueLapse";
-import { Assumption, Cite, DataChip, PartialMatch, people, RoadmapChip, SimChip } from "@/components/RecommendBlock";
+import { Assumption, Cite, DataChip, people, RoadmapChip, SimChip } from "@/components/RecommendBlock";
 import { Row, Src, STAGE_LABEL, STAGE_QUESTION } from "@/components/RegionCard";
 import { Seg, Skel, Tag } from "@/components/ui";
 
@@ -28,12 +28,12 @@ function Chip({ step, eng, src }: { step: number; eng: string | null; src?: Para
 }
 
 export default function Guided({ prog, code, step, seen, briefProg, activeInd,
-                                 onStep, onCode, onProg, onExplore, onInd, onLive,
+                                 onStep, onCode, onProg, onInd, onLive,
                                  munis, crowd, onCrowd, preRun, onTl, reportHref, onRanCombo }: {
   prog: Prog; code: string; step: number; seen: number[]; briefProg?: Brief["programmes"][number];
   activeInd: string | null;
   onStep: (n: number) => void; onCode: (c: string) => void; onProg: (p: Prog) => void;
-  onExplore: () => void; onInd: (k: string | null) => void;
+  onInd: (k: string | null) => void;
   onTl?: (v: Values | null) => void;         // step 4: monthly queue values driving the choropleth
   onLive?: (v: { code: string; value: number } | null) => void;
   munis?: FC | null;
@@ -179,7 +179,7 @@ export default function Guided({ prog, code, step, seen, briefProg, activeInd,
         )}
 
         {step === 4 && (
-          <Step4 prog={prog} code={code} name={name} path={pathF} rec={recF} activeInd={activeInd}
+          <Step4 prog={prog} code={code} path={pathF} rec={recF} activeInd={activeInd}
                  onInd={onInd} onCode={onCode} onTl={onTl} />
         )}
       </div>
@@ -195,9 +195,6 @@ export default function Guided({ prog, code, step, seen, briefProg, activeInd,
           </button>
         ) : (
           <div className="flex items-center gap-3">
-            <button onClick={onExplore} className="t-caption text-white/60 hover:text-white underline decoration-dotted underline-offset-2">
-              Explore all indicators
-            </button>
             {reportHref && (
               <a href={reportHref} className="t-caption text-white/60 hover:text-white underline decoration-dotted underline-offset-2">
                 Generate report
@@ -227,11 +224,28 @@ const NODE_STYLE: Record<NodeStatus, { dot: string; text: string; ring: string }
   gap:   { dot: "bg-transparent border border-dashed border-white/40", text: "text-white/45",
            ring: "border-dashed border-white/25 bg-transparent" },
 };
+const STATUS_WORD: Record<NodeStatus, string> = { worse: "worse", better: "better", close: "close", gap: "no data" };
+const statusOf = (it: PathwayItem): NodeStatus =>
+  it.value == null ? "gap" : isBehind(it) ? "worse" : it.delta === 0 || close(it) ? "close" : "better";
 
-// Step 4 — the whole pathway as a 5-node strip. The selected node drives the map indicator; queue
-// nodes get a monthly time-lapse, and each node shows its own roadmap actions (stage-tagged server-side).
-function Step4({ prog, code, name, path, rec, activeInd, onInd, onCode, onTl }: {
-  prog: Prog; code: string; name: string; path: Pathway | null; rec: Recommend | null;
+// One-line captions under the hero number, keyed to the pathway indicators — plain wording for the
+// slide look; any other key falls back to the indicator's own label.
+const CAPTION: Record<string, string> = {
+  screen_breast: "of invited women attend screening",
+  screen_bowel: "of invited people return the home test",
+  wait_6m: "per 10 000 waited over 6 months for specialist care",
+  onc_ref_21: "of oncology referrals took over 21 days",
+  onc_wait_90: "of oncology patients wait over 90 days",
+  surv_breast: "five-year survival, breast cancer",
+  surv_cervix: "five-year survival, cervical cancer",
+  surv_bowel: "five-year survival, colorectal cancer",
+};
+
+// Step 4 — the whole pathway as a 5-node strip + one hero card, like the report's pathway slide.
+// The selected node drives the map indicator; queue nodes get a monthly time-lapse, and each node
+// shows its roadmap actions as citation chips (stage-tagged server-side).
+function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
+  prog: Prog; code: string; path: Pathway | null; rec: Recommend | null;
   activeInd: string | null; onInd: (k: string | null) => void; onCode: (c: string) => void;
   onTl?: (v: Values | null) => void;
 }) {
@@ -277,36 +291,45 @@ function Step4({ prog, code, name, path, rec, activeInd, onInd, onCode, onTl }: 
   const primary = new Set(NODES.flatMap((n) => n.keys));
   const rest = path?.indicators.filter((i) => !primary.has(i.key)) ?? [];
   const restStages = [...new Set(rest.map((i) => i.stage))];
-  const behind = NODES.filter((n, i) => statuses[i] === "worse").map((n) => STAGE_LABEL[n.id] ?? n.id);
+  const behind = NODES.filter((n, i) => statuses[i] === "worse").map((n) => (STAGE_LABEL[n.id] ?? n.id).toLowerCase());
+  const measured = statuses.filter((s) => s !== "gap").length;
   const cur = NODES.find((n) => n.id === node)!;
+  const items = cur.keys.map(find).filter((i): i is PathwayItem => !!i && i.value != null);
+  const hero = items.find(isBehind) ?? items.find((i) => i.key === cur.mapKey) ?? items[0];
+  const heroStatus = hero ? statusOf(hero) : "gap";
   const acts = (rec?.pathway_actions ?? []).filter((a) => a.stage === node);
   const loose = (rec?.pathway_actions ?? []).filter((a) => !a.stage || !NODES.some((n) => n.id === a.stage));
+  const rel = acts.length ? acts : loose;                    // stage-matched chips, else later-steps actions
+  const shownActs = rel.slice(0, 3);
+  const assum = shownActs.find((a) => a.partial_match && a.assumption)?.assumption;
 
   return (
-    <div className="mt-2">
-      <p className="t-body text-white/75 leading-snug">
-        {!path ? <>After screening: does care in {name} keep pace with Finland?</>
-          : behind.length
-            ? <>After screening, {name} falls behind on: <span className="text-rose-300">{behind.join(", ")}</span></>
-            : <>After screening, {name} keeps pace with Finland on the published indicators.</>}
-      </p>
-      <p className="t-caption mt-1 text-white/50 leading-snug">
-        Screening is only the first step. Here is how {name} compares with Finland on the later steps — public data, no simulation.
-      </p>
+    <div className="mt-1">
+      {/* the slide-style takeaway: computed from the node statuses, not typed */}
+      {!path ? <Skel className="h-7 mt-2 w-4/5" /> : (
+        <h2 className="t-title mt-1.5 leading-snug">
+          {behind.length
+            ? <>Falls behind on <span className="text-rose-300">{behind.join(", ")}</span></>
+            : measured ? "Keeps pace with Finland" : "A data gap in diagnosis"}
+        </h2>
+      )}
 
-      {/* the 5-node pathway strip — node colour = status of its primary indicator */}
-      <div className="relative mt-3">
-        <div className="absolute left-4 right-4 top-[7px] border-t border-white/15" />
+      {/* the 5-node pathway strip — dot colour = status; status word underneath, click swaps the card */}
+      <div className="relative mt-4">
+        <div className="absolute left-5 right-5 top-[8px] border-t border-white/15" />
         <div className="relative flex justify-between">
           {NODES.map((n, i) => {
-            const st = statuses[i], s = NODE_STYLE[st];
+            const st = statuses[i], s = NODE_STYLE[st], on = node === n.id;
             return (
               <button key={n.id} onClick={() => setSel(n.id)} title={STAGE_QUESTION[n.id]}
-                      className={`flex flex-col items-center gap-1 px-1 py-0.5 rounded-lg border w-[76px] transition
-                        ${node === n.id ? s.ring : "border-transparent hover:bg-white/5"}`}>
-                <span className={`w-3 h-3 rounded-full shrink-0 ${s.dot}`} />
-                <span className={`text-[10px] leading-tight text-center ${node === n.id ? s.text : "text-white/60"}`}>
+                      className={`flex flex-col items-center gap-1 px-1 py-1 rounded-lg border w-[78px] transition
+                        ${on ? s.ring : "border-transparent hover:bg-white/5"}`}>
+                <span className={`w-3.5 h-3.5 rounded-full shrink-0 ${s.dot} ${on ? "ring-2 ring-white/25" : ""}`} />
+                <span className={`text-[11px] leading-tight text-center ${on ? "text-white" : "text-white/70"}`}>
                   {STAGE_LABEL[n.id] ?? n.id}
+                </span>
+                <span className={`text-[9px] uppercase tracking-wide leading-none ${s.text}`}>
+                  {STATUS_WORD[st]}
                 </span>
               </button>
             );
@@ -314,46 +337,68 @@ function Step4({ prog, code, name, path, rec, activeInd, onInd, onCode, onTl }: 
         </div>
       </div>
 
-      {/* the selected node's rows, queue time-lapse and roadmap actions */}
-      {!path ? <div className="mt-2 space-y-2"><Skel className="h-10" /><Skel className="h-10" /></div> : (
-        <div className="mt-2.5">
-          <div className="px-1 mb-0.5">
-            <span className="t-caption uppercase tracking-wide text-white/45">{STAGE_LABEL[cur.id]}</span>
-            <span className="t-micro italic ml-1.5">{STAGE_QUESTION[cur.id]}</span>
-          </div>
-          {cur.id === "diagnosis" ? (
-            <div className="flex items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 bg-white/[0.03] border border-white/10">
-              <span className="t-caption leading-snug">
-                No public county data — stage known for 42 % of cancers nationally
-                (<a href="https://syoparekisteri.fi/assets/themes/ssy3/factsheets/syopa_2024_tilastoraportti.html"
-                    target="_blank" rel="noreferrer" className="underline decoration-dotted hover:text-white/80">
-                  Cancer Registry 2024</a>, from report text).
-              </span>
+      {/* one hero card for the selected node — giant number, one-line caption, Finland + status + n */}
+      {!path ? <div className="mt-3 space-y-2"><Skel className="h-16" /><Skel className="h-10" /></div> : (
+        <div className="mt-3">
+          {cur.id === "diagnosis" || !hero ? (
+            <div className="rounded-xl border border-dashed border-white/20 bg-white/[0.02] px-4 py-3.5 flex items-start gap-3">
+              <span className="mt-1 w-3.5 h-3.5 rounded-full border border-dashed border-white/40 shrink-0" />
+              <div className="min-w-0 flex-1">
+                <div className="t-section text-white/80">A data gap in diagnosis</div>
+                <p className="t-caption mt-1 leading-snug">
+                  No public county data — stage known for 42 % of cancers nationally
+                  (<a href="https://syoparekisteri.fi/assets/themes/ssy3/factsheets/syopa_2024_tilastoraportti.html"
+                      target="_blank" rel="noreferrer" className="underline decoration-dotted hover:text-white/80">
+                    Cancer Registry 2024</a>, from report text).
+                </p>
+              </div>
               <Tag v="note">Data gap</Tag>
             </div>
           ) : (
-            cur.keys.map((k) => {
-              const it = find(k);
-              return it ? <ScoreRow key={k} it={it} active={it.key === activeInd}
-                                    onPick={() => onInd(it.key)} /> : null;
-            })
-          )}
-          {cur.queue && <QueueLapse kkey={cur.queue} code={code} onValues={(v) => onTl?.(v)} />}
-          {acts.length > 0 && (
-            <div className="mt-2">
-              <div className="t-caption mb-1 flex items-center gap-2"><RoadmapChip /> What the roadmap says</div>
-              {acts.map((a, i) => (
-                <div key={a.id} className="px-1 py-1">
-                  {a.why && (i === 0 || acts[i - 1].why !== a.why) &&
-                    <div className="text-[11.5px] text-white/60 leading-snug">{a.why}</div>}
-                  <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
-                    <Cite a={a} />
-                    <PartialMatch a={a} />
-                    {a.small_numbers && <Tag v="note">{a.small_numbers}</Tag>}
-                    {a.assumption && <Assumption text={a.assumption} />}
-                  </div>
+            <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3.5 flex items-center gap-4">
+              <div className="min-w-0 flex-1">
+                <div className={`text-[32px] font-semibold leading-none tabular-nums ${NODE_STYLE[heroStatus].text}`}>
+                  {fmt(hero.value, hero.unit)}
                 </div>
-              ))}
+                <div className="t-caption mt-1.5 text-white/65 leading-snug">
+                  {CAPTION[hero.key] ?? hero.label}
+                  {hero.key === activeInd && hero.key !== cur.mapKey && <span className="text-sky-300"> · on map</span>}
+                </div>
+                <div className="t-micro mt-1"><Src s={hero.source} /></div>
+              </div>
+              <div className="shrink-0 flex flex-col items-end gap-1 text-right">
+                <span className="t-caption text-white/55">
+                  Finland <span className="text-white/90 font-medium tabular-nums">{fmt(hero.national, hero.unit)}</span>
+                </span>
+                {heroStatus === "worse" ? <Tag v="warn">worse than Finland</Tag>
+                  : heroStatus === "better"
+                    ? <span className="tag" style={{ color: "#6ee7b7", borderColor: "rgba(110,231,183,0.4)",
+                                                   background: "rgba(110,231,183,0.08)" }}>better than Finland</span>
+                    : <Tag v="data">close to Finland</Tag>}
+                {hero.abs_is_denominator && hero.abs_value != null && (
+                  <span className={`t-micro tabular-nums ${hero.abs_value < 30 ? "text-amber-300" : ""}`}>
+                    n = {fmt(hero.abs_value)}{hero.abs_value < 30 ? " · small numbers" : ""}
+                  </span>)}
+                {hero.target != null && <span className="t-micro text-amber-300/80">target {fmt(hero.target, hero.unit)}</span>}
+                {hero.rank != null && <span className="t-micro">rank {hero.rank} of {hero.of}</span>}
+              </div>
+            </div>
+          )}
+          {/* other measured indicators on this node — one line each, click to put on the map */}
+          {items.filter((i) => i !== hero).map((i) => (
+            <button key={i.key} onClick={() => onInd(i.key)} title={`show on the map — ${i.label}`}
+                    className="t-micro w-full text-left mt-1 px-1 text-white/50 hover:text-white/80 leading-snug">
+              also <span className="tabular-nums text-white/70">{fmt(i.value, i.unit)}</span> {i.label.toLowerCase()}{" "}
+              (Finland {fmt(i.national, i.unit)}){i.key === activeInd && <span className="text-sky-300"> · on map</span>}
+            </button>
+          ))}
+          {cur.queue && <QueueLapse kkey={cur.queue} code={code} onValues={(v) => onTl?.(v)} />}
+          {shownActs.length > 0 && (
+            <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+              <RoadmapChip />
+              {shownActs.map((a) => <Cite key={a.id} a={a} />)}
+              {rel.length > shownActs.length && <span className="t-micro">+{rel.length - shownActs.length} more</span>}
+              {assum && <Assumption text={assum} />}
             </div>
           )}
         </div>
@@ -390,53 +435,7 @@ function Step4({ prog, code, name, path, rec, activeInd, onInd, onCode, onTl }: 
           </div>
         </details>
       )}
-      {loose.length > 0 && (
-        <div className="mt-2.5 pt-2 border-t border-white/10">
-          <div className="t-caption mb-1 flex items-center gap-2"><RoadmapChip /> What the roadmap says for later steps</div>
-          {loose.map((a) => (
-            <div key={a.id} className="px-1 py-1">
-              {a.why && <div className="text-[11.5px] text-white/60 leading-snug">{a.why}</div>}
-              <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
-                <Cite a={a} />
-                {a.assumption && <Assumption text={a.assumption} />}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-      <div className="text-[10px] text-white/35 px-1 mt-1.5">ASSUMPTION badges mark judgement calls. Simulated estimates, not forecasts.</div>
+      <div className="text-[10px] text-white/35 px-1 mt-1.5">ASSUMPTION badges mark judgement calls. Public data — no simulation on this step.</div>
     </div>
-  );
-}
-
-// Step-4 scorecard row: key indicator, value vs Finland, status pill — clutter in the tooltip.
-function ScoreRow({ it, active, onPick }: { it: PathwayItem; active: boolean; onPick: () => void }) {
-  const pill = it.value == null ? <Tag v="data">No data</Tag>
-    : isBehind(it) ? <Tag v="warn">Worse than Finland</Tag>
-    : it.delta === 0 || close(it) ? <Tag v="data">Close to Finland</Tag>
-    : <span className="tag" style={{ color: "#6ee7b7", borderColor: "rgba(110,231,183,0.4)", background: "rgba(110,231,183,0.08)" }}>Better</span>;
-  const tip = [it.rank != null && `rank ${it.rank} of ${it.of}`,
-               it.target != null && `target ${fmt(it.target, it.unit)}`].filter(Boolean).join(" · ");
-  return (
-    <button onClick={onPick} title={tip || it.label}
-            className={`w-full text-left rounded-lg px-2.5 py-1.5 transition ${active ? "rowsel" : "hover:bg-white/5"}`}>
-      <div className="flex items-center justify-between gap-2">
-        <span className="t-body text-white/80 leading-tight">
-          {it.label}
-          {active && <span className="t-micro text-sky-300"> · shown on map</span>}
-        </span>
-        <span className="flex items-center gap-2 shrink-0 whitespace-nowrap">
-          <span className="t-section tabular-nums">{fmt(it.value, it.unit)}</span>
-          <span className="t-caption text-white/50">Finland {fmt(it.national, it.unit)}</span>
-          {pill}
-        </span>
-      </div>
-      <div className="t-micro mt-0.5 flex gap-2">
-        {it.abs_is_denominator && it.abs_value != null &&
-          <span>n = {fmt(it.abs_value)}{it.abs_value < 30 ? " · small numbers" : ""}</span>}
-        {it.shared_producer && <span>shared producer {it.shared_producer}</span>}
-        <Src s={it.source} />
-      </div>
-    </button>
   );
 }
