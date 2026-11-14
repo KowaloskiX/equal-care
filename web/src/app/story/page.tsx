@@ -161,7 +161,7 @@ export default function Story() {
           <div className="text-[11px] uppercase tracking-wide text-emerald-300/80">Live simulation · combine interventions <SimChip eng={engineName(wi?.engine)} /></div>
           <div className="mt-1.5 text-[20px] font-semibold text-emerald-300 tabular-nums">
             +{fmt(wi?.extra_people_per_year)} people/yr
-            <span className="text-white/60 font-normal text-[14px]"> · closes {fmt(wi?.gap_closed_pct, "%")} of the gap · {wi?.delta_points != null && wi.delta_points > 0 ? "+" : ""}{wi?.delta_points} pts</span>
+            <span className="text-white/60 font-normal text-[14px]"> · {wi?.gap_closed_pct != null && wi.gap_closed_pct > 100 ? "more than closes the gap (upper bound)" : <>closes {fmt(wi?.gap_closed_pct, "%")} of the gap</>} · {wi?.delta_points != null && wi.delta_points > 0 ? "+" : ""}{wi?.delta_points} pts</span>
           </div>
           <div className="text-[11.5px] text-white/40 mt-1">
             {wi?.name}: own language + SMS reminder · live calls {wi?.asked_live ?? "…"} · cached {wi?.from_cache ?? "…"} · an upper bound from the model, not a forecast

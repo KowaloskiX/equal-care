@@ -458,7 +458,8 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, pre
         <div ref={resRef} className="mt-2.5 slide">
           <div className="t-panel text-emerald-300">
             +{fmt(w.extra_people_per_year)} {who} a year
-            {w.gap_closed_pct != null && <span className="text-white/55"> · {w.gap_closed_pct} % of the gap</span>}
+            {w.gap_closed_pct != null && <span className="text-white/55"> · {w.gap_closed_pct > 100
+              ? "more than the whole gap (simulated upper bound)" : `${w.gap_closed_pct} % of the gap`}</span>}
           </div>
           <div className="flex items-center gap-2 mt-1.5">
             <div className="flex-1 h-3.5 rounded bg-white/5 overflow-hidden">
@@ -492,7 +493,7 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, pre
                       <div className="h-full rounded bg-emerald-400/50" style={{ width: `${Math.min(100, t.pct ?? 0)}%` }} />
                     </div>
                     <span className="w-28 text-right text-[10px] tabular-nums text-emerald-300 shrink-0">
-                      +{fmt(t.extra)} /yr{t.pct != null && <> · {t.pct} %</>}
+                      +{fmt(t.extra)} /yr{t.pct != null && <> · {t.pct > 100 ? "> whole gap" : `${t.pct} %`}</>}
                     </span>
                   </div>
                 ))}
