@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+httpx          # fastapi TestClient in src/check.py
+pandas
+pyarrow
+requests
+pypdf
+google-genai   # Gemini analyst (next step)
+python-dotenv
