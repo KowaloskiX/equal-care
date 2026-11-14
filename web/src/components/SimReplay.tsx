@@ -418,7 +418,7 @@ export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
   const simSplit = rec?.sim_split;
   return (
     <>
-      <DataBlock split={rec?.split ?? null} target={rec?.screening?.target ?? 80} />
+      <div data-tour="s2-split"><DataBlock split={rec?.split ?? null} target={rec?.screening?.target ?? 80} /></div>
 
       <div className="mt-5 pt-3 border-t border-white/10">
         <div className="flex items-center gap-2 flex-wrap">
@@ -432,7 +432,7 @@ export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
               and why not. Nothing is computed until you ask them.
             </p>
             {!replay ? <Skel className="h-9 mt-2" /> : (
-              <button onClick={() => setRan(true)}
+              <button data-tour="s2-ask" onClick={() => setRan(true)}
                       className="mt-2 w-full rounded-lg bg-sky-400/15 border border-sky-300/35 text-sky-200 text-[12.5px] py-2
                                  hover:bg-sky-400/25">
                 Ask {replay.rows.length} simulated resident types in {replay.name}
@@ -444,7 +444,7 @@ export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
           <ReplayPlayer replay={replay} who={who} onLive={onLive} onProgress={onProgress} onDone={() => setDone(true)} />)}
         {done && !replay && <Skel className="h-24 mt-3" />}
         {done && replay && (
-          <div ref={resRef} className="mt-2.5 slide">
+          <div ref={resRef} className="mt-2.5 slide" data-tour="s2-groups">
             {replay.final.groups?.length ? (
               <div className="mt-2">
                 <div className="t-caption uppercase tracking-wide">Who is most likely to skip</div>
@@ -586,7 +586,7 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCro
   return (
     <>
       <div className="t-caption mt-1.5 mb-1.5">Pick interventions — the residents answer again.</div>
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap gap-1.5" data-tour="s3-interv">
         {opts.map((s) => (
           <button key={s.scenario} onClick={() => toggle(s.scenario)} title={s.label}
                   className={`chip text-[11px] ${sel.has(s.scenario) ? "chip-primary" : ""}`}>
@@ -595,7 +595,7 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCro
           </button>
         ))}
       </div>
-      <button onClick={run} disabled={!sel.size || busy}
+      <button data-tour="s3-run" onClick={run} disabled={!sel.size || busy}
               className="mt-2 w-full rounded-lg bg-emerald-400/15 border border-emerald-300/30 text-emerald-300 text-[12px] py-1.5
                          hover:bg-emerald-400/25 disabled:opacity-40 disabled:cursor-not-allowed">
         {busy ? "asking simulated residents…" : "Run simulation"}
@@ -623,7 +623,7 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCro
                 : null
           : null;
         return (
-        <div ref={resRef} className="mt-2.5 slide">
+        <div ref={resRef} className="mt-2.5 slide" data-tour="s3-result">
           <div className="t-panel text-emerald-300">
             {both ? `+${fmt(low)} to +${fmt(high)} ${who} a year` : `${sgn(ex)} ${who} a year`}
           </div>

@@ -53,8 +53,94 @@ const TOUR: TourStep[] = [
   { target: "next", location: "Story · Start", title: "Start with step 1",
     where: "The story column on the left drives the map: click through Where → Why → What → Pathway.",
     action: "Press Next — or click a county on the map first.",
-    takeaway: "Lost later? The ? button in the top bar restarts this tour." },
+    takeaway: "The ? button always shows a tour of the step you're on." },
 ];
+
+// Step 2 — "Why?": decomposition (data) + simulated residents (simulation)
+const TOUR_2: TourStep[] = [
+  { title: "Step 2 · Why does the gap exist?",
+    where: "Two answers side by side: statistics on who lives here, and simulated residents who say what stops them.",
+    action: "Click Next to walk this step's parts.",
+    takeaway: "The decomposition is plain regression on 291 municipalities — no AI." },
+  { target: "s2-split", location: "Story · Split", title: "Population or services?",
+    where: "The county's gap split in two: how much the people who live here explain (language, education, age), and how much is left unexplained — where services could matter.",
+    action: "Hover the bars — the grey range is the 90 % uncertainty interval.",
+    takeaway: "Unexplained ≠ proven service failure — it's what's left after composition." },
+  { target: "s2-ask", location: "Story · Simulated residents", title: "Ask the residents",
+    where: "Simulated resident types rebuilt from Statistics Finland tables — the Gemini Decisions API judges whether each would attend and what blocks them.",
+    action: "Click the button — nothing is computed until you ask.",
+    takeaway: "Answers are validated against real county rates and labelled SIMULATION." },
+  { target: "map", location: "Map · Resident dots", title: "One dot, one hundred people",
+    where: "Each simulated resident rains onto the map: green will attend, rose won't. They appear one by one, matched to real municipalities.",
+    action: "Click any dot to see that resident's traits — and the exact question the engine was asked.",
+    takeaway: "Positions are stable — in step 3 the same people just change their answer." },
+  { target: "s2-groups", location: "Story · Results", title: "Who skips, and why",
+    where: "After the run: the three groups most likely to skip and the barrier chart — the reasons residents give (language, time, fear…).",
+    action: "Compare the barriers with the interventions in the next step — they're matched.",
+    takeaway: "In Helsinki the top barrier is language — the Cancer Registry confirms it independently." },
+  { target: "next", location: "Story · Start", title: "On to step 3",
+    where: "You've seen where the gap is and who is behind it.",
+    action: "Press Next — pick interventions and re-ask the residents.",
+    takeaway: "The ? button always shows a tour of the step you're on." },
+];
+
+// Step 3 — "What would help?": interventions → residents answer again → roadmap citations
+const TOUR_3: TourStep[] = [
+  { title: "Step 3 · What would help?",
+    where: "Pick roadmap-backed interventions, re-ask the simulated residents, and see the upper-bound effect — as a range across two engines.",
+    action: "Click Next to walk this step's parts.",
+    takeaway: "We show a range, not one number — the models disagree on size, not on order." },
+  { target: "s3-interv", location: "Story · Interventions", title: "Roadmap-backed options",
+    where: "Each chip is an intervention; the small code (1.3.1 · p.33) is the matching action in the national implementation plan.",
+    action: "Select one or combine several — try Own language first for Helsinki.",
+    takeaway: "The Decisions API matched each intervention to the roadmap text and scored the fit." },
+  { target: "s3-run", location: "Story · Run", title: "Re-ask the residents",
+    where: "The same simulated residents answer again with the intervention in place — dots rain in, then flip colour as answers change.",
+    action: "Click Run simulation and watch the map.",
+    takeaway: "Nothing pre-computed is shown before you run it — it's your simulation." },
+  { target: "map", location: "Map · Flipping dots", title: "Same people, new answer",
+    where: "Rose dots turn green as resident types change their answer under the intervention — positions never move.",
+    action: "Click a dot that flipped to see what changed its mind.",
+    takeaway: "Flips happen gradually, in step with the resident count on the left." },
+  { target: "s3-result", location: "Story · Result", title: "Range, citations, history",
+    where: "The effect as a people-per-year range across two engines, each intervention's roadmap actions scored ●●●/●●, and the TRIED list of your runs.",
+    action: "Try another combination — TRIED keeps your runs to compare.",
+    takeaway: "It's a simulated upper bound, not a forecast — a pilot measures the real effect." },
+  { target: "next", location: "Story · Start", title: "On to step 4",
+    where: "Screening is only the first step — the gap can continue into queues and survival.",
+    action: "Press Next for the rest of the pathway (Goal 3).",
+    takeaway: "The ? button always shows a tour of the step you're on." },
+];
+
+// Step 4 — "Rest of the pathway": stages, engine pick, hero, queue movie
+const TOUR_4: TourStep[] = [
+  { title: "Step 4 · The rest of the pathway",
+    where: "Screening is step one — after it come referral, diagnosis, treatment and survival. This is where Goal 3 lives: equal and effective care.",
+    action: "Click Next to walk this step's parts.",
+    takeaway: "Everything here is public THL data — except the engine's stage pick, labelled SIMULATION." },
+  { target: "s4-strip", location: "Story · Pathway", title: "Five stages, 100 dots each",
+    where: "Each stage shows a waffle of 100 dots filling in: green stay on track, rose drop out, dim means no public data. Status words sit underneath (worse / close / better / no data).",
+    action: "Click a stage to swap the card below.",
+    takeaway: "Each stage is measured on its own cohort — the columns don't multiply into one funnel." },
+  { target: "s4-focus", location: "Story · Engine pick", title: "Where Gemini would start",
+    where: "The Decisions API reads this county's real stage numbers and picks which stage to fix first — the ◂ marker on the strip.",
+    action: "Switch counties in the chips below and watch the pick move.",
+    takeaway: "It's a prioritisation aid ranked from real numbers, not a diagnosis — labelled SIMULATION." },
+  { target: "s4-hero", location: "Story · Hero number", title: "The stage's headline",
+    where: "The selected stage's key indicator counts up next to Finland's value, its status tag, target and rank — with n warnings when numbers are small.",
+    action: "Click Referral or Treatment — the number re-counts for that stage.",
+    takeaway: "n = 8 style warnings flag small denominators — noisy data is shown, not hidden." },
+  { target: "s4-queue", location: "Story · Queue movie", title: "Queues, month by month",
+    where: "On Referral or Treatment a timeline plays monthly THL queue data — press ▶ and watch the county's month move, or the map re-colours per month.",
+    action: "Pick the Treatment stage and press ▶ Play.",
+    takeaway: "Satakunta's 37.5 % is only 8 patients — the app says so out loud." },
+  { target: "map", location: "Map · Choropleth", title: "All Finland, all months",
+    where: "The map colours every county by the selected indicator — and during the queue movie it re-colours month by month.",
+    action: "Click 'Longest oncology queues' chips to jump between counties.",
+    takeaway: "This step is why the demo exists — Goal 3 means the whole pathway, not just screening." },
+];
+
+const TOUR_BY_STEP: Record<number, TourStep[]> = { 1: TOUR, 2: TOUR_2, 3: TOUR_3, 4: TOUR_4 };
 
 export default function Home() {
   const [meta, setMeta] = useState<Meta | null>(null);
@@ -133,7 +219,9 @@ export default function Home() {
   const guided = () => { setMode("guided"); setSel(null); setLive(null); setTl(null); setPreRun(null); setCrowd(null); };
   const explain = (c: string) => { setPicked(c); setSel(null); setMode("guided"); setLive(null); setTl(null);
                                    setCrowd(null); setPreRun(null); setStep(2); setSeen([1, 2]); markVisited(prog, c); };
-  const restartTour = () => { guided(); setStep(1); setSeen([1]); setPreRun(null); setTour(true); };
+  // ? shows a tour of wherever you are — current guided step, or the general tour outside the story
+  const restartTour = () => setTour(true);
+  const tourSteps = mode === "guided" ? (TOUR_BY_STEP[step] ?? TOUR) : TOUR;
   const tourDone = () => { setTour(false); localStorage.setItem("ec_tour_done", "1"); };
   // analyst drawer actions: jump into the guided story at the answered county
   const showInStory = (f: { prog: string; code: string }) => {
@@ -323,7 +411,7 @@ export default function Home() {
                  onShow={showInStory} onPlay={playRun} onClose={() => setAsk(false)} />
       )}
 
-      {tour && <Tour steps={TOUR} onDone={tourDone} />}
+      {tour && <Tour steps={tourSteps} onDone={tourDone} />}
     </main>
   );
 }

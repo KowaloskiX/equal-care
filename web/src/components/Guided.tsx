@@ -331,7 +331,7 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
       )}
 
       {/* the 5-node pathway strip — dot colour = status; status word underneath, click swaps the card */}
-      <div className="relative mt-4">
+      <div className="relative mt-4" data-tour="s4-strip">
         <div className="absolute left-5 right-5 top-[8px] border-t border-white/15" />
         {/* decorative stream — people moving along the pathway; carries no number */}
         {[0, 1, 2].map((k) => <span key={k} className="flow-p" style={{ animationDelay: `${k * 1.5}s` }} />)}
@@ -362,7 +362,7 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
         </div>
       </div>
 
-      <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
+      <div className="mt-1.5 flex items-center gap-1.5 flex-wrap" data-tour="s4-focus">
         {focus && (
           <>
             <SimChip eng={engineName(focus.engine)} />
@@ -394,7 +394,7 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
               <Tag v="note">Data gap</Tag>
             </div>
           ) : (
-            <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3.5 flex items-center gap-4">
+            <div data-tour="s4-hero" className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3.5 flex items-center gap-4">
               <div className="min-w-0 flex-1">
                 <div className={`text-[32px] font-semibold leading-none tabular-nums ${NODE_STYLE[heroStatus].text}`}>
                   <CountUp v={hero.value} />{hero.unit === "%" ? " %" : ""}
@@ -431,7 +431,7 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
               (Finland {fmt(i.national, i.unit)}){i.key === activeInd && <span className="text-sky-300"> · on map</span>}
             </button>
           ))}
-          {cur.queue && <QueueLapse kkey={cur.queue} code={code} onValues={(v) => onTl?.(v)} />}
+          {cur.queue && <div data-tour="s4-queue"><QueueLapse kkey={cur.queue} code={code} onValues={(v) => onTl?.(v)} /></div>}
           {shownActs.length > 0 && (
             <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
               <RoadmapChip />
