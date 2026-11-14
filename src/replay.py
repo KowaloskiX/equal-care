@@ -84,6 +84,28 @@ def _key_labels(k):
             "edu_label": pop.EDU[d["edu"]]}
 
 
+def _skip_groups(G0):
+    """Top-3 who-is-skipping groups: language group (Finnish/Swedish vs other) x activity, ranked by
+    expected non-attenders Σ(1-pa)·w, with the group's simulated rate and its main barrier."""
+    import pandas as pd
+    G = G0.assign(skipw=(1 - G0.pa) * G0.w,
+                  lg=np.where(G0.lang.isin(("fi", "sv")), "Finnish or Swedish", "another native language"))
+    out = []
+    for (lg, act), d in G.groupby(["lg", "activity"]):
+        skip = float(d.skipw.sum()); w = float(d.w.sum())
+        if not skip or not w:
+            continue
+        bshare = {b: float((d.skipw * d.reasons.map(lambda r: (r or {}).get(b, 0.0))).sum()) for b in js.BARRIERS}
+        btot = sum(bshare.values())
+        main = max(bshare, key=bshare.get) if btot else None
+        out.append({"lang_group": lg, "activity": act,
+                    "expected_skip": int(round(skip)), "rate": round(100 * float((d.pa * d.w).sum() / w), 1),
+                    "main_barrier": main, "main_barrier_label": js.REASONS.get(main) if main else None,
+                    "main_barrier_short": REASON_SHORT.get(main) if main else None,
+                    "barrier_share": round(bshare[main] / btot, 2) if btot and main else None})
+    return sorted(out, key=lambda g: -g["expected_skip"])[:3]
+
+
 def _files(*paths):
     out = []
     for p in paths:
@@ -165,7 +187,8 @@ def replay(prog, code, scenarios=None, engine=None):
         base.update({"people_total": int(round(float(G0.w.sum()))), "per_dot": per_dot, "rows": rows,
                      "files": _files(bpath), "asked_live": 0,
                      "final": {"rate": rows[-1]["cum_rate"] if rows else None, "real": real,
-                               "national_real": v["national"], "target": v["target"]},
+                               "national_real": v["national"], "target": v["target"],
+                               "groups": _skip_groups(G0)},
                      "reason_labels": js.REASONS, "reason_shorts": REASON_SHORT})
         return base
 
@@ -220,7 +243,7 @@ def answer(prog, key, scenarios=None, engine=None):
         for i, line in enumerate(path.read_text().splitlines(), 1):
             r = json.loads(line)
             if tuple(r["key"]) == key:
-                st = js.state(key, prog, name)
+                st = js.state(key, prog, name, e)
                 if e == "jev":
                     qs = {k: v.model_dump(exclude_none=True) for k, v in js._questions_jev(prog).items()}
                 else:

@@ -17,15 +17,14 @@ SIM = ROOT / "data/sim"
 PROGRAMMES = {"breast": "screen_breast", "bowel": "screen_bowel", "cervix": "screen_cervix"}
 SURVIVAL = {"breast": "surv_breast", "bowel": "surv_bowel"}
 
-# ASSUMPTION: the roadmap does not name SMS reminders / evening slots / mobile units; 2.4.1 is the action
-# through which a county sets such service requirements in procurement.
-SERVICE_ASSUMPTION = ("The roadmap does not name SMS reminders / evening slots / mobile units; 2.4.1 is the "
-                      "action through which a county sets such service requirements in procurement.")
+# Roadmap actions for each gap are scored by Gemini Decisions (src/matcher.py); the hand-mapped ids in
+# "actions" are kept only when their matcher score for that gap is >= 1.5. A cite with score < 2.5 shows
+# as "partial match" in the UI instead of a hand-written ASSUMPTION text.
 SCENARIO_ACTIONS = {
-    "own_language": {"actions": ["1.3.1"], "assumption": None, "short": "Own language"},
-    "sms_reminder": {"actions": ["2.4.1", "1.1.1"], "assumption": SERVICE_ASSUMPTION, "short": "SMS reminder"},
-    "evening_slots": {"actions": ["2.4.1", "1.1.1"], "assumption": SERVICE_ASSUMPTION, "short": "Evening slots"},
-    "mobile_unit": {"actions": ["2.4.1", "1.1.1"], "assumption": SERVICE_ASSUMPTION, "short": "Mobile unit"},
+    "own_language": {"actions": ["1.3.1"], "gap": "lang_barrier", "short": "Own language"},
+    "sms_reminder": {"actions": ["2.4.1", "1.1.1"], "gap": "screening_reminders", "short": "SMS reminder"},
+    "evening_slots": {"actions": ["2.4.1", "1.1.1"], "gap": "screening_reminders", "short": "Evening slots"},
+    "mobile_unit": {"actions": ["2.4.1", "1.1.1"], "gap": "screening_distance", "short": "Mobile unit"},
 }
 MONITORING_ACTION = "2.4.5"     # monthly county-level screening data / real-time status from the Cancer Registry
 # ASSUMPTION: a county within 1 point of the national rate is treated as a national-level gap, not a local one.
@@ -35,6 +34,7 @@ NATIONAL_ACTION = "2.4.1"
 NATIONAL_WHY = ("The county is at the national level; the gap to 80 % is national, so the lever is the national "
                 "screening quality handbooks in procurement.")
 GOAL3_ACTIONS = ["3.2.1", "3.2.2"]
+GOAL3_GAP = "stage_data_gap"
 GOAL3_LIMITATION = ("Stage at diagnosis and time from diagnosis to treatment are not published by county, so the "
                     "survival gap cannot be located on the pathway with public data; the quality registry is what "
                     "would close this gap.")
@@ -47,10 +47,10 @@ WAIT_PROXY = ("Waiting lists cover non-urgent oncology care; urgent cancer treat
 QUEUE_MIN_POINTS = 1.0
 SMALL_N = 30
 QUEUE_ACTIONS = {
-    "onc_ref_21": {"ids": ["2.5.2"], "assumption": None, "stage": "referral",   # standardised referral criteria
+    "onc_ref_21": {"ids": ["2.5.2"], "gap": "referral_delay", "assumption": None, "stage": "referral",
                    "why": "Oncology referrals are processed in over 21 days more often than nationally; standardised "
                           "referral criteria are the lever for a smooth transition to specialist care."},
-    "onc_wait_90": {"ids": ["3.1.2", "3.1.4"], "assumption": WAIT_PROXY, "stage": "treatment",
+    "onc_wait_90": {"ids": ["3.1.2", "3.1.4"], "gap": "onc_queue", "assumption": WAIT_PROXY, "stage": "treatment",
                     "why": "A larger share of oncology patients than nationally waits over 90 days for treatment; "
                            "regional care pathways and national quality targets are the lever."},
 }
@@ -61,11 +61,15 @@ TITLE_EN = {
     "1.3.1": "Raise screening participation of language groups through targeted, community-based communication",
     "2.4.1": "Apply the screening quality handbooks in procurement and steering",
     "2.4.5": "Use screening-register data with the counties (monthly county-level reporting)",
+    "2.5.1": "Improve access to care by strengthening GP resources in primary care (personal-doctor model)",
     "2.5.2": "Standardised referral criteria for a smooth transition to specialised care",
     "3.1.2": "Cancer-specific care pathway descriptions applied as regional pathways",
     "3.1.4": "National quality and effectiveness targets and monitoring metrics for care pathways",
     "3.2.1": "Legal basis for a cancer care quality registry at the Finnish Cancer Registry",
     "3.2.2": "Systematic peer comparison of quality-registry data between counties",
+    "3.2.3": "Steering mechanisms that respond to peer-review findings and shortcomings",
+    "4.1.1": "Uniform structured recording and harmonisation of cancer and other health data",
+    "4.1.4": "Cancer data repository feeding the Cancer Registry and quality-registry content",
 }
 
 ENGINE_LABEL = {"jev": "Jev", "gemini-decision-1": "Gemini Decisions"}
@@ -89,6 +93,31 @@ def cite(aid, by_id=None, extra=None):
     if extra:
         out.update(extra)
     return out
+
+
+def _match_meta(gap_id, aid):
+    """Matcher score/confidence for one (gap, action) from the committed Gemini Decisions cache."""
+    import matcher
+    r = matcher.read_cache().get((aid, gap_id)) or {}
+    return {"score": round(r["score"], 2) if r.get("score") is not None else None,
+            "confidence": round(r["confidence"], 2) if r.get("confidence") is not None else None,
+            "matched_by": "Gemini Decisions",
+            "partial_match": r.get("score") is not None and r["score"] < 2.5}
+
+
+def _matched(gap_id, keep_ids=(), extra=None, max_top=3, by_id=None):
+    """Roadmap actions for one gap: matcher top actions (score >= 2.0, max 3, by score); a hand-mapped
+    id not in the matcher list is kept only if its matcher score for the gap is >= 1.5."""
+    import matcher
+    by_id = by_id or _actions_by_id()
+    rows = [(r["id"], r["score"]) for r in matcher.ranked(gap_id)[:max_top]]
+    have = {a for a, _ in rows}
+    for aid in keep_ids:
+        sc = matcher.score_for(gap_id, aid)
+        if aid not in have and sc is not None and sc >= 1.5:
+            rows.append((aid, sc))
+    rows.sort(key=lambda t: -t[1])
+    return [cite(aid, by_id, (extra or {}) | _match_meta(gap_id, aid)) for aid, _ in rows]
 
 
 def _sim(prog):
@@ -139,6 +168,16 @@ def recommend(prog, code):
         driver = "services"
     else:
         driver = "population"
+    # plain-word headline key for step 2a — share of the real-vs-Finland gap each side explains
+    headline = None
+    if drow and real is not None and nat_real is not None and real < nat_real and comp is not None and other is not None:
+        tg = abs(real - nat_real)
+        if tg and abs(comp) / tg >= 0.6:
+            headline = "mostly_population"
+        elif tg and other < 0 and abs(other) / tg >= 0.6:
+            headline = "mostly_unexplained"
+        elif tg:
+            headline = "both"
 
     by_id = _actions_by_id()
     scenarios = []
@@ -151,17 +190,20 @@ def recommend(prog, code):
         scenarios.append({"scenario": sc, "label": res["label"], "short": m["short"],
                           "delta_points": per.get("delta_points"), "extra_people_per_year": extra,
                           "share_of_missing": round(100 * extra / missing) if extra and missing else None,
-                          "actions": [cite(aid, by_id) for aid in m["actions"]], "assumption": m["assumption"],
+                          "actions": _matched(m["gap"], m["actions"], by_id=by_id), "assumption": None,
                           "note": _note(s)})
 
     pathway_actions = []
     if driver == "national":
-        pathway_actions.append(cite(NATIONAL_ACTION, by_id, {"why": NATIONAL_WHY, "stage": "detection"}))
+        pathway_actions.append(cite(NATIONAL_ACTION, by_id,
+                                    {"why": NATIONAL_WHY, "stage": "detection"} |
+                                    _match_meta("screening_service", NATIONAL_ACTION)))
     if other is not None and comp is not None and other < 0 and abs(other) > abs(comp):
-        pathway_actions.append(cite(MONITORING_ACTION, by_id,
-                                    {"why": "The unexplained part of the gap is larger than the population part; "
-                                            "monthly county-level screening data is the early-warning action.",
-                                     "stage": "detection"}))
+        pathway_actions += _matched("screening_service", (MONITORING_ACTION,), by_id=by_id,
+                                    extra={"why": "The unexplained part of the gap is larger than the population "
+                                                  "part; county-level screening data and targeted organisation "
+                                                  "are the early-warning levers.",
+                                           "stage": "detection"})
 
     surv = None
     skey = SURVIVAL.get(prog)
@@ -173,17 +215,17 @@ def recommend(prog, code):
                     "delta": round(r["value"] - v["national"], 1), "below_national": r["value"] < v["national"],
                     "year": v["year"], "source": v["source"]}
             if r["value"] < v["national"]:
-                pathway_actions += [cite(aid, by_id, {"why": GOAL3_LIMITATION, "stage": "outcome"})
-                                    for aid in GOAL3_ACTIONS]
+                pathway_actions += _matched(GOAL3_GAP, GOAL3_ACTIONS, by_id=by_id,
+                                            extra={"why": GOAL3_LIMITATION, "stage": "outcome"})
 
     for qkey, q in QUEUE_ACTIONS.items():
         v = ds.values(qkey, "county")
         r = v["values"].get(code)
         if r and v["national"] is not None and r["value"] - v["national"] >= QUEUE_MIN_POINTS:
             small = r["abs_value"] is not None and r["abs_value"] < SMALL_N
-            pathway_actions += [cite(aid, by_id, {"why": q["why"], "assumption": q["assumption"], "stage": q["stage"],
-                                                  "small_numbers": f"n = {int(r['abs_value'])}" if small else None})
-                                for aid in q["ids"]]
+            pathway_actions += _matched(q["gap"], q["ids"], by_id=by_id,
+                                        extra={"why": q["why"], "assumption": q["assumption"], "stage": q["stage"],
+                                               "small_numbers": f"n = {int(r['abs_value'])}" if small else None})
 
     return {"programme": prog, "code": code, "name": ds.short_names().get(code, code),
             "screening": {k: gap[k] for k in ("rate", "target", "missing_per_year", "invited")} | {"source": gap["source"]} if gap else None,
@@ -197,7 +239,7 @@ def recommend(prog, code):
                       "real": real, "national_real": nat_real,
                       "r2": (D or {}).get("r2"), "r2_pct": round(100 * D["r2"]) if D else None,
                       "n_municipalities": (D or {}).get("n_municipalities"),
-                      "driver": driver,
+                      "driver": driver, "headline": headline,
                       "assumption": driver_assumption,
                       "note": "Data · municipality WLS on composition" if drow else _note(s),
                       "method": (D or {}).get("method"), "source": (D or {}).get("source")},

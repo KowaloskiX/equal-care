@@ -34,7 +34,9 @@ def _county_frame(prog, scenario, c, county_of, code):
     return E[E.county == code]
 
 
-def whatif(prog, code, scenarios, engine=None):
+def whatif(prog, code, scenarios, engine=None, cache_only=False):
+    """cache_only=True -> return None instead of asking when the combo is not fully cached
+    (used to attach the other engine's cached result without ever calling it live)."""
     e = engine or js.ENGINE
     scenarios = sorted(set(scenarios))
     if prog not in js.PROGRAMMES:
@@ -59,10 +61,12 @@ def whatif(prog, code, scenarios, engine=None):
 
     path = js.cache_path(prog, name, e)
     have = js.read_cache(path)
-    todo = [(tuple(r[js.KEY]), js.combo_state(tuple(r[js.KEY]), prog, scenarios))
+    todo = [(tuple(r[js.KEY]), js.combo_state(tuple(r[js.KEY]), prog, scenarios, e))
             for _, r in asked.iterrows() if tuple(r[js.KEY]) not in have]
     asked_live = len(todo)
     if todo:
+        if cache_only:
+            return None
         if not os.environ.get(js.API_KEY[e]):
             raise Unavailable(f"{len(todo)} archetype answers are not cached and {js.API_KEY[e]} is not set")
         asyncio.run(js.ask(todo, prog, path, engine=e))
@@ -86,7 +90,7 @@ def whatif(prog, code, scenarios, engine=None):
     validation = s["validation"] if s else None
     by_id = rec._actions_by_id()
     engine_label = rec.ENGINE_LABEL.get(js.engine_name(e), js.engine_name(e))
-    return {"programme": prog, "engine": js.engine_name(e), "code": code,
+    out = {"programme": prog, "engine": js.engine_name(e), "code": code,
             "name": ds.short_names().get(code, code), "scenarios_selected": scenarios,
             "baseline_rate": round(base_rate, 2) if base_rate is not None else None,
             "new_rate": round(new_rate, 2) if new_rate is not None else None,
@@ -97,6 +101,18 @@ def whatif(prog, code, scenarios, engine=None):
             "asked_live": asked_live, "from_cache": len(asked) - asked_live,
             "validation": validation, "note": f"Simulation · {engine_label}",
             "scenarios": [{"scenario": sc, "label": js.SCENARIOS[sc]["label"],
-                           "actions": [rec.cite(aid, by_id) for aid in rec.SCENARIO_ACTIONS[sc]["actions"]],
-                           "assumption": rec.SCENARIO_ACTIONS[sc]["assumption"]} for sc in scenarios],
+                           "actions": rec._matched(rec.SCENARIO_ACTIONS[sc]["gap"],
+                                                   rec.SCENARIO_ACTIONS[sc]["actions"], by_id=by_id),
+                           "assumption": None} for sc in scenarios],
             "source": (s or {}).get("levels", {}).get("county", {}).get("source")}
+    # two-model range: if the Jev cache already covers this combo, attach its result — no live Jev calls
+    if e != "jev":
+        try:
+            alt = whatif(prog, code, scenarios, engine="jev", cache_only=True)
+        except (Unavailable, KeyError):
+            alt = None
+        if alt:
+            out["other_engine"] = {"engine": alt["engine"], "new_rate": alt["new_rate"],
+                                   "extra_people_per_year": alt["extra_people_per_year"],
+                                   "gap_closed_pct": alt["gap_closed_pct"]}
+    return out

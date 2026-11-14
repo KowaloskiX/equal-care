@@ -60,6 +60,16 @@ check("Southwest Finland bowel driver is national", r2["split"]["driver"] == "na
       r2["split"]["assumption"] and any(a["id"] == rec.NATIONAL_ACTION for a in r2["pathway_actions"]))
 check("every scenario cites an action with a page",
       all(s["actions"] and all(a["page"] > 0 for a in s["actions"]) for s in r["scenarios"]))
+cited = [a for s in r["scenarios"] for a in s["actions"]] + r["pathway_actions"]
+check("every cited action carries matcher score, confidence and matched_by",
+      cited and all(a.get("score") is not None and a.get("confidence") is not None
+                    and a.get("matched_by") == "Gemini Decisions" for a in cited))
+import matcher as mt
+check("1.3.1 is among lang_barrier matcher matches",
+      "1.3.1" in {x["id"] for x in mt.ranked("lang_barrier")})
+check("scenario action lists are matcher tops (+ kept hand-maps), by score",
+      all([a["score"] for a in s["actions"]] == sorted((a["score"] for a in s["actions"]), reverse=True)
+           for s in r["scenarios"]))
 b = c.get("/api/brief").json()
 check("brief: 3 counties per programme, missing desc",
       len(b["programmes"]) == 2 and all(len(p["counties"]) == 3 for p in b["programmes"]) and
@@ -90,7 +100,7 @@ check("queue values carry denominator and shared-producer flag",
       any(r["shared_producer"] == "HUS" for r in qw["values"].values()))
 worst_w = max(qw["values"], key=lambda c: qw["values"][c]["value"])
 r = c.get(f"/api/recommend/breast/{worst_w}").json()
-check("worse-than-national oncology waiting adds 3.1.2 + 3.1.4",
+check("worse-than-national oncology waiting cites onc_queue matches (3.1.2 top, 3.1.4 kept)",
       {"3.1.2", "3.1.4"} <= {a["id"] for a in r["pathway_actions"]})
 qr = c.get("/api/values?key=onc_ref_21").json()
 worst_r = max(qr["values"], key=lambda c: qr["values"][c]["value"])
