@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import RegionCard, { Src } from "@/components/RegionCard";
 import Guided from "@/components/Guided";
@@ -140,7 +140,16 @@ const TOUR_4: TourStep[] = [
     takeaway: "This step is why the demo exists — Goal 3 means the whole pathway, not just screening." },
 ];
 
-const TOUR_BY_STEP: Record<number, TourStep[]> = { 1: TOUR, 2: TOUR_2, 3: TOUR_3, 4: TOUR_4 };
+// One continuous walkthrough: each tour step carries goStep so Next advances the app itself.
+// Tail "press Next" cards are dropped — the tour does the moving.
+const seg = (arr: TourStep[], step: number) => arr.slice(0, -1).map((s) => ({ ...s, goStep: step }));
+const TOUR_ALL: TourStep[] = [
+  ...seg(TOUR, 1), ...seg(TOUR_2, 2), ...seg(TOUR_3, 3), ...seg(TOUR_4, 4),
+  { goStep: 4, title: "That's the whole story",
+    where: "Where the gap is, who is behind it, what would help, and what happens after screening — Goal 3 end to end.",
+    action: "Generate report in the top bar writes it up as slides; Ask the analyst answers with the same data.",
+    takeaway: "Every claim keeps its tag: DATA, SIMULATION or ROADMAP." },
+];
 
 export default function Home() {
   const [meta, setMeta] = useState<Meta | null>(null);
@@ -219,9 +228,16 @@ export default function Home() {
   const guided = () => { setMode("guided"); setSel(null); setLive(null); setTl(null); setPreRun(null); setCrowd(null); };
   const explain = (c: string) => { setPicked(c); setSel(null); setMode("guided"); setLive(null); setTl(null);
                                    setCrowd(null); setPreRun(null); setStep(2); setSeen([1, 2]); markVisited(prog, c); };
-  // ? shows a tour of wherever you are — current guided step, or the general tour outside the story
+  // ? opens one continuous walkthrough — the tour drives the guided steps; opening mid-flow
+  // resumes at the section for the step you're on
   const restartTour = () => setTour(true);
-  const tourSteps = mode === "guided" ? (TOUR_BY_STEP[step] ?? TOUR) : TOUR;
+  const tourStart = mode === "guided" ? Math.max(0, TOUR_ALL.findIndex((t) => t.goStep === step)) : 0;
+  const tourGo = useCallback((st: TourStep) => {
+    if (!st.goStep) return;
+    if (mode !== "guided") { setMode("guided"); setSel(null); setLive(null); setTl(null); setCrowd(null); setPreRun(null); }
+    setStep(st.goStep);
+    setSeen((s) => Array.from(new Set([...s, st.goStep!])).sort());
+  }, [mode]);
   const tourDone = () => { setTour(false); localStorage.setItem("ec_tour_done", "1"); };
   // analyst drawer actions: jump into the guided story at the answered county
   const showInStory = (f: { prog: string; code: string }) => {
@@ -411,7 +427,7 @@ export default function Home() {
                  onShow={showInStory} onPlay={playRun} onClose={() => setAsk(false)} />
       )}
 
-      {tour && <Tour steps={tourSteps} onDone={tourDone} />}
+      {tour && <Tour steps={TOUR_ALL} startAt={tourStart} onActivate={tourGo} onDone={tourDone} />}
     </main>
   );
 }

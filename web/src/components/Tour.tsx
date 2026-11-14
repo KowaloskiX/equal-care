@@ -11,13 +11,18 @@ export type TourStep = {
   where: string;        // what you're seeing
   action: string;       // what to try
   takeaway: string;     // what to remember
+  goStep?: number;      // guided step this part belongs to — the tour drives the app there
 };
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
-export default function Tour({ steps, onDone }: { steps: TourStep[]; onDone: () => void }) {
+export default function Tour({ steps, onDone, startAt = 0, onActivate }: {
+  steps: TourStep[]; onDone: () => void;
+  startAt?: number;                           // resume at the section for the step you're on
+  onActivate?: (st: TourStep) => void;        // fired per step — the app follows goStep
+}) {
   const maskId = useId();
-  const [n, setN] = useState(0);
+  const [n, setN] = useState(startAt);
   const [rect, setRect] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
   const st = steps[n];
 
@@ -33,11 +38,16 @@ export default function Tour({ steps, onDone }: { steps: TourStep[]; onDone: () 
 
   useEffect(() => {
     const raf = requestAnimationFrame(measure);                    // state may not be set sync in an effect
+    const retry = setTimeout(measure, 700);                      // step DOM may mount a beat later
     window.addEventListener("resize", measure);
     window.addEventListener("scroll", measure, true);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", measure);
+    return () => { cancelAnimationFrame(raf); clearTimeout(retry);
+                   window.removeEventListener("resize", measure);
                    window.removeEventListener("scroll", measure, true); };
   }, [measure]);
+
+  // the app follows the tour: goStep flips the guided step as the card advances
+  useEffect(() => { onActivate?.(steps[n]); }, [n, steps, onActivate]);
 
   useEffect(() => {
     const k = (e: KeyboardEvent) => {
