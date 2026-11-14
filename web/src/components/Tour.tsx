@@ -2,7 +2,7 @@
 // Spotlight walkthrough — no dependency. Elements opt in with data-tour="name"; the card sits
 // bottom-right, the rest of the screen dims behind an SVG mask, the target gets a ring.
 // Each step says what you're looking at, what to try, and the one thing to remember.
-import { useCallback, useEffect, useId, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 export type TourStep = {
   target?: string;      // data-tour name; undefined = welcome card, no spotlight
@@ -12,6 +12,7 @@ export type TourStep = {
   action: string;       // what to try
   takeaway: string;     // what to remember
   goStep?: number;      // guided step this part belongs to — the tour drives the app there
+  act?: string;         // data-tour element the tour clicks for you when the card opens
 };
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
@@ -23,6 +24,7 @@ export default function Tour({ steps, onDone, startAt = 0, onActivate }: {
 }) {
   const maskId = useId();
   const [n, setN] = useState(startAt);
+  const fired = useRef(new Set<string>());      // each act clicks once — Back/Next never re-fires
   const [rect, setRect] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
   const st = steps[n];
 
@@ -38,16 +40,28 @@ export default function Tour({ steps, onDone, startAt = 0, onActivate }: {
 
   useEffect(() => {
     const raf = requestAnimationFrame(measure);                    // state may not be set sync in an effect
-    const retry = setTimeout(measure, 700);                      // step DOM may mount a beat later
+    // step DOM may mount a beat later — and sim results take ~8s; keep retrying for a while
+    const iv = setInterval(measure, 700);
+    const stop = setTimeout(() => clearInterval(iv), 12000);
     window.addEventListener("resize", measure);
     window.addEventListener("scroll", measure, true);
-    return () => { cancelAnimationFrame(raf); clearTimeout(retry);
+    return () => { cancelAnimationFrame(raf); clearInterval(iv); clearTimeout(stop);
                    window.removeEventListener("resize", measure);
                    window.removeEventListener("scroll", measure, true); };
   }, [measure]);
 
-  // the app follows the tour: goStep flips the guided step as the card advances
-  useEffect(() => { onActivate?.(steps[n]); }, [n, steps, onActivate]);
+  // the app follows the tour: goStep flips the guided step, act clicks the element for you —
+  // a beat late so the spotlight lands first and the click reads as the tour doing it
+  useEffect(() => {
+    onActivate?.(steps[n]);
+    const act = steps[n].act;
+    if (!act || fired.current.has(act)) return;
+    fired.current.add(act);
+    const t = setTimeout(() => {
+      (document.querySelector(`[data-tour="${act}"]`) as HTMLElement | null)?.click();
+    }, 600);
+    return () => clearTimeout(t);
+  }, [n, steps, onActivate]);
 
   useEffect(() => {
     const k = (e: KeyboardEvent) => {

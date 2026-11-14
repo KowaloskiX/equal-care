@@ -342,7 +342,7 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
             const pick = focus?.answer.choice === n.id;
             const prob = focus?.answer.probabilities[n.id];
             return (
-              <button key={n.id} onClick={() => setSel(n.id)} title={STAGE_QUESTION[n.id]}
+              <button key={n.id} data-tour={`s4-node-${n.id}`} onClick={() => setSel(n.id)} title={STAGE_QUESTION[n.id]}
                       className={`flex flex-col items-center gap-1 px-1 py-1 rounded-lg border w-[78px] transition
                         ${on ? s.ring : "border-transparent hover:bg-white/5"}`}>
                 <span className={`w-3.5 h-3.5 rounded-full shrink-0 ${s.dot} ${on ? "ring-2 ring-white/25" : ""}`} />

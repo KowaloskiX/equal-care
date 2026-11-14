@@ -78,7 +78,7 @@ export default function QueueLapse({ kkey, code, onValues }: {
   return (
     <div className="mt-2 rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
       <div className="flex items-center gap-2">
-        <button onClick={() => { if (playing) setPlay(false); else { if (pi >= tl.periods.length - 1) setPi(0); setPlay(true); } }}
+        <button data-tour="s4-play" onClick={() => { if (playing) setPlay(false); else { if (pi >= tl.periods.length - 1) setPi(0); setPlay(true); } }}
                 title={playing ? "Pause" : "Play the months"}
                 className="w-6 h-6 rounded-full bg-sky-400/15 border border-sky-300/35 text-sky-200 text-[10px]
                            flex items-center justify-center hover:bg-sky-400/25">

@@ -587,8 +587,9 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCro
     <>
       <div className="t-caption mt-1.5 mb-1.5">Pick interventions — the residents answer again.</div>
       <div className="flex flex-wrap gap-1.5" data-tour="s3-interv">
-        {opts.map((s) => (
-          <button key={s.scenario} onClick={() => toggle(s.scenario)} title={s.label}
+        {opts.map((s, i) => (
+          <button key={s.scenario} data-tour={i === 0 ? "s3-chip0" : undefined}
+                  onClick={() => toggle(s.scenario)} title={s.label}
                   className={`chip text-[11px] ${sel.has(s.scenario) ? "chip-primary" : ""}`}>
             {s.short ?? s.label}
             {s.actions[0] && <span className="text-[9px] opacity-60 ml-1.5">{s.actions[0].id}·p.{s.actions[0].page}</span>}
