@@ -2,8 +2,9 @@
 // Readable briefing document (print-friendly: Cmd+P -> PDF). All text and numbers come rendered from /api/report.
 import { Tag } from "@/components/ui";
 import { ActionChip, EvidenceChips } from "@/components/report/Evidence";
+import { HeroStats, SlideVisual } from "@/components/report/Visuals";
 import {
-  factsOnly, KIND_WORDS, limitations, sourcesOf, type Cover, type ReportResponse, type Slide,
+  factsOnly, KIND_WORDS, limitations, sourcesOf, visualFor, type Cover, type ReportResponse, type Slide,
 } from "@/lib/report";
 
 const KIND_TITLE: Record<Slide["kind"], string> = {
@@ -27,6 +28,7 @@ export function Briefing({ data, cover }: { data: ReportResponse; cover: Cover |
       <div className="t-caption uppercase tracking-[0.18em] mb-2">Equal Care Across Finland · generated briefing</div>
       <h1 className="text-[30px] font-semibold leading-tight">{r.title}</h1>
       <p className="text-[16px] text-white/60 mt-2">{r.subtitle}</p>
+      <div className="mt-3" style={{ containerType: "inline-size" }}><HeroStats data={data} /></div>
 
       {data.flags.length > 0 && (
         <div className="report-flags mt-6 rounded-xl border border-amber-400/40 bg-amber-400/[0.08] p-4">
@@ -51,6 +53,11 @@ export function Briefing({ data, cover }: { data: ReportResponse; cover: Cover |
             <EvidenceChips kinds={s.evidence} />
           </div>
           <h2 className="t-title mt-1.5 text-[20px]">{s.headline}</h2>
+          {s.kind !== "title" && (
+            <div className="glass mt-3 px-4 py-3 w-full" style={{ aspectRatio: "16 / 7", containerType: "inline-size" }}>
+              <SlideVisual slide={s} v={visualFor(data, s)} />
+            </div>
+          )}
           {s.bullets.length > 0 && (
             <ul className="mt-3 space-y-2 list-disc pl-5 text-[14.5px] leading-relaxed text-white/80">
               {s.bullets.map((b, j) => <li key={j}>{b}</li>)}

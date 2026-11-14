@@ -39,6 +39,8 @@ Rules:
 5. Use neutral, non-shaming language about counties and residents.
 6. Write in English, in plain words, for a non-technical decision-maker. Keep each bullet under 25 words.
 7. The executive summary must state the main finding for each county in at most three sentences: where the gap is, how much of it who lives here explains, and the first action to try. Do not describe the document itself.
+8. Each slide has a fixed visual chosen by its kind. Write the headline as the one-sentence takeaway of that visual, at most 12 words, and at most three bullets on what it means for the decision-maker.
+9. Produce exactly one slide of each kind, in this order: title, where, why, who, what, pathway, limits, next.
 """
 
 IMAGE_PROMPT = ("Abstract, calm editorial illustration for a public-health briefing about equal access to cancer "
@@ -288,6 +290,8 @@ def build_facts(items):
         r = rec.recommend(prog, code)
         name = r["name"]
         F.add(f"c{code}_name", name, "", "DATA", "county name", {"title": "Statistics Finland regions", "org": "Statistics Finland"})
+        F.add(f"{p}_name", name, "", "DATA", f"county name for the {PROG_WORDS[prog]} item",
+              {"title": "Statistics Finland regions", "org": "Statistics Finland"})
         ctx = {"programme": PROG_WORDS[prog], "county": name, "key_prefix": p, "county_prefix": f"c{code}",
                "suggested_actions": [], "scenario_keys": [], "whatif_key_prefix": None}
 
@@ -445,6 +449,197 @@ def build_facts(items):
     facts = dict(F.f)
     facts["limitations"] = list(LIMITATIONS)
     return facts, ctx_items, notes
+
+
+# ---------------------------------------------------------------- visuals (backend data for the fixed slide layouts; never sent to the model)
+
+NEXT_STEPS = [
+    "Pick the groups with the most expected non-attendance",
+    "Send invitations and reminders in their own language",
+    "Measure attendance against this baseline after one screening round",
+]
+
+_GEO = None
+
+
+def _county_features():
+    """All county polygons (data/geo/county.geojson is already a simplified set); together they draw Finland."""
+    global _GEO
+    if _GEO is None:
+        gj = json.loads((ROOT / "data/geo/county.geojson").read_text())
+        names = ds.short_names()
+        _GEO = [{"code": f["properties"]["code"], "name": names.get(f["properties"]["code"], f["properties"]["name"]),
+                 "geometry": f["geometry"]} for f in gj["features"]]
+    return _GEO
+
+
+def _combo_actions(r, combo):
+    """Matcher-scored roadmap actions of the scenarios in a combo, best score per action id."""
+    best = {}
+    for s in r.get("scenarios", []):
+        if s["scenario"] not in combo:
+            continue
+        for a in s.get("actions", []):
+            if a["id"] not in best or (a.get("score") or 0) > (best[a["id"]].get("score") or 0):
+                best[a["id"]] = a
+    return sorted(({"id": a["id"], "title_en": a.get("title_en") or a.get("title"), "page": a.get("page"),
+                    "score": a.get("score"), "confidence": a.get("confidence"),
+                    "partial_match": a.get("partial_match"), "matched_by": a.get("matched_by")}
+                   for a in best.values()), key=lambda x: -(x["score"] or 0))
+
+
+def _pw_node_status(its):
+    """Same status logic as the guided step-4 strip: gap / worse / better / close
+    (ASSUMPTION shared with the UI: a |delta| < 1 point counts as close to Finland)."""
+    def _cl(q):
+        return q["unit"] == "%" and q.get("delta") is not None and abs(q["delta"]) < 1
+    if not its:
+        return "gap"
+    if any(q.get("worse_than_national") and not _cl(q) for q in its):
+        return "worse"
+    if any(q.get("delta") not in (None, 0) and not _cl(q) for q in its):
+        return "better"
+    return "close"
+
+
+def build_visuals(items):
+    """-> visuals dict keyed 'c{code}_{prog}' (the FACTS key prefix): the fixed per-kind slide visuals,
+    every value computed in code with its source. Nothing here is shown to the model and no live
+    engine calls are made — what-if rows come from the cache only (whatif(cache_only=True))."""
+    import decompose, replay, whatif
+    names = ds.short_names()
+    out = {}
+    for it in items:
+        prog, code, scen = it["prog"], it["code"], it["scenarios"]
+        p = f"c{code}_{prog}"
+        V = {"prog": prog, "code": code}
+        try:
+            r = rec.recommend(prog, code)
+        except Exception as e:
+            out[p] = {"prog": prog, "code": code, "error": str(e)}
+            continue
+        name = r["name"]
+        ind = rec.PROGRAMMES[prog]
+        sc = r.get("screening")
+
+        # where — ranking + mini-map
+        try:
+            v = ds.values(ind, "county")
+            ranked = sorted(v["values"].items(), key=lambda kv: kv[1]["value"])
+            V["where"] = {
+                "county": {"code": code, "name": name, "rate": sc["rate"] if sc else None,
+                           "missing_per_year": sc["missing_per_year"] if sc else None},
+                "ranking": [{"code": c, "name": names.get(c, c), "rate": x["value"],
+                             "missing_per_year": (ds.screening_gap(ind, c) or {}).get("missing_per_year")}
+                            for c, x in ranked[:5]],
+                "target": sc["target"] if sc else v.get("target"), "national": v.get("national"), "unit": "%",
+                "map": {"highlight": code, "features": _county_features()},
+                "source": _flat_source(v["source"]),
+            }
+        except Exception as e:
+            V["where"] = {"error": str(e)}
+
+        # why — municipality-WLS decomposition
+        try:
+            d = decompose.decompose(prog)
+            row = d["rows"].get(code) or {}
+            V["why"] = {
+                "real": row.get("real"), "expected": row.get("expected"),
+                "composition_gap": row.get("composition_gap"),
+                "composition_gap_90": row.get("composition_gap_90"),
+                "unexplained_gap": row.get("unexplained_gap"), "total_gap": row.get("total_gap"),
+                "national_real": d["national_real"], "r2_pct": round(100 * d["r2"]),
+                "n_municipalities": d["n_municipalities"], "method": d["method"],
+                "source": {"attendance": _flat_source(d["source"]["attendance"]),
+                           "composition": {k: _flat_source(s) for k, s in d["source"]["composition"].items()}},
+            }
+        except Exception as e:
+            V["why"] = {"error": str(e)}
+
+        # who — baseline replay final (reads committed caches only, never asks)
+        try:
+            rep = replay.replay(prog, code)
+            fin = rep["final"]
+            V["who"] = {
+                "groups": fin.get("groups"),
+                "barriers": rep["rows"][-1]["cum_reasons"] if rep.get("rows") else {},
+                "barrier_labels": replay.REASON_SHORT,
+                "simulated_rate": fin.get("rate"), "real_rate": fin.get("real"),
+                "expected_skip_per_100": round(100 - fin["rate"]) if fin.get("rate") is not None else None,
+                "people_total": rep.get("people_total"), "per_dot": rep.get("per_dot"),
+                "engine": rep.get("engine"), "note": rep.get("note"),
+                "source": _flat_source(rep.get("source")),
+            }
+        except Exception as e:
+            V["who"] = {"error": str(e)}
+
+        # what — cached what-if per combo (item scenarios, else each single scenario), both engines
+        try:
+            gap = ds.screening_gap(ind, code)
+            combos = [scen] if scen else [[s["scenario"]] for s in r.get("scenarios", [])]
+            rows = []
+            for combo in combos:
+                w = whatif.whatif(prog, code, combo, cache_only=True)
+                row = {"scenarios": combo,
+                       "label": " + ".join(rec.SCENARIO_ACTIONS[x]["short"] for x in combo),
+                       "actions": _combo_actions(r, combo)}
+                if w:
+                    row["main"] = {"engine": w["engine"], "extra_people_per_year": w["extra_people_per_year"],
+                                   "gap_closed_pct": w["gap_closed_pct"], "new_rate": w["new_rate"]}
+                    row["other"] = w.get("other_engine")
+                else:
+                    row["note"] = "combination not cached — the report never asks the engine live"
+                rows.append(row)
+            V["what"] = {"missing_per_year": (gap or {}).get("missing_per_year"), "combos": rows,
+                         "source": {"title": "Simulated residents (src/whatif.py, cached answers only)"}}
+        except Exception as e:
+            V["what"] = {"error": str(e)}
+
+        # pathway — 5-node statuses + onc_wait_90 monthly series for county and Finland
+        try:
+            surv_key = "surv_bowel" if prog == "bowel" else "surv_breast"
+            NODES = [("detection", [ind]), ("referral", ["wait_6m", "onc_ref_21"]), ("diagnosis", []),
+                     ("treatment", ["onc_wait_90"]), ("outcome", [surv_key])]
+            by_key = {q["key"]: q for q in ds.pathway(code)["indicators"]}
+            nodes = []
+            for nid, keys in NODES:
+                its = [by_key[k] for k in keys if k in by_key]
+                pri = its[0] if its else None
+                nodes.append({"id": nid, "status": _pw_node_status(its),
+                              "value": pri["value"] if pri else None,
+                              "national": pri["national"] if pri else None,
+                              "unit": pri["unit"] if pri else None,
+                              "abs_value": pri.get("abs_value") if pri else None,
+                              "small_n": bool(pri and pri.get("abs_value") is not None
+                                              and pri["abs_value"] < rec.SMALL_N)})
+            queue = None
+            try:
+                tl = ds.timeline("onc_wait_90")
+                queue = {"key": "onc_wait_90", "label": tl["label"], "unit": tl["unit"],
+                         "periods": tl["periods"],
+                         "county": {str(x): ((tl["values"].get(x, {}).get(code) or {}).get("value"))
+                                    for x in tl["periods"]},
+                         "finland": {str(x): tl["national"].get(x) for x in tl["periods"]},
+                         "source": _flat_source(tl["source"])}
+            except Exception:
+                pass
+            V["pathway"] = {"nodes": nodes, "queue": queue,
+                            "source": _flat_source((by_key.get("onc_wait_90") or {}).get("source"))}
+        except Exception as e:
+            V["pathway"] = {"error": str(e)}
+
+        # limits — the fixed limitation strings
+        V["limits"] = list(LIMITATIONS)
+
+        # next — first-ranked intervention's cited actions + the pilot steps
+        first = (r.get("scenarios") or [None])[0]
+        V["next"] = {"scenario": first["scenario"] if first else None,
+                     "label": first["short"] if first else None,
+                     "actions": _combo_actions(r, [first["scenario"]]) if first else [],
+                     "steps": list(NEXT_STEPS)}
+
+        out[p] = V
+    return out
 
 
 def _model_text(text, facts):
@@ -659,19 +854,27 @@ def _hash(items, model):
     return hashlib.sha256(json.dumps({"items": items, "model": model, "v": 1}, sort_keys=True).encode()).hexdigest()[:16]
 
 
-def cover():
-    """{image: data URL | None, model, error?}; cached per process (the prompt is fixed)."""
+SCENE_SUFFIX = {"where": " Scene: a quiet overview of Finnish towns and lakes from above.",
+                "next": " Scene: a sunrise over a Finnish town, a sense of a first step."}
+
+
+def cover(scene=None):
+    """{image: data URL | None, model, error?}; cached per process per scene.
+    scene: None for the cover, 'where'/'next' for the two slide backdrops (same style prompt + a scene line)."""
     m = pick_image_model()
     if not m:
         return {"image": None, "model": None, "error": "no image model available"}
-    if m in _COVER:
-        return _COVER[m]
+    if scene not in SCENE_SUFFIX:
+        scene = None
+    prompt = IMAGE_PROMPT + (SCENE_SUFFIX.get(scene) or "")
+    if (m, scene) in _COVER:
+        return _COVER[(m, scene)]
     from google.genai import types
     c = client()
 
     def call():
         return c.models.generate_content(
-            model=m, contents=IMAGE_PROMPT,
+            model=m, contents=prompt,
             config=types.GenerateContentConfig(response_modalities=["TEXT", "IMAGE"],
                                                image_config=types.ImageConfig(aspect_ratio="16:9"),
                                                http_options=types.HttpOptions(timeout=IMAGE_TIMEOUT_S * 1000)))
@@ -683,8 +886,8 @@ def cover():
             if blob and blob.data:
                 data = blob.data if isinstance(blob.data, bytes) else base64.b64decode(blob.data)
                 out = {"image": f"data:{blob.mime_type or 'image/png'};base64,{base64.b64encode(data).decode()}",
-                       "model": m, "latency_s": round(time.time() - t0, 2), "prompt": IMAGE_PROMPT}
-                _COVER[m] = out
+                       "model": m, "latency_s": round(time.time() - t0, 2), "prompt": prompt, "scene": scene}
+                _COVER[(m, scene)] = out
                 return out
         return {"image": None, "model": m, "error": "image model returned no image"}
     except Exception as e:
@@ -709,6 +912,7 @@ def report(items, with_image=False):
     raw, usage, latency = generate(payload, model)
     rendered, flags = render(raw, facts)
     out = {"report": rendered, "raw": raw, "facts": facts, "flags": flags, "items": items,
+           "visuals": build_visuals(items),
            "model": model, "model_note": model_note, "usage": usage, "latency_s": latency, "notes": notes,
            "id": h, "cached": False}
     _CACHE[h] = out

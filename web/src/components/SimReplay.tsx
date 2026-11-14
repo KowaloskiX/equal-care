@@ -606,20 +606,20 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, pre
           </div>
           <div className="t-micro mt-1 flex items-center gap-2">
             <SimChip eng={engineName(w.engine)} />
-            <span>{w.asked_live ? `${w.asked_live} new ${engineName(w.engine) ?? "engine"} calls` : "replayed from cache"} · cached {w.from_cache} · an upper bound, not a forecast</span>
+            <span>{w.asked_live ? `${w.asked_live} new ${engineName(w.engine) ?? "engine"} calls` : "replayed from recorded answers"} · {w.from_cache} resident types changed</span>
           </div>
           <div className="mt-4">
             <div className="t-caption uppercase tracking-wide mb-1">What the roadmap says</div>
-            <div className="space-y-0.5">
+            <div className="t-micro text-white/40 mb-1.5">●●● direct match · ●● partial · scored by {engineName(w.engine) ?? "Gemini Decisions"} against the roadmap text</div>
+            <div className="space-y-1">
               {w.scenarios.map((s) => (
                 <div key={s.scenario} className="flex flex-wrap items-baseline gap-x-2 gap-y-1 px-0.5">
-                  <span className="text-[11px] text-white/55">{s.label}</span>
-                  {s.actions.map((a) => (
-                    <span key={a.id} className="inline-flex items-center gap-1">
-                      <Cite a={a} /><PartialMatch a={a} />
-                    </span>
-                  ))}
-                  {s.assumption && <Assumption text={s.assumption} />}
+                  <span className="text-[11px] text-white/55 shrink-0">{s.label}</span>
+                  <span className="inline-flex flex-wrap items-center gap-1.5">
+                    {s.actions.map((a) => <Cite key={a.id} a={a} />)}
+                    {s.actions.length > 0 && <PartialMatch a={s.actions.find((a) => a.partial_match) ?? s.actions[0]} />}
+                    {s.assumption && <Assumption text={s.assumption} />}
+                  </span>
                 </div>
               ))}
             </div>
@@ -630,7 +630,7 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, pre
               <div className="space-y-0.5">
                 {tried.map((t, i) => (
                   <div key={i} className="flex items-center gap-2">
-                    <span className="w-24 shrink-0 text-[10.5px] text-white/55 truncate" title={t.label}>{t.label}</span>
+                    <span className="w-28 shrink-0 text-[10.5px] text-white/55 leading-tight" title={t.label}>{t.label}</span>
                     <div className="flex-1 h-2 rounded bg-white/5 overflow-hidden">
                       <div className="h-full rounded bg-emerald-400/50" style={{ width: `${Math.min(100, t.pct ?? 0)}%` }} />
                     </div>

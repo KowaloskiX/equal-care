@@ -3,15 +3,17 @@
 // Sizes use container query units (cqw) so the slide scales with the stage.
 import { useEffect, useRef, useState } from "react";
 import { EvidenceChips } from "@/components/report/Evidence";
+import { HeroStats, SlideVisual } from "@/components/report/Visuals";
 import { Tag } from "@/components/ui";
-import type { Cover, ReportResponse, Slide } from "@/lib/report";
+import { visualFor, type Cover, type ReportResponse, type Slide } from "@/lib/report";
 
 const KICKER: Record<Slide["kind"], string> = {
   title: "Briefing", where: "Where", why: "Why", who: "Who", what: "What to do", pathway: "Further down the pathway",
   limits: "What the data cannot show", next: "Next steps",
 };
 
-export function Deck({ data, cover, onExit }: { data: ReportResponse; cover: Cover | null; onExit: () => void }) {
+export function Deck({ data, cover, scenes, onExit }: { data: ReportResponse; cover: Cover | null;
+                       scenes?: Record<string, Cover | null>; onExit: () => void }) {
   const slides = data.report.slides;
   const N = slides.length;
   const [i, setI] = useState(0);
@@ -35,6 +37,9 @@ export function Deck({ data, cover, onExit }: { data: ReportResponse; cover: Cov
   if (!s) return null;
   const isTitle = s.kind === "title" || i === 0;
   const flagged = data.flags.filter((f) => f.path.startsWith(`slides[${i}]`));
+  const vis = visualFor(data, s);
+  const backdrop = isTitle ? cover?.image
+    : (s.kind === "where" || s.kind === "next") ? scenes?.[s.kind]?.image : null;
 
   const fullscreen = () => {
     if (document.fullscreenElement) document.exitFullscreen();
@@ -46,10 +51,10 @@ export function Deck({ data, cover, onExit }: { data: ReportResponse; cover: Cov
       <div className="relative overflow-hidden rounded-[1.2vmin] border border-white/10 bg-[#10121a] shrink-0"
            style={{ width: `min(96vw, calc(${notes ? 62 : 88}vh * 16 / 9))`, aspectRatio: "16 / 9", containerType: "inline-size" }}
            onClick={() => setI((x) => Math.min(N - 1, x + 1))}>
-        {isTitle && cover?.image && (
+        {backdrop && (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element -- data URL from the API */}
-            <img src={cover.image} alt="" className="absolute inset-0 w-full h-full object-cover opacity-55" />
+            <img src={backdrop} alt="" className={`absolute inset-0 w-full h-full object-cover ${isTitle ? "opacity-55" : "opacity-[0.22]"}`} />
             <div className="absolute inset-0"
                  style={{ background: "linear-gradient(90deg, #0b0c10 0%, rgba(11,12,16,0.82) 45%, rgba(11,12,16,0.15) 100%)" }} />
           </>
@@ -59,17 +64,34 @@ export function Deck({ data, cover, onExit }: { data: ReportResponse; cover: Cov
             {isTitle ? "Equal Care Across Finland · generated briefing" : KICKER[s.kind] ?? s.kind}
           </div>
           {isTitle ? (
-            <div className="flex-1 flex flex-col justify-center max-w-[62%]">
+            <div className="flex-1 flex flex-col justify-center max-w-[68%]">
               <h1 className="font-semibold leading-[1.1]" style={{ fontSize: "4.2cqw" }}>{data.report.title}</h1>
               <p className="text-white/65 mt-[1.6cqw]" style={{ fontSize: "1.75cqw" }}>{data.report.subtitle}</p>
               {s.headline && s.headline !== data.report.title && (
                 <p className="text-amber-300/90 mt-[2.4cqw]" style={{ fontSize: "1.6cqw" }}>{s.headline}</p>
               )}
+              <HeroStats data={data} />
               {s.bullets.length > 0 && (
                 <ul className="mt-[1.6cqw] space-y-[0.7cqw] text-white/70" style={{ fontSize: "1.35cqw" }}>
                   {s.bullets.map((b, j) => <li key={j}>{b}</li>)}
                 </ul>
               )}
+            </div>
+          ) : vis ? (
+            <div className="flex-1 flex items-center gap-[3.5cqw] min-h-0">
+              <div className="flex-1 min-w-0 h-full flex flex-col justify-center" style={{ containerType: "inline-size" }}>
+                <SlideVisual slide={s} v={vis} />
+              </div>
+              <div className="w-[34%] shrink-0">
+                <h2 className="font-semibold leading-[1.15]" style={{ fontSize: "2.5cqw" }}>{s.headline}</h2>
+                <ul className="mt-[1.8cqw] space-y-[1cqw]">
+                  {s.bullets.slice(0, 3).map((b, j) => (
+                    <li key={j} className="flex gap-[0.8cqw] text-white/80 leading-snug" style={{ fontSize: "1.3cqw" }}>
+                      <span className="text-amber-300/80 shrink-0">—</span><span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           ) : (
             <div className="flex-1 flex flex-col justify-center">

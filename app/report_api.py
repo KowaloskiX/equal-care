@@ -46,8 +46,9 @@ async def report_facts(items: str):
 
 
 @router.get("/api/report/cover")
-async def report_cover():
+async def report_cover(scene: str | None = None):
+    """scene: 'where' | 'next' for the two slide backdrops; anything else = the cover."""
     try:
-        return await run_in_threadpool(rp.cover)
+        return await run_in_threadpool(rp.cover, scene)
     except rp.Unconfigured as e:
         raise HTTPException(503, str(e))

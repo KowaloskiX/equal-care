@@ -52,6 +52,7 @@ function ReportView() {
   const [view, setView] = useState<View>(sp.get("view") === "slides" ? "slides" : "briefing");
   const [res, setRes] = useState<{ key: string; data?: ReportResponse; err?: string } | null>(null);
   const [cover, setCover] = useState<{ base: string; c: Cover | null; err?: string } | null>(null);
+  const [scenes, setScenes] = useState<Record<string, Cover | null>>({});
 
   useEffect(() => {
     if (!items.length) return;
@@ -74,6 +75,18 @@ function ReportView() {
   const exit = useCallback(() => setView("briefing"), []);
   const cur = res?.key === key ? res : null;
   const data = cur?.data;
+
+  // slide backdrops for the 'where' and 'next' kinds — lazily, after the deck can already render
+  useEffect(() => {
+    if (!data) return;
+    let live = true;
+    for (const k of ["where", "next"] as const) {
+      getCover(base, k)
+        .then((c) => live && setScenes((s) => (s[k] === c ? s : { ...s, [k]: c })))
+        .catch(() => live && setScenes((s) => ({ ...s, [k]: null })));
+    }
+    return () => { live = false; };
+  }, [data, base]);
   const c = cover?.base === base ? cover.c : null;
   const names = data ? factsOnly(data.facts) : {};
   const progWord = (p: string) => (p === "bowel" ? "colorectal" : p);
@@ -122,7 +135,7 @@ function ReportView() {
           <p className="no-print mx-auto max-w-3xl px-6 t-micro">Cover illustration unavailable: {cover?.err ?? c?.error ?? "no image"}</p>
         )}
       </div>
-      {data && view === "slides" && <Deck data={data} cover={c} onExit={exit} />}
+      {data && view === "slides" && <Deck data={data} cover={c} scenes={scenes} onExit={exit} />}
     </main>
   );
 }
