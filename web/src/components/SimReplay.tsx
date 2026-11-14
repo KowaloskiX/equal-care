@@ -410,7 +410,8 @@ export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
     onCrowd?.((p) => (p && p.prog === replay.programme && p.code === replay.code ? p
                      : buildCrowd(replay, munis, who, engineName(replay.engine) ?? replay.engine)));
   }, [ran, replay, munis]);   // eslint-disable-line react-hooks/exhaustive-deps
-  const onProgress = (n: number) => onCrowd?.((p) => (p ? { ...p, revealed: n } : p));
+  const onProgress = (n: number) => onCrowd?.((p) =>
+    (p ? { ...p, revealed: n, revealFrac: p.rows.length ? n / p.rows.length : p.revealFrac } : p));
 
   if (err) return <div className="t-body text-rose-300 mt-2">{err}</div>;
   const eng = engineName(replay?.engine) ?? engineName(rec?.sim_split?.validation?.engine ?? null) ?? "the engine";
@@ -521,14 +522,15 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCro
             pRow: b.rows.map((r) => r.p_cal ?? r.jev_attend) }
         : { ...buildCrowd(b, munis ?? null, who, engineName(b.engine) ?? b.engine),
             scenarios: [...sel] };
-      return { ...base, revealed: instant ? b.rows.length : 0 };
+      return { ...base, revealed: instant ? b.rows.length : 0, revealFrac: instant ? 1 : 0 };
     });
     if (instant) return;
     const t0 = performance.now();
     const sweep = (t: number) => {
       const x = Math.min(1, (t - t0) / 1800);
       const n = Math.round(Math.pow(x, 0.8) * b.rows.length);   // fast start, settles at the end
-      onCrowd?.((p) => (p ? { ...p, revealed: Math.max(p.revealed, n) } : p));
+      onCrowd?.((p) => (p ? { ...p, revealed: Math.max(p.revealed, n),
+                                  revealFrac: Math.max(p.revealFrac, Math.pow(x, 0.8)) } : p));
       if (x < 1) revealRef.current = requestAnimationFrame(sweep);
     };
     revealRef.current = requestAnimationFrame(sweep);
@@ -553,7 +555,7 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCro
     getBaselineReplay(prog, code).then((b) => {
       const c = buildCrowd(b, munis, who, engineName(b.engine) ?? b.engine);
       onCrowd?.((p) => (p && p.prog === prog && p.code === code && !p.dots.length
-        ? { ...c, revealed: p.revealed, scenarios: p.scenarios, flip: p.flip, pRow: p.pRow } : p));
+        ? { ...c, revealed: p.revealed, revealFrac: p.revealFrac, scenarios: p.scenarios, flip: p.flip, pRow: p.pRow } : p));
     }).catch(() => null);
   }, [crowd, munis, prog, code]);   // eslint-disable-line react-hooks/exhaustive-deps
   // scenario progress n -> flip the dots of revealed scenario rows to their new p_cal

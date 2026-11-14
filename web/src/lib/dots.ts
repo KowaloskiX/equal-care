@@ -9,6 +9,8 @@ export type Crowd = {
   dots: CrowdDot[]; rows: ResidentRow[]; perDot: number; who: string; engine: string;
   pRow: number[];                       // current calibrated probability per replay row
   revealed: number;                     // baseline rows revealed (all during a scenario run)
+  revealFrac: number;                   // 0..1 share of dots visible — rows run largest-first,
+                                        // so revealing by row would pop most dots at once
   flip: Record<number, ResidentRow>;    // baseline row index -> scenario row once revealed
   scenarios: string[];                  // scenario names for the "what was asked" popover
 };
@@ -83,7 +85,7 @@ export function buildCrowd(replay: Replay, munis: FC | null, who: string, engine
   return { prog: replay.programme, code: replay.code, dots, rows: replay.rows,
            perDot: replay.per_dot ?? 1, who, engine,
            pRow: replay.rows.map((r) => r.p_cal ?? r.jev_attend),
-           revealed: 0, flip: {}, scenarios: [] };
+           revealed: 0, revealFrac: 0, flip: {}, scenarios: [] };
 }
 
 // baseline row index for each scenario row (same archetype key) — used to flip dots red -> green

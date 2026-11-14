@@ -170,14 +170,14 @@ export default function ChoroplethMap(props: {
     layers.push(new ScatterplotLayer({
       id: "crowd", data: crowd.dots, pickable: true,
       getPosition: (d: CrowdDot) => [d.lon, d.lat],
-      getRadius: (d: CrowdDot) => (d.row < crowd.revealed ? 3 : 0), radiusUnits: "pixels",
+      getRadius: (d: CrowdDot) => (d.u <= crowd.revealFrac ? 3 : 0), radiusUnits: "pixels",
       getFillColor: (d: CrowdDot) => (d.u < crowd.pRow[d.row] ? [74, 222, 128, 235] : [248, 113, 113, 235]),
       stroked: true, getLineColor: [255, 255, 255, 90], getLineWidth: 0.5, lineWidthUnits: "pixels",
       transitions: { getRadius: 400, getFillColor: 300 },   // grow on reveal, fade on scenario flip
-      updateTriggers: { getRadius: [crowd.revealed], getFillColor: [crowd.pRow, crowd.flip] },
+      updateTriggers: { getRadius: [crowd.revealFrac], getFillColor: [crowd.pRow, crowd.flip] },
       onHover: (info: PickingInfo) => {
         const d = info.object as CrowdDot | undefined;
-        if (!d || d.row >= crowd.revealed) return setHover(null);
+        if (!d || d.u > crowd.revealFrac) return setHover(null);
         const r = crowd.flip[d.row] ?? crowd.rows[d.row];
         setHover({ x: info.x, y: info.y, name: d.tip,
                    value: `${crowd.engine} ${Math.round(r.jev_attend * 100)} % takes part`,
@@ -185,7 +185,7 @@ export default function ChoroplethMap(props: {
       },
       onClick: (info: PickingInfo) => {
         const d = info.object as CrowdDot | undefined;
-        if (d && d.row < crowd.revealed) { setAns(null); setPick({ x: info.x, y: info.y, d }); }
+        if (d && d.u <= crowd.revealFrac) { setAns(null); setPick({ x: info.x, y: info.y, d }); }
       },
     }));
   }
