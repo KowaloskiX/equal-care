@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { fmt, getRecommend, type Gap, type Pathway, type PathwayItem, type Recommend } from "@/lib/api";
 import RecommendBlock from "@/components/RecommendBlock";
+import WhatIfPanel from "@/components/WhatIf";
 
 const PROG_LABEL: Record<string, string> = { breast: "Breast screening", bowel: "Colorectal screening" };
 
@@ -19,13 +20,30 @@ export function Src({ s }: { s: { url: string; org: string; indicator?: number |
   );
 }
 
+function Spark({ pts, bad }: { pts: [number, number][]; bad: boolean }) {
+  const w = 56, h = 14, xs = pts.map((p) => p[1]);
+  const lo = Math.min(...xs), hi = Math.max(...xs), span = hi - lo || 1;
+  const d = pts.map((p, i) => `${(i / (pts.length - 1)) * w},${h - ((p[1] - lo) / span) * (h - 2) - 1}`).join(" ");
+  return (
+    <svg width={w} height={h} className="inline-block align-middle opacity-80">
+      <polyline points={d} fill="none" stroke={bad ? "#f87171" : "#94a3b8"} strokeWidth="1.2" />
+      <circle cx={w} cy={h - ((xs[xs.length - 1] - lo) / span) * (h - 2) - 1} r="1.6" fill={bad ? "#f87171" : "#94a3b8"} />
+    </svg>
+  );
+}
+
 function Row({ it, onPick, active }: { it: PathwayItem; onPick: (k: string) => void; active: boolean }) {
   const tone = it.worse_than_national == null ? "text-white/60" : it.worse_than_national ? "text-rose-400" : "text-emerald-400";
   return (
     <button onClick={() => onPick(it.key)} className={`w-full text-left rounded-lg px-2.5 py-2 transition ${active ? "bg-white/10" : "hover:bg-white/5"}`}>
       <div className="flex items-baseline justify-between gap-2">
-        <span className="text-[12.5px] text-white/80 leading-tight">{it.label}{it.goal === 3 && <span className="ml-1.5 pill text-amber-300 border-amber-300/40">Goal 3</span>}</span>
-        <span className="font-semibold tabular-nums whitespace-nowrap">{fmt(it.value, it.unit)}</span>
+        <span className="text-[12.5px] text-white/80 leading-tight">{it.label}{it.goal === 3 && <span className="ml-1.5 pill text-amber-300 border-amber-300/40">Goal 3</span>}
+          {(it.rising_months ?? 0) >= 3 && <span className="ml-1.5 pill text-rose-300 border-rose-300/40">early warning · {it.rising_months} mo</span>}
+        </span>
+        <span className="font-semibold tabular-nums whitespace-nowrap">
+          {it.trend && it.trend.length > 1 && <Spark pts={it.trend} bad={(it.rising_months ?? 0) >= 3} />}{" "}
+          {fmt(it.value, it.unit)}
+        </span>
       </div>
       <div className="flex items-baseline justify-between gap-2 mt-0.5">
         <span className={`text-[11.5px] ${tone}`}>
@@ -74,6 +92,7 @@ export default function RegionCard({ p, gaps, active, onPick, onClose }: {
           ))}
         </div>
       )}
+      <WhatIfPanel code={p.code} recs={recs} />
       {gaps.length > 0 && (
         <div className="mb-3 rounded-xl border border-amber-300/25 bg-amber-300/[0.06] p-3">
           <div className="text-[11px] uppercase tracking-wide text-amber-300/80 mb-1.5">Missing to reach 80 % attendance, per year</div>

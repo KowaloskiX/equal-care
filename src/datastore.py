@@ -101,6 +101,22 @@ def screening_gap(key, code, level="county", year=None, target=None):
             "method": "invited = attended / rate; missing = target x invited - attended", "source": v["source"]}
 
 
+def _trend(ind, code):
+    """The indicator's time series for one county (yearly or YYYYMM monthly) and, for monthly series, how many of
+    the latest consecutive months moved in the worse direction — the 'early warning' count."""
+    X = _rows(ind.key, "county"); X = X[X.code == code].sort_values("year")
+    pts = [[int(r.year), float(r.value)] for _, r in X.iterrows()]
+    rising = 0
+    monthly = pts and pts[-1][0] > 9999          # periods are stored as YYYYMM ints
+    if monthly and ind.higher_is_better is not None:
+        for i in range(len(pts) - 1, 0, -1):
+            worsened = pts[i][1] > pts[i - 1][1] if ind.higher_is_better is False else pts[i][1] < pts[i - 1][1]
+            if pts[i][1] == pts[i - 1][1] or not worsened:
+                break
+            rising += 1
+    return pts[-36:], rising
+
+
 def pathway(code, year=None):
     """One county along the care pathway: each indicator against Finland and its rank among the 23 counties."""
     out = []
@@ -115,11 +131,12 @@ def pathway(code, year=None):
         absolute = ind.unit in ABSOLUTE_UNITS   # a county count against the national count says nothing
         delta = None if nat is None or absolute else round(r["value"] - nat, 1)
         worse = None if delta is None or ind.higher_is_better is None else (delta < 0) == ind.higher_is_better and delta != 0
+        trend, rising = _trend(ind, code)
         out.append({"key": ind.key, "label": ind.label, "stage": ind.stage, "goal": ind.goal, "unit": ind.unit,
                     "value": r["value"], "national": nat, "delta": delta, "worse_than_national": worse,
                     "rank": rank, "of": len(vals), "target": ind.target, "year": v["year"], "source": v["source"],
                     "abs_value": r["abs_value"], "abs_is_denominator": ind.abs_is_denominator,
-                    "shared_producer": r.get("shared_producer")})
+                    "shared_producer": r.get("shared_producer"), "trend": trend, "rising_months": rising})
     out.sort(key=lambda x: STAGES.index(x["stage"]))
     _, R, _ = frames()
     name_fi = R[(R.level == "county") & (R.code == code)].name.iloc[0]

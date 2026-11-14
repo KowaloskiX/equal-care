@@ -1,5 +1,5 @@
 """Smoke test of the API and the data invariants. Usage: python src/check.py (exit code 1 on failure)."""
-import sys
+import json, sys
 from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT / "src"), str(ROOT)]
@@ -77,5 +77,15 @@ r = c.get(f"/api/recommend/bowel/{worst_r}").json()
 worse_r = qr["values"][worst_r]["value"] - qr["national"] >= 1.0
 check("over-21-day referrals add 2.5.2 only when >= 1 pt worse than Finland",
       ("2.5.2" in {a["id"] for a in r["pathway_actions"]}) == worse_r)
+# live what-if: a single scenario must reproduce the committed sim row; the all-four combo must not underperform it
+w = c.get("/api/whatif?prog=breast&code=90&s=own_language").json()
+sim_row = json.load(open(ROOT / "data/sim/breast.json"))["scenarios"]["own_language"]["levels"]["county"]["90"]
+check("what-if single scenario equals the sim file row",
+      w["delta_points"] == sim_row["delta_points"] and w["extra_people_per_year"] == sim_row["extra_people_per_year"])
+singles = [c.get(f"/api/whatif?prog=breast&code=90&s={s}").json()["extra_people_per_year"]
+           for s in ("own_language", "sms_reminder", "evening_slots", "mobile_unit")]
+all4 = c.get("/api/whatif?prog=breast&code=90&s=own_language,sms_reminder,evening_slots,mobile_unit").json()
+check("what-if all-four combo >= best single scenario",
+      all4["extra_people_per_year"] >= max(singles))
 print(f"\n{len(fails)} failed" if fails else "\nall passed")
 sys.exit(1 if fails else 0)

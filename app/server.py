@@ -152,6 +152,19 @@ def sim_region(prog: str, code: str, level: str = "county"):
 # ---------------- recommendations (cited roadmap actions; see src/recommend.py)
 
 
+@app.get("/api/whatif")
+def whatif_endpoint(prog: str, code: str, s: str):
+    """Live combined-intervention run over the simulated residents for one county (503 when answers are not cached
+    and the engine key is not set — never fakes a result)."""
+    import whatif
+    try:
+        return whatif.whatif(prog, code, [x.strip() for x in s.split(",") if x.strip()])
+    except whatif.Unavailable as e:
+        raise HTTPException(503, str(e))
+    except KeyError as e:
+        raise HTTPException(404, str(e))
+
+
 @app.get("/api/recommend/{prog}/{code}")
 def recommend_endpoint(prog: str, code: str):
     if prog not in rec.PROGRAMMES:

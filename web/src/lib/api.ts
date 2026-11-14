@@ -21,6 +21,7 @@ export type PathwayItem = {
   delta: number | null; worse_than_national: boolean | null; rank: number | null; of: number; target: number | null;
   year: number; source: Source;
   abs_value?: number | null; abs_is_denominator?: boolean; shared_producer?: string | null;
+  trend?: [number, number][]; rising_months?: number;
 };
 export type Pathway = { code: string; name: string; indicators: PathwayItem[] };
 export type Gap = {
@@ -43,7 +44,7 @@ export type SimLevel = {
   programme: string; engine?: string; label: string; level: string; year: number; national_real: number;
   national_expected: number; rows: Record<string, SimRow>; validation: Validation; note: string; source: Source;
 };
-export type ActionRef = { id: string; title: string; page: number; url: string; responsible: string | null; metric: string | null };
+export type ActionRef = { id: string; title: string; title_en?: string | null; page: number; url: string; responsible: string | null; metric: string | null };
 export type ScenarioRow = {
   scenario: string; label: string; delta_points: number | null; extra_people_per_year: number | null;
   actions: ActionRef[]; assumption: string | null; note: string;
@@ -62,6 +63,15 @@ export type BriefCounty = {
   top_scenario: ScenarioRow | null; survival: Recommend["survival"];
 };
 export type Brief = { programmes: { programme: string; validation: Validation | null; counties: BriefCounty[]; note: string }[] };
+export type WhatIf = {
+  programme: string; engine: string; code: string; name: string; scenarios_selected: string[];
+  baseline_rate: number | null; new_rate: number | null; delta_points: number | null;
+  extra_people_per_year: number | null; invited: number | null; missing_per_year: number | null;
+  gap_closed_pct: number | null; asked_live: number; from_cache: number;
+  validation: Validation | null; note: string;
+  scenarios: { scenario: string; label: string; actions: ActionRef[]; assumption: string | null }[];
+  source: Source | null;
+};
 
 const get = async <T,>(path: string): Promise<T> => {
   const r = await fetch(`${API}${path}`);
@@ -78,6 +88,8 @@ export const getGap = (key: string, code: string) => get<Gap>(`/api/gap?key=${ke
 export const getSim = (prog: string) => get<SimLevel>(`/api/sim/${prog}`);
 export const getRecommend = (prog: string, code: string) => get<Recommend>(`/api/recommend/${prog}/${code}`);
 export const getBrief = () => get<Brief>("/api/brief");
+export const getWhatif = (prog: string, code: string, s: string[]) =>
+  get<WhatIf>(`/api/whatif?prog=${prog}&code=${code}&s=${s.join(",")}`);
 
 export const engineName = (e?: string | null) =>
   e === "jev" ? "Jev" : e === "gemini-decision-1" ? "Gemini Decisions" : null;

@@ -14,7 +14,7 @@ export function SimPill({ text = "Simulation" }: { text?: string }) {
   return <span className="pill text-sky-300 border-sky-300/40">{text}</span>;
 }
 
-function Cite({ a }: { a: ActionRef }) {
+export function Cite({ a }: { a: ActionRef }) {
   return (
     <a href={a.url} target="_blank" rel="noreferrer" title={a.title}
        className="text-amber-300/90 hover:text-amber-300 underline decoration-dotted whitespace-nowrap">
@@ -23,7 +23,7 @@ function Cite({ a }: { a: ActionRef }) {
   );
 }
 
-function Assumption({ text }: { text: string }) {
+export function Assumption({ text }: { text: string }) {
   return (
     <details className="mt-0.5">
       <summary className="inline-block pill text-violet-300 border-violet-300/40 cursor-pointer select-none">ASSUMPTION</summary>
@@ -94,7 +94,7 @@ export default function RecommendBlock({ r }: { r: Recommend }) {
             <div key={a.id} className="px-2.5 py-1">
               <div className="flex items-baseline gap-2">
                 <Cite a={a} />
-                <span className="text-[11.5px] text-white/60 leading-tight">{a.title.slice(0, 90)}</span>
+                <span className="text-[11.5px] text-white/60 leading-tight" title={a.title}>{(a.title_en ?? a.title).slice(0, 90)}</span>
               </div>
               {a.why && <div className="text-[10.5px] text-white/40 mt-0.5">{a.why}</div>}
               {a.assumption && <Assumption text={a.assumption} />}

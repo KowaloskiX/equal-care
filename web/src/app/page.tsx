@@ -203,7 +203,7 @@ export default function Home() {
                         {" — "}
                         <a href={act.url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}
                            className="text-amber-300/90 underline decoration-dotted">Roadmap {act.id}, p.{act.page}</a>
-                        <span className="text-white/40"> {ts.label}</span>
+                        <span className="text-white/40" title={act.title}> {act.title_en ?? ts.label}</span>
                       </div>
                     )}
                     {c.survival?.below_national && (

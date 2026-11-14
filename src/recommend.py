@@ -55,6 +55,19 @@ QUEUE_ACTIONS = {
                            "regional care pathways and national quality targets are the lever."},
 }
 
+# English titles for the cited roadmap actions (the roadmap itself is Finnish).
+TITLE_EN = {
+    "1.1.1": "Involve residents and patients in developing screening and other preventive services",
+    "1.3.1": "Raise screening participation of language groups through targeted, community-based communication",
+    "2.4.1": "Apply the screening quality handbooks in procurement and steering",
+    "2.4.5": "Use screening-register data with the counties (monthly county-level reporting)",
+    "2.5.2": "Standardised referral criteria for a smooth transition to specialised care",
+    "3.1.2": "Cancer-specific care pathway descriptions applied as regional pathways",
+    "3.1.4": "National quality and effectiveness targets and monitoring metrics for care pathways",
+    "3.2.1": "Legal basis for a cancer care quality registry at the Finnish Cancer Registry",
+    "3.2.2": "Systematic peer comparison of quality-registry data between counties",
+}
+
 ENGINE_LABEL = {"jev": "Jev", "gemini-decision-1": "Gemini Decisions"}
 
 
@@ -71,7 +84,7 @@ def cite(aid, by_id=None, extra=None):
     by_id = by_id or _actions_by_id()
     assert aid in by_id, f"roadmap action {aid!r} not found in strategy.actions()"
     a = by_id[aid]
-    out = {"id": a["id"], "title": a["title"], "page": a["page"], "url": a["url"],
+    out = {"id": a["id"], "title": a["title"], "title_en": TITLE_EN.get(aid), "page": a["page"], "url": a["url"],
            "responsible": a.get("responsible"), "metric": a.get("metric")}
     if extra:
         out.update(extra)

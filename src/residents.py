@@ -99,15 +99,26 @@ def eligible(prog):
 
 
 def state(key, prog, scenario="baseline"):
-    k = dict(zip(KEY, key)); P = PROGRAMMES[prog]; S = SCENARIOS[scenario]
+    k = dict(zip(KEY, key)); P = PROGRAMMES[prog]
     person = {"age": k["age5"], "gender": "female" if k["sex"] == "F" else "male", "lives_in": f"Finland, {k['muni_type']}",
               "home_area": k["settlement"], "native_language": LANG_EN[k["lang"]], "education": pop.EDU[k["edu"]],
               "main_activity": k["activity"]}
     if k["activity"] == "employed":
         person["health_care"] = "has occupational health care through the employer"   # ASSUMPTION: most employees in Finland do
     situation = {"received": P["invitation"], "language_of_invitation": "Finnish and Swedish"}
-    situation.update({x: y for x, y in S.items() if x != "label"})
+    for sc in scenario.split("+"):           # a "+"-joined name merges the facts of every scenario (what-if combos)
+        situation.update({x: y for x, y in SCENARIOS[sc].items() if x != "label"})
     return {"person": person, "situation": situation}
+
+
+def combo_name(scenarios):
+    """Stable cache/lookup name for a scenario set: sorted and '+'-joined; a single scenario keeps its own name."""
+    return "+".join(sorted(set(scenarios)))
+
+
+def combo_state(key, prog, scenarios):
+    """Baseline state with the facts of every selected scenario merged (same wording as SCENARIOS)."""
+    return state(key, prog, combo_name(scenarios))
 
 
 def _questions_jev(prog):
