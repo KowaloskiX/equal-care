@@ -38,6 +38,22 @@ GOAL3_ACTIONS = ["3.2.1", "3.2.2"]
 GOAL3_LIMITATION = ("Stage at diagnosis and time from diagnosis to treatment are not published by county, so the "
                     "survival gap cannot be located on the pathway with public data; the quality registry is what "
                     "would close this gap.")
+# ASSUMPTION: waiting lists cover non-urgent oncology care; urgent cancer treatment is not in this measure, so this
+# is a proxy for capacity, not time from diagnosis to treatment.
+WAIT_PROXY = ("Waiting lists cover non-urgent oncology care; urgent cancer treatment is not in this measure, so this "
+              "is a proxy for capacity, not time from diagnosis to treatment.")
+# ASSUMPTION: a queue indicator triggers an action only when it is at least 1 percentage point worse than Finland,
+# so rounding-level differences (0.4 % vs 0.2 %) do not produce recommendations; below 30 patients it is flagged.
+QUEUE_MIN_POINTS = 1.0
+SMALL_N = 30
+QUEUE_ACTIONS = {
+    "onc_ref_21": {"ids": ["2.5.2"], "assumption": None,          # direct match: standardised referral criteria
+                   "why": "Oncology referrals are processed in over 21 days more often than nationally; standardised "
+                          "referral criteria are the lever for a smooth transition to specialist care."},
+    "onc_wait_90": {"ids": ["3.1.2", "3.1.4"], "assumption": WAIT_PROXY,
+                    "why": "A larger share of oncology patients than nationally waits over 90 days for treatment; "
+                           "regional care pathways and national quality targets are the lever."},
+}
 
 ENGINE_LABEL = {"jev": "Jev", "gemini-decision-1": "Gemini Decisions"}
 
@@ -120,6 +136,15 @@ def recommend(prog, code):
                     "year": v["year"], "source": v["source"]}
             if r["value"] < v["national"]:
                 pathway_actions += [cite(aid, by_id, {"why": GOAL3_LIMITATION}) for aid in GOAL3_ACTIONS]
+
+    for qkey, q in QUEUE_ACTIONS.items():
+        v = ds.values(qkey, "county")
+        r = v["values"].get(code)
+        if r and v["national"] is not None and r["value"] - v["national"] >= QUEUE_MIN_POINTS:
+            small = r["abs_value"] is not None and r["abs_value"] < SMALL_N
+            pathway_actions += [cite(aid, by_id, {"why": q["why"], "assumption": q["assumption"],
+                                                  "small_numbers": f"n = {int(r['abs_value'])}" if small else None})
+                                for aid in q["ids"]]
 
     return {"programme": prog, "code": code, "name": ds.short_names().get(code, code),
             "screening": {k: gap[k] for k in ("rate", "target", "missing_per_year", "invited")} | {"source": gap["source"]} if gap else None,

@@ -11,10 +11,10 @@ const STAGE_LABEL: Record<string, string> = {
   treatment: "Treatment", outcome: "Outcome",
 };
 
-export function Src({ s }: { s: { url: string; org: string; indicator: number; year: number | null } }) {
+export function Src({ s }: { s: { url: string; org: string; indicator?: number | null; year?: number | null; period?: string } }) {
   return (
     <a href={s.url} target="_blank" rel="noreferrer" className="text-[11px] text-white/40 hover:text-amber-300 underline decoration-dotted">
-      {s.org} #{s.indicator}{s.year ? `, ${s.year}` : ""}
+      {s.org}{s.indicator != null ? ` #${s.indicator}` : ""}{s.period || s.year ? `, ${s.period ?? s.year}` : ""}
     </a>
   );
 }
@@ -32,6 +32,12 @@ function Row({ it, onPick, active }: { it: PathwayItem; onPick: (k: string) => v
           {it.delta != null && <>{it.delta > 0 ? "+" : ""}{fmt(it.delta)} vs Finland {fmt(it.national, it.unit)}</>}
           {it.rank != null && <span className="text-white/45"> · {it.rank}/{it.of}</span>}
           {it.target != null && <span className="text-white/45"> · target {fmt(it.target, it.unit)}</span>}
+          {it.abs_is_denominator && it.abs_value != null && (
+            <span className="text-white/45"> · n = {fmt(it.abs_value)}
+              {it.abs_value < 30 && <span className="ml-1 pill text-amber-300 border-amber-300/40">small numbers</span>}
+            </span>
+          )}
+          {it.shared_producer && <span className="text-white/45"> · value of shared producer {it.shared_producer}</span>}
         </span>
         <Src s={it.source} />
       </div>

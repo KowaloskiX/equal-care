@@ -18,6 +18,11 @@ ABSOLUTE_UNITS = {"people", "visits"}
 @lru_cache
 def frames():
     D = pd.read_csv(DATA / "sotkanet.csv", dtype={"code": str, "county_code": str})
+    queue = DATA / "thl_queue.csv"        # oncology care-queue indicators from fetch_thl_queue.py
+    if queue.exists():
+        D = pd.concat([D, pd.read_csv(queue, dtype={"code": str, "county_code": str})], ignore_index=True)
+    if "shared" not in D.columns:
+        D["shared"] = None
     R = pd.read_csv(DATA / "regions.csv", dtype={"code": str, "county_code": str})
     meta = json.loads((DATA / "indicators.json").read_text())
     return D, R, meta
@@ -32,8 +37,12 @@ def short_names():
 
 def source(key, year=None):
     _, _, meta = frames(); m = meta[key]
-    return {"indicator": m["sotkanet_id"], "title": m["title_en"] or m["title_fi"], "url": m["url"], "year": year,
-            "org": m["source_org"], "updated": m["data_updated"]}
+    s = {"indicator": m["sotkanet_id"], "title": m["title_en"] or m["title_fi"], "url": m["url"], "year": year,
+         "org": m["source_org"], "updated": m["data_updated"]}
+    for f in ("cube_url", "period"):           # non-Sotkanet sources (THL care queue) carry their own reference fields
+        if m.get(f) is not None:
+            s[f] = m[f]
+    return s
 
 
 def _rows(key, level):
@@ -64,7 +73,9 @@ def values(key, level="county", year=None, county=None):
             "higher_is_better": ind.higher_is_better, "target": ind.target, "target_note": ind.target_note,
             "national": float(nat.value.iloc[0]) if len(nat) else None,
             "values": {r.code: {"name": short_names().get(r.code, r["name"]), "name_fi": r["name"], "value": float(r.value),
-                                "abs_value": None if pd.isna(r.abs_value) else float(r.abs_value)} for _, r in X.iterrows()},
+                                "abs_value": None if pd.isna(r.abs_value) else float(r.abs_value),
+                                "shared_producer": None if pd.isna(r.shared) or r.shared == "" else r.shared}
+                       for _, r in X.iterrows()},
             "source": source(key, year)}
 
 
@@ -106,7 +117,9 @@ def pathway(code, year=None):
         worse = None if delta is None or ind.higher_is_better is None else (delta < 0) == ind.higher_is_better and delta != 0
         out.append({"key": ind.key, "label": ind.label, "stage": ind.stage, "goal": ind.goal, "unit": ind.unit,
                     "value": r["value"], "national": nat, "delta": delta, "worse_than_national": worse,
-                    "rank": rank, "of": len(vals), "target": ind.target, "year": v["year"], "source": v["source"]})
+                    "rank": rank, "of": len(vals), "target": ind.target, "year": v["year"], "source": v["source"],
+                    "abs_value": r["abs_value"], "abs_is_denominator": ind.abs_is_denominator,
+                    "shared_producer": r.get("shared_producer")})
     out.sort(key=lambda x: STAGES.index(x["stage"]))
     _, R, _ = frames()
     name_fi = R[(R.level == "county") & (R.code == code)].name.iloc[0]

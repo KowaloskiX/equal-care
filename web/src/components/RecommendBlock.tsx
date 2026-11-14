@@ -53,7 +53,8 @@ function Scenario({ s }: { s: ScenarioRow }) {
 export default function RecommendBlock({ r }: { r: Recommend }) {
   const { split } = r;
   const r2 = split.validation?.counties_weighted?.r;
-  const assumptions = [...new Set(r.scenarios.map((s) => s.assumption).filter((x): x is string => Boolean(x)))];
+  const assumptions = [...new Set([...r.scenarios.map((s) => s.assumption), ...r.pathway_actions.map((a) => a.assumption)]
+    .filter((x): x is string => Boolean(x)))];
   return (
     <div className="mb-3">
       {r.screening && (
@@ -96,6 +97,7 @@ export default function RecommendBlock({ r }: { r: Recommend }) {
                 <span className="text-[11.5px] text-white/60 leading-tight">{a.title.slice(0, 90)}</span>
               </div>
               {a.why && <div className="text-[10.5px] text-white/40 mt-0.5">{a.why}</div>}
+              {a.assumption && <Assumption text={a.assumption} />}
             </div>
           ))}
         </div>

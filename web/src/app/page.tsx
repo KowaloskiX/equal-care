@@ -126,7 +126,7 @@ export default function Home() {
         {shown && (mode === "data" ? ind : sim) && (
           <div className="glass p-4 pointer-events-auto overflow-y-auto min-h-0">
             <div className="flex items-baseline justify-between gap-2">
-              <div className="text-[13px] font-semibold leading-tight">{shown.label}, {shown.year}</div>
+              <div className="text-[13px] font-semibold leading-tight">{shown.label}, {shown.source.period ?? shown.year}</div>
               <div className="flex items-center gap-1.5">{mode === "sim" && <SimPill text={`Simulation${engineName(sim?.engine) ? ` · ${engineName(sim?.engine)}` : ""}`} />}<Src s={shown.source} /></div>
             </div>
             <div className="text-[12px] text-white/55 mt-1">

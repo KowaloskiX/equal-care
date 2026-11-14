@@ -24,7 +24,7 @@ GOALS = {
 @dataclass(frozen=True)
 class Indicator:
     key: str            # short id used in the code and the API
-    sotkanet_id: int
+    sotkanet_id: int | None   # Sotkanet indicator id, None for indicators from other THL cubes (fetch_thl_queue.py)
     label: str          # short English label for the UI
     stage: str          # place in the care pathway (STAGES)
     goal: int | None    # strategy goal it measures, None for context indicators
@@ -33,13 +33,19 @@ class Indicator:
     higher_is_better: bool | None = True
     target: float | None = None      # national target from the strategy, if there is one
     target_note: str | None = None
+    source_page: str | None = None   # human-readable source page when the indicator is not in Sotkanet
+    abs_is_denominator: bool = False # abs_value is the denominator behind the %, so the UI can flag tiny counts
 
     @property
     def url(self) -> str:
+        if self.source_page:
+            return self.source_page
         return f"https://sotkanet.fi/sotkanet/en/taulukko?indicator={self.sotkanet_id}"
 
     @property
-    def api_url(self) -> str:
+    def api_url(self) -> str | None:
+        if self.sotkanet_id is None:
+            return None
         return f"https://sotkanet.fi/rest/1.1/indicators/{self.sotkanet_id}"
 
 
@@ -54,6 +60,17 @@ INDICATORS = [
     # referral: access to specialised care (all specialties; there is no cancer-only waiting indicator in Sotkanet)
     Indicator("wait_6m", 3336, "Waited over 6 months for specialised care, per 10 000", "referral", 3, "per 10 000", "total",
               higher_is_better=False),
+    # referral/treatment: cancer-specific access to specialised care, THL Hoitoon pääsy cube (src/fetch_thl_queue.py)
+    Indicator("onc_ref_21", None, "Oncology: referrals processed in over 21 days", "referral", 3, "%", "total",
+              higher_is_better=False, target=0.0,
+              target_note="Health Care Act 3-week rule on the THL Hoitoon pääsy page: care must start within three "
+                          "weeks of the care-need assessment, so over-21-day referral processing should be zero",
+              source_page="https://thl.fi/data-ja-tilastot/hoitoon-paasy/erikoissairaanhoito",
+              abs_is_denominator=True),
+    Indicator("onc_wait_90", None, "Oncology: share of patients waiting over 90 days for treatment", "treatment", 3, "%", "total",
+              higher_is_better=False,
+              source_page="https://thl.fi/data-ja-tilastot/hoitoon-paasy/erikoissairaanhoito",
+              abs_is_denominator=True),
     # treatment
     Indicator("onc_visits", 2475, "Outpatient visits, oncology and radiotherapy", "treatment", 3, "visits", "total",
               higher_is_better=None),

@@ -8,7 +8,7 @@ setup:            ## Python venv and web dependencies
 	$(PY) -m pip install -q -r requirements.txt
 	cd web && $(NODE_PATH_ADD) npm install --no-audit --no-fund
 
-data: sotkanet geo strategy statfin   ## re-fetch every public source (the results are committed; the demo never fetches live)
+data: sotkanet geo strategy statfin thl-queue   ## re-fetch every public source (the results are committed; the demo never fetches live)
 
 sotkanet:         ## THL Sotkanet indicators -> data/sotkanet.csv, data/regions.csv, data/indicators.json
 	$(PY) src/fetch_sotkanet.py
@@ -18,6 +18,9 @@ geo:              ## Statistics Finland boundaries -> data/geo/*.geojson
 
 strategy:         ## cancer strategy + roadmap PDFs -> data/strategy/pages.jsonl
 	$(PY) src/strategy.py fetch
+
+thl-queue:      ## THL Hoitoon pääsy oncology care-queue data -> data/thl_queue.csv
+	$(PY) src/fetch_thl_queue.py
 
 statfin:          ## Statistics Finland population tables -> data/statfin/*.csv
 	$(PY) src/fetch_statfin.py

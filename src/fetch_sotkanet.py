@@ -62,8 +62,12 @@ def main():
     RAW.mkdir(parents=True, exist_ok=True)
     R = regions()
     keep = set(R.region_id)
-    rows, meta = [], {}
+    rows = []
+    meta_file = Path("data/indicators.json")
+    meta = json.loads(meta_file.read_text()) if meta_file.exists() else {}   # keep non-Sotkanet entries (thl_queue)
     for ind in INDICATORS:
+        if ind.sotkanet_id is None:      # fetched by another script (fetch_thl_queue.py)
+            continue
         m = get(f"indicators/{ind.sotkanet_id}", cache=RAW / f"meta_{ind.sotkanet_id}.json")
         meta[ind.key] = {**ind.__dict__, "url": ind.url, "api_url": ind.api_url, "title_fi": m["title"]["fi"],
                          "title_en": m["title"].get("en"), "description_en": (m.get("description") or {}).get("en"),

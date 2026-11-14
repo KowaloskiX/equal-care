@@ -53,5 +53,27 @@ check("brief: 3 counties per programme, missing desc",
       len(b["programmes"]) == 2 and all(len(p["counties"]) == 3 for p in b["programmes"]) and
       all([x["screening"]["missing_per_year"] for x in p["counties"]] ==
           sorted((x["screening"]["missing_per_year"] for x in p["counties"]), reverse=True) for p in b["programmes"]))
+# oncology care-queue indicators (THL Hoitoon pääsy, specialty Syöpätaudit)
+nat = c.get("/api/values?key=onc_wait_90&level=country").json()["values"]["358"]
+check("oncology queue anchor reproduced: 486 waiting, 3.5 % over 90 d",
+      nat["abs_value"] == 486 and nat["value"] == 3.5)
+import datastore as ds
+qD, qR, _ = ds.frames()
+allc = set(qR[qR.level == "county"].code)
+qcodes = set(qD[(qD.level == "county") & qD.key.isin(("onc_wait_90", "onc_ref_21"))].code)
+check("queue producer mapping covers 22 counties; only Åland lacks a producer",
+      len(allc - {"91"}) == 22 and allc - qcodes <= {"91", "20"} and "91" not in qcodes)
+qw = c.get("/api/values?key=onc_wait_90").json()
+check("queue values carry denominator and shared-producer flag",
+      all("abs_value" in r and "shared_producer" in r for r in qw["values"].values()) and
+      any(r["shared_producer"] == "HUS" for r in qw["values"].values()))
+worst_w = max(qw["values"], key=lambda c: qw["values"][c]["value"])
+r = c.get(f"/api/recommend/breast/{worst_w}").json()
+check("worse-than-national oncology waiting adds 3.1.2 + 3.1.4",
+      {"3.1.2", "3.1.4"} <= {a["id"] for a in r["pathway_actions"]})
+qr = c.get("/api/values?key=onc_ref_21").json()
+worst_r = max(qr["values"], key=lambda c: qr["values"][c]["value"])
+r = c.get(f"/api/recommend/bowel/{worst_r}").json()
+check("over-21-day referrals add 2.5.2", "2.5.2" in {a["id"] for a in r["pathway_actions"]})
 print(f"\n{len(fails)} failed" if fails else "\nall passed")
 sys.exit(1 if fails else 0)

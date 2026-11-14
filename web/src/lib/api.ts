@@ -3,9 +3,10 @@ import type { Geometry } from "geojson";
 
 export const API = process.env.NEXT_PUBLIC_API ?? "http://localhost:8010";
 
-export type Source = { indicator: number; title: string; url: string; year: number | null; org: string; updated: string };
+export type Source = { indicator: number | null; title: string; url: string; year: number | null; org: string;
+  updated: string | null; cube_url?: string; period?: string };
 export type Indicator = {
-  key: string; sotkanet_id: number; label: string; stage: string; goal: number | null; unit: string;
+  key: string; sotkanet_id: number | null; label: string; stage: string; goal: number | null; unit: string;
   higher_is_better: boolean | null; target: number | null; target_note: string | null; url: string; latest_year: number | null;
   title_en: string; description: string | null; updated: string;
 };
@@ -19,6 +20,7 @@ export type PathwayItem = {
   key: string; label: string; stage: string; goal: number | null; unit: string; value: number; national: number | null;
   delta: number | null; worse_than_national: boolean | null; rank: number | null; of: number; target: number | null;
   year: number; source: Source;
+  abs_value?: number | null; abs_is_denominator?: boolean; shared_producer?: string | null;
 };
 export type Pathway = { code: string; name: string; indicators: PathwayItem[] };
 export type Gap = {
@@ -46,7 +48,7 @@ export type ScenarioRow = {
   scenario: string; label: string; delta_points: number | null; extra_people_per_year: number | null;
   actions: ActionRef[]; assumption: string | null; note: string;
 };
-export type PathwayAction = ActionRef & { why?: string };
+export type PathwayAction = ActionRef & { why?: string; assumption?: string | null };
 export type Recommend = {
   programme: string; code: string; name: string;
   screening: { rate: number; target: number; missing_per_year: number; invited: number; source: Source } | null;
