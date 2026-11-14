@@ -46,10 +46,8 @@ export const splitEngine = (split: Recommend["split"] | undefined | null) =>
 
 export function Cite({ a }: { a: ActionRef }) {
   return (
-    <a href={a.url} target="_blank" rel="noreferrer" title={a.title}
-       className="text-amber-300/90 hover:text-amber-300 underline decoration-dotted whitespace-nowrap">
-      Roadmap {a.id}, p.{a.page}
-    </a>
+    <a href={a.url} target="_blank" rel="noreferrer" title={a.title_en ?? a.title}
+       className="tag tag-roadmap whitespace-nowrap">{a.id} · p.{a.page}</a>
   );
 }
 

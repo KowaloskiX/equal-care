@@ -1,9 +1,9 @@
 "use client";
 // Finland by wellbeing services county, coloured by the selected indicator. Click a county to select it; its
 // municipalities are drawn on top when the indicator exists at municipality level.
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import DeckGL from "@deck.gl/react";
-import { FlyToInterpolator, Layer, type PickingInfo } from "@deck.gl/core";
+import { FlyToInterpolator, Layer, WebMercatorViewport, type PickingInfo } from "@deck.gl/core";
 import { GeoJsonLayer } from "@deck.gl/layers";
 import { Map } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -45,6 +45,34 @@ export default function ChoroplethMap(props: {
 }) {
   const { counties, municipalities, county, muni, selected, onSelect, live } = props;
   const [view, setView] = useState<ViewState>(HOME);
+  const wrap = useRef<HTMLDivElement>(null);
+  const wasLive = useRef(false);
+  const liveCode = live?.code ?? null;
+
+  // "the map comes alive": while a replay runs, the camera fits the replayed county inside the
+  // free area right of the 440 px story column; when it ends, back to all of Finland.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (liveCode == null) {
+        if (wasLive.current)
+          setView({ ...HOME, transitionDuration: 800, transitionInterpolator: new FlyToInterpolator() });
+        wasLive.current = false;
+        return;
+      }
+      wasLive.current = true;
+      const el = wrap.current;
+      const f = counties?.features.find((x) => x.properties.code === liveCode);
+      if (!el || !f) return;
+      const pts = coords(f);
+      const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+      const vp = new WebMercatorViewport({ width: el.clientWidth, height: el.clientHeight });
+      const fit = vp.fitBounds([[Math.min(...xs), Math.min(...ys)], [Math.max(...xs), Math.max(...ys)]],
+                               { padding: { left: 480, top: 84, right: 48, bottom: 96 }, maxZoom: 6.4 });
+      setView({ longitude: fit.longitude, latitude: fit.latitude, zoom: fit.zoom, pitch: 0, bearing: 0,
+                transitionDuration: 900, transitionInterpolator: new FlyToInterpolator() });
+    }, 0);
+    return () => clearTimeout(t);
+  }, [liveCode, counties]);
   const [hover, setHover] = useState<{ x: number; y: number; name: string; value: string; n?: string; src?: string } | null>(null);
 
   const muniFeatures = useMemo(() => {
@@ -83,7 +111,8 @@ export default function ChoroplethMap(props: {
         const c = code === live?.code ? colorFor(live?.value, county)
                                      : colorFor(county?.values[code]?.value, county);
         const focus = selected ?? live?.code;
-        return focus && code !== focus ? [c[0], c[1], c[2], 90] : c;
+        const dim = live ? 60 : 90;                    // during a replay the rest of Finland fades harder
+        return focus && code !== focus ? [c[0], c[1], c[2], dim] : c;
       },
       getLineColor: (f: unknown) => {
         const code = (f as Feature).properties.code;
@@ -112,7 +141,7 @@ export default function ChoroplethMap(props: {
   }
 
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0" ref={wrap}>
       <DeckGL viewState={view} onViewStateChange={(e: { viewState: unknown }) => setView(e.viewState as ViewState)} controller layers={layers}
         getCursor={({ isHovering }) => (isHovering ? "pointer" : "grab")}>
         <Map mapStyle={STYLE} />

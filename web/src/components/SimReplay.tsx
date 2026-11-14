@@ -90,12 +90,12 @@ function Reasons({ cum, shorts }: { cum?: Record<string, number>; shorts: Record
 function Asked({ ans, onClose }: { ans: ResidentAnswer; onClose: () => void }) {
   const pre = (x: unknown) => JSON.stringify(x, null, 1);
   return (
-    <div className="rounded-lg border border-sky-300/25 bg-black/60 p-2.5 mt-2">
+    <div className="rounded-lg border border-sky-300/30 bg-[#0c0e16]/95 backdrop-blur shadow-xl p-2.5">
       <div className="flex items-start justify-between gap-2">
         <div className="t-caption leading-tight">What Jev was asked — <span className="text-white/40">{ans.file} line {ans.line}</span></div>
         <button onClick={onClose} className="text-white/50 hover:text-white leading-none px-1">×</button>
       </div>
-      <div className="mt-1.5 space-y-1.5 max-h-64 overflow-y-auto pr-1">
+      <div className="mt-1.5 space-y-1.5 max-h-[55vh] overflow-y-auto pr-1">
         <div className="t-micro">state sent</div>
         <pre className="text-[9.5px] leading-snug text-white/60 whitespace-pre-wrap">{pre(ans.state)}</pre>
         <div className="t-micro">questions</div>
@@ -115,10 +115,12 @@ export function ReplayPlayer({ replay, who, onLive, onDone, duration = 7000 }: {
   const rows = replay.rows;
   const instant = reduced();
   const [i, setI] = useState(() => (instant ? rows.length : 0));
+  const [stream, setStream] = useState<ResidentRow[]>([]);   // tile queue, newest first — ~1 tile in per 700 ms
   const [done, setDone] = useState(instant);
   const [ans, setAns] = useState<ResidentAnswer | null>(null);
   const liveRef = useRef(onLive);
   const doneRef = useRef(onDone);
+  const iRef = useRef(i);
   useEffect(() => { liveRef.current = onLive; doneRef.current = onDone; });
 
   useEffect(() => {
@@ -126,12 +128,24 @@ export function ReplayPlayer({ replay, who, onLive, onDone, duration = 7000 }: {
     let raf = 0; const t0 = performance.now();
     const tick = (t: number) => {
       const x = Math.min(1, (t - t0) / duration);
-      setI(Math.round(Math.pow(x, 1.5) * rows.length));   // ease — faster at the tail
+      const n = Math.round(Math.pow(x, 1.5) * rows.length);   // ease — faster at the tail
+      iRef.current = n; setI(n);
       if (x < 1) raf = requestAnimationFrame(tick); else setDone(true);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [rows.length, duration, instant]);
+
+  useEffect(() => {   // counter/gauge/map follow `i` per frame; a new tile enters ~1.4×/s so each stays readable
+    if (instant) return;
+    const t = setInterval(() => {
+      const n = iRef.current;
+      if (!n) return;
+      const r = rows[n - 1];
+      setStream((s) => (s.length && rowKey(s[0]) === rowKey(r) ? s : [r, ...s].slice(0, 5)));
+    }, 700);
+    return () => clearInterval(t);
+  }, [instant, rows]);
 
   const cur = i ? rows[i - 1] : null;
   useEffect(() => { liveRef.current?.(cur ? { code: replay.code, value: cur.cum_rate } : null); },
@@ -140,10 +154,11 @@ export function ReplayPlayer({ replay, who, onLive, onDone, duration = 7000 }: {
 
   const scenario = replay.mode === "scenario";
   const start = scenario ? replay.final.baseline_rate ?? null : null;
-  const shown = rows.slice(Math.max(0, i - 5), i).reverse();
+  // while running: the sampled stream; when done: the three biggest resident types in the county
+  const shown = done ? rows.slice(0, 3) : stream;
 
   return (
-    <div className="mt-2">
+    <div className="relative mt-2">
       <div className="flex items-center justify-between gap-2">
         <div className="text-[11px] text-white/70 tabular-nums">
           Asked {i} / {rows.length} resident types · {fmt(cur?.cum_people ?? 0)} of {fmt(replay.people_total)} {who}
@@ -156,7 +171,8 @@ export function ReplayPlayer({ replay, who, onLive, onDone, duration = 7000 }: {
       </div>
       <Gauge value={cur?.cum_rate ?? start ?? replay.final.rate ?? 0} start={start}
              real={replay.final.real} national={replay.final.national_real} target={replay.final.target} />
-      <div className="space-y-1 mt-2">
+      {done && <div className="t-micro mt-2">Largest groups in {replay.name}</div>}
+      <div className="space-y-1 mt-1">
         {shown.map((r) => (
           <Tile key={rowKey(r)} r={r} scenario={scenario}
                 onAsk={() => getResidentAnswer(replay.programme, r.answer_key,
@@ -165,7 +181,11 @@ export function ReplayPlayer({ replay, who, onLive, onDone, duration = 7000 }: {
         ))}
       </div>
       {!scenario && <Reasons cum={cur?.cum_reasons} shorts={replay.reason_shorts} />}
-      {ans && <Asked ans={ans} onClose={() => setAns(null)} />}
+      {ans && (
+        <div className="absolute inset-x-0 top-0 z-20">
+          <Asked ans={ans} onClose={() => setAns(null)} />
+        </div>
+      )}
       <div className="t-micro mt-2 leading-snug">
         Replaying {engineName(replay.engine) ?? "the engine"}&apos;s recorded answers ·{" "}
         {replay.files.map((f) => f.path).join(" · ")} · {replay.asked_live ? `${replay.asked_live} new calls` : "0 new calls"}
@@ -184,6 +204,10 @@ export function BaselineStep({ prog, code, rec, who, onLive }: {
   const [ran, setRan] = useState(false);
   const [done, setDone] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const resRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {   // bring the revealed result into view inside the column
+    if (done) resRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [done]);
   useEffect(() => {   // callers key this component by prog:code, so a change remounts it
     let live = true;
     getResidents(prog, code)
@@ -213,8 +237,14 @@ export function BaselineStep({ prog, code, rec, who, onLive }: {
       )}
       {ran && replay && <ReplayPlayer replay={replay} who={who} onLive={onLive} onDone={() => setDone(true)} />}
       {split && (
-        <div className="mt-2.5 pt-2 border-t border-white/10 slide">
-          <div className="t-panel">{DRIVER_HEADLINE[split.driver] ?? ""}</div>
+        <div ref={resRef} className="mt-2.5 pt-2 border-t border-white/10 slide">
+          {replay && (
+            <p className="t-body text-white/70 leading-snug">
+              From who lives here, {replay.name} would be at {fmt(replay.final.rate, "%")}. It really is at{" "}
+              {fmt(replay.final.real, "%")} (Finland {fmt(replay.final.national_real, "%")}).
+            </p>
+          )}
+          <div className="t-panel mt-1">{DRIVER_HEADLINE[split.driver] ?? ""}</div>
           {split.driver === "national" ? (
             <p className="t-body text-white/55 mt-1">
               The county is at Finland&apos;s level; the gap to {fmt(rec?.screening?.target ?? 80, "%")} is national.
@@ -248,6 +278,10 @@ export function ScenarioStep({ prog, code, rec, who, onLive }: {
   const [done, setDone] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [tried, setTried] = useState<{ label: string; pct: number | null; extra: number | null; live: number }[]>([]);
+  const resRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {   // bring the revealed result into view inside the column
+    if (done) resRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [done]);
   // callers key this component by prog:code, so a programme/county change remounts and resets it
 
   const opts = rec?.scenarios ?? [];
@@ -292,7 +326,7 @@ export function ScenarioStep({ prog, code, rec, who, onLive }: {
       {replay && !busy && (
         <ReplayPlayer key={runId} replay={replay} who={who} onLive={onLive} onDone={onDone} />)}
       {w && (
-        <div className="mt-2 slide">
+        <div ref={resRef} className="mt-2 slide">
           <div className="flex items-center gap-2">
             <span className="w-20 shrink-0 text-[11px] text-emerald-300/90 truncate">gap closed</span>
             <div className="flex-1 h-3.5 rounded bg-white/5 overflow-hidden">
