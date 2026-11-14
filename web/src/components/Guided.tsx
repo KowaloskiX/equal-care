@@ -29,7 +29,7 @@ function Chip({ step, eng, src }: { step: number; eng: string | null; src?: Para
 
 export default function Guided({ prog, code, step, seen, briefProg, activeInd,
                                  onStep, onCode, onProg, onExplore, onInd, onLive,
-                                 munis, crowd, onCrowd, onTl }: {
+                                 munis, crowd, onCrowd, preRun, onTl }: {
   prog: Prog; code: string; step: number; seen: number[]; briefProg?: Brief["programmes"][number];
   activeInd: string | null;
   onStep: (n: number) => void; onCode: (c: string) => void; onProg: (p: Prog) => void;
@@ -39,6 +39,7 @@ export default function Guided({ prog, code, step, seen, briefProg, activeInd,
   munis?: FC | null;
   crowd?: Crowd | null;
   onCrowd?: (c: Crowd | null | ((p: Crowd | null) => Crowd | null)) => void;
+  preRun?: { scenarios: string[]; key: number } | null;   // analyst drawer: preselect + auto-run
 }) {
   const who = people(prog);
   const counties = useMemo(() => briefProg?.counties ?? [], [briefProg]);
@@ -168,8 +169,9 @@ export default function Guided({ prog, code, step, seen, briefProg, activeInd,
         {step === 3 && (
           <>
             {!recF ? <Skel className="h-24 mt-2" />
-                   : <ScenarioStep key={`${prog}:${code}`} prog={prog} code={code} rec={recF} who={who}
-                                   onLive={onLive} munis={munis} crowd={crowd} onCrowd={onCrowd} />}
+                   : <ScenarioStep key={`${prog}:${code}:${preRun?.key ?? 0}`} prog={prog} code={code} rec={recF} who={who}
+                                   onLive={onLive} munis={munis} crowd={crowd} onCrowd={onCrowd}
+                                   preselect={preRun?.scenarios} autoRun={!!preRun} />}
           </>
         )}
 

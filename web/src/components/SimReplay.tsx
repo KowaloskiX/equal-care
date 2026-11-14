@@ -367,14 +367,16 @@ export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
 }
 
 // Step 3 — "What would help?": pick interventions, run the residents again, compare attempts.
-export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
+export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, preselect, autoRun }: {
   prog: string; code: string; rec: Recommend | null; who: string;
   onLive?: (v: { code: string; value: number } | null) => void;
   munis?: FC | null;
   crowd?: Crowd | null;
   onCrowd?: (c: Crowd | null | ((p: Crowd | null) => Crowd | null)) => void;
+  preselect?: string[];                                  // analyst "Play it on the map"
+  autoRun?: boolean;
 }) {
-  const [sel, setSel] = useState<Set<string>>(new Set());
+  const [sel, setSel] = useState<Set<string>>(new Set(preselect ?? []));
   const [busy, setBusy] = useState(false);
   const [replay, setReplay] = useState<Replay | null>(null);
   const [runId, setRunId] = useState(0);
@@ -408,6 +410,10 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
       .catch((e) => setErr(String(e instanceof Error ? e.message : e)))
       .finally(() => setBusy(false));
   };
+  const ranOnce = useRef(false);
+  useEffect(() => {   // analyst drawer "Play it on the map" starts the run immediately
+    if (autoRun && !ranOnce.current && sel.size && !busy) { ranOnce.current = true; run(); }
+  });
   // scenario progress n -> flip the dots of revealed scenario rows to their new p_cal
   const onProgress = (n: number) => onCrowd?.((p) => {
     if (!p || !replay) return p;

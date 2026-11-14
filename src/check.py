@@ -141,5 +141,53 @@ check("scenario replay uses the baseline's per_dot and carries p_cal_before",
 check("cervix replay is out of the story (404)", c.get("/api/residents/cervix/90").status_code == 404)
 big = c.get("/api/residents/bowel/90")
 check("largest replay payload stays under ~1.5 MB", len(big.content) < 1_500_000)
+
+# analyst: tool functions return real, source-carrying data; the tool-use loop works on a fake client (no network)
+import analyst
+gaps = analyst.list_screening_gaps("breast", 3)
+check("analyst list_screening_gaps: counties with real rates + missing/yr",
+      len(gaps["counties"]) == 3 and all("missing_per_year" in co["screening"] for co in gaps["counties"])
+      and gaps["national"] > 0)
+fc = analyst.find_county("Helsinki")
+check("analyst find_county resolves Helsinki", any(x["code"] == "90" for x in fc["counties"]))
+pw = analyst.county_pathway("90")
+check("analyst county_pathway: sourced indicators", len(pw["indicators"]) >= 10
+      and all(i["source"].get("url") for i in pw["indicators"]))
+ex = analyst.explain_county("breast", "90")
+check("analyst explain_county: split + cited scenarios",
+      ex["split"]["driver"] in ("services", "population")
+      and all(s["actions"] for s in ex["scenarios"]))
+sw = analyst.simulate_interventions("breast", "90", ["own_language", "sms_reminder"])
+check("analyst simulate_interventions: rates + actions", sw["new_rate"] > sw["baseline_rate"]
+      and all(a["page"] for s in sw["scenarios"] for a in s["actions"]))
+rk = analyst.indicator_ranking("onc_wait_90")
+check("analyst indicator_ranking: worst first with national + source",
+      rk["counties_worst_first"][0]["value"] >= rk["counties_worst_first"][-1]["value"]
+      and rk["national"] > 0 and rk["source"]["url"])
+rm = analyst.search_roadmap("screening")
+check("analyst search_roadmap: actions with ids + pages",
+      len(rm["actions"]) > 0 and all(a["id"] and a["page"] for a in rm["actions"]))
+
+class _Block:
+    def __init__(self, **kw): self.__dict__.update(kw)
+class _Resp:
+    def __init__(self, content): self.content = content; self.usage = _Block(input_tokens=11, output_tokens=7)
+class _FakeMsgs:
+    def __init__(self): self.n = 0
+    def create(self, **kw):
+        self.n += 1
+        if self.n == 1:
+            return _Resp([_Block(type="tool_use", id="t1", name="explain_county",
+                                 input={"programme": "breast", "code": "90"})])
+        return _Resp([_Block(type="text", text="Helsinki sits at 74.3 %; the split is mostly services.")])
+class _Fake:
+    def __init__(self): self.messages = _FakeMsgs()
+ans = analyst.ask("why is Helsinki behind?", "breast", "90", client=_Fake())
+check("analyst loop: tool_use then text, tools + focus returned",
+      ans["text"].startswith("Helsinki") and ans["tools"] == [{"name": "explain_county",
+      "args": {"programme": "breast", "code": "90"}}] and ans["focus"] == {"prog": "breast", "code": "90"}
+      and ans["run"] is None and ans["usage"]["input_tokens"] == 22)
+check("analyst grounding flags an invented number",
+      grounding.unverified("Attendance is 99.9 %.", [{"rate": 74.3, "missing_per_year": 2205}], ""))
 print(f"\n{len(fails)} failed" if fails else "\nall passed")
 sys.exit(1 if fails else 0)

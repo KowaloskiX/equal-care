@@ -113,6 +113,14 @@ export type Timeline = {
   values: Record<string, Record<string, { value: number; abs_value: number | null; shared: string | null }>>;
   source: Source;
 };
+// the analyst drawer: Claude's grounded answer + which backend tools produced it
+export type AskResponse = {
+  text: string; unverified: number[];
+  tools: { name: string; args: Record<string, unknown> }[];
+  focus: { prog: string; code: string } | null;
+  run: { prog: string; code: string; scenarios: string[] } | null;
+  model: string; usage: { input_tokens: number; output_tokens: number };
+};
 
 const get = async <T,>(path: string): Promise<T> => {
   const r = await fetch(`${API}${path}`);
@@ -149,6 +157,16 @@ export const getResidentAnswer = (prog: string, key: string[], s?: string[]) =>
 export const getCorrelation = (a: string, b: string, level = "county") =>
   get<Correlation>(`/api/correlation?a=${a}&b=${b}&level=${level}`);
 export const getTimeline = (key: string) => get<Timeline>(`/api/timeline?key=${encodeURIComponent(key)}`);
+export const askAnalyst = async (question: string, prog?: string | null, code?: string | null): Promise<AskResponse> => {
+  const r = await fetch(`${API}/api/ask`, { method: "POST", headers: { "content-type": "application/json" },
+                                           body: JSON.stringify({ question, prog, code }) });
+  if (!r.ok) {
+    let d = `HTTP ${r.status}`;
+    try { const j = await r.json(); if (j?.detail) d = String(j.detail); } catch { /* keep the status */ }
+    throw new Error(d);
+  }
+  return r.json();
+};
 
 export const engineName = (e?: string | null) =>
   e === "jev" ? "Jev" : e === "gemini-decision-1" ? "Gemini Decisions" : null;

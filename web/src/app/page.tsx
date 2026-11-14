@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import RegionCard, { Src } from "@/components/RegionCard";
 import Guided from "@/components/Guided";
+import Analyst from "@/components/Analyst";
 import Tour, { type TourStep } from "@/components/Tour";
 import { Skel, StepNo, Tag } from "@/components/ui";
 import { fmt, getBrief, getGap, getGeo, getMeta, getPathway, getValues,
@@ -63,6 +64,8 @@ export default function Home() {
   const [live, setLive] = useState<{ code: string; value: number } | null>(null);   // replay's running sim rate
   const [crowd, setCrowd] = useState<Crowd | null>(null);                           // simulated residents as map dots
   const [tl, setTl] = useState<Values | null>(null);                                // step-4 queue time-lapse month
+  const [ask, setAsk] = useState(false);                                            // analyst drawer
+  const [preRun, setPreRun] = useState<{ scenarios: string[]; key: number } | null>(null);
 
   useEffect(() => {
     getMeta().then(setMeta).catch((e) => setErr(String(e)));
@@ -98,16 +101,28 @@ export default function Home() {
   }, [shown]);
 
   // every change of context (county, programme, step) clears the live simulation overlay
-  const goStep = (n: number) => { setStep(n); setLive(null); setTl(null); setSeen((s) => (s.includes(n) ? s : [...s, n]));
+  const goStep = (n: number) => { setStep(n); setLive(null); setTl(null); setPreRun(null);
+                                  setSeen((s) => (s.includes(n) ? s : [...s, n]));
                                   if (n === 1) setCrowd(null); };
   const pickProg = (p: Prog) => { setProg(p); setPicked(null); setPathKey(null); setLive(null); setCrowd(null);
-                                  setTl(null); setStep(1); setSeen([1]); };
-  const pickCode = (c: string) => { setPicked(c); setLive(null); setPathKey(null); setCrowd(null); setTl(null); };
+                                  setTl(null); setPreRun(null); setStep(1); setSeen([1]); };
+  const pickCode = (c: string) => { setPicked(c); setLive(null); setPathKey(null); setCrowd(null); setTl(null); setPreRun(null); };
   const explore = () => { setMode("explore"); setLive(null); setTl(null); };
-  const guided = () => { setMode("guided"); setSel(null); setLive(null); setTl(null); };
-  const explain = (c: string) => { setPicked(c); setSel(null); setMode("guided"); setLive(null); setTl(null); setStep(2); setSeen([1, 2]); };
-  const restartTour = () => { guided(); setStep(1); setSeen([1]); setTour(true); };
+  const guided = () => { setMode("guided"); setSel(null); setLive(null); setTl(null); setPreRun(null); };
+  const explain = (c: string) => { setPicked(c); setSel(null); setMode("guided"); setLive(null); setTl(null);
+                                   setPreRun(null); setStep(2); setSeen([1, 2]); };
+  const restartTour = () => { guided(); setStep(1); setSeen([1]); setPreRun(null); setTour(true); };
   const tourDone = () => { setTour(false); localStorage.setItem("ec_tour_done", "1"); };
+  // analyst drawer actions: jump into the guided story at the answered county
+  const showInStory = (f: { prog: string; code: string }) => {
+    setProg(f.prog as Prog); setPicked(f.code); setSel(null); setMode("guided");
+    setLive(null); setCrowd(null); setTl(null); setPreRun(null); setStep(2); setSeen([1, 2]); setAsk(false);
+  };
+  const playRun = (r: { prog: string; code: string; scenarios: string[] }) => {
+    setProg(r.prog as Prog); setPicked(r.code); setSel(null); setMode("guided");
+    setLive(null); setCrowd(null); setTl(null); setStep(3); setSeen([1, 2, 3]);
+    setPreRun({ scenarios: r.scenarios, key: Date.now() }); setAsk(false);
+  };
 
   const activeStage = ind?.stage;
   const liveName = live ? county?.values[live.code]?.name ?? live.code : null;
@@ -129,6 +144,7 @@ export default function Home() {
           <span className="t-caption truncate hidden md:block">Where cancer care falls behind, and what each county can do</span>
         </div>
         <div className="flex items-center gap-2 shrink-0">
+          <button onClick={() => setAsk((a) => !a)} className="tag tag-sim">Ask the analyst</button>
           <button onClick={restartTour} title="Show me around"
                   className="tag tag-data w-6 h-6 justify-center !px-0">?</button>
           {mode === "guided"
@@ -145,7 +161,7 @@ export default function Home() {
                   activeInd={step === 4 ? pathKey : null}
                   onStep={goStep} onCode={pickCode} onProg={pickProg} onExplore={explore}
                   onInd={setPathKey} onLive={setLive} onTl={setTl}
-                  munis={geo.municipality} crowd={crowd} onCrowd={setCrowd} />
+                  munis={geo.municipality} crowd={crowd} onCrowd={setCrowd} preRun={preRun} />
         ) : mode === "guided" ? (
           briefErr
             ? <div className="t-body text-rose-300 mt-4">Can&apos;t reach the data API — start it with <code className="text-rose-200">make app</code>.</div>
@@ -251,6 +267,13 @@ export default function Home() {
           <RegionCard p={path} gaps={gaps} active={shownKey}
                       onPick={setKey} onClose={() => setSel(null)} prog={prog} onExplain={explain} />
         </div>
+      )}
+
+      {ask && (
+        <Analyst prog={mode === "guided" ? prog : null}
+                 code={mode === "guided" ? code : sel}
+                 countyName={(c) => county?.values[c]?.name ?? c}
+                 onShow={showInStory} onPlay={playRun} onClose={() => setAsk(false)} />
       )}
 
       {tour && <Tour steps={TOUR} onDone={tourDone} />}

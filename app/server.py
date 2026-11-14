@@ -215,3 +215,20 @@ def brief_endpoint(prog: str | None = None, n: int = 3):
         if p not in rec.PROGRAMMES:
             raise HTTPException(404, f"unknown programme {p!r}")
     return rec.brief(progs, max(1, min(n, 23)))
+
+
+# ---------------- analyst drawer (Claude over the app's own tool functions)
+
+
+@app.post("/api/ask")
+def ask_endpoint(body: dict):
+    """The analyst: Claude picks which backend tools to call and explains the results. Numbers are only
+    ever copied from tool results — grounding.unverified() flags any it invented. 503 without a key, 502
+    on an Anthropic API error (the model id included)."""
+    import analyst
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        raise HTTPException(503, "ANTHROPIC_API_KEY is not set")
+    try:
+        return analyst.ask(body.get("question", ""), body.get("prog"), body.get("code"))
+    except Exception as e:                       # Anthropic APIError, network, bad model id — surface it, no fake text
+        raise HTTPException(502, str(e))
