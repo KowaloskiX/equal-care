@@ -74,6 +74,8 @@ check("worse-than-national oncology waiting adds 3.1.2 + 3.1.4",
 qr = c.get("/api/values?key=onc_ref_21").json()
 worst_r = max(qr["values"], key=lambda c: qr["values"][c]["value"])
 r = c.get(f"/api/recommend/bowel/{worst_r}").json()
-check("over-21-day referrals add 2.5.2", "2.5.2" in {a["id"] for a in r["pathway_actions"]})
+worse_r = qr["values"][worst_r]["value"] - qr["national"] >= 1.0
+check("over-21-day referrals add 2.5.2 only when >= 1 pt worse than Finland",
+      ("2.5.2" in {a["id"] for a in r["pathway_actions"]}) == worse_r)
 print(f"\n{len(fails)} failed" if fails else "\nall passed")
 sys.exit(1 if fails else 0)
