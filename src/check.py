@@ -38,12 +38,23 @@ check("simulation summaries for breast+bowel (cervix out of the story), each wit
 h = c.get("/api/sim/breast/region/90").json()
 check("Helsinki breast gap splits into composition + other",
       abs(h["composition_gap"] + h["other_gap"] - (h["real"] - h["national_real"])) < 0.05 and len(h["scenarios"]) == 4)
+d90 = c.get("/api/decompose/breast/90").json()
+check("decompose Helsinki breast: composition ≈ -4.7, unexplained ≈ -2.6",
+      abs(d90["composition_gap"] + 4.7) <= 0.05 and abs(d90["unexplained_gap"] + 2.6) <= 0.05)
+check("decompose: composition + unexplained == total",
+      abs(d90["composition_gap"] + d90["unexplained_gap"] - d90["total_gap"]) < 0.05)
+check("decompose: 90 % interval contains the point estimate",
+      d90["composition_gap_90"][0] <= d90["composition_gap"] <= d90["composition_gap_90"][1])
+check("decompose: r2, municipalities and predictor years present",
+      d90["r2"] > 0 and d90["n_municipalities"] > 100 and len(d90["predictors"]) == 4)
 import recommend as rec
 action_ids = {x["id"] for x in c.get("/api/actions").json()["actions"]}
 need = {aid for m in rec.SCENARIO_ACTIONS.values() for aid in m["actions"]} | {rec.MONITORING_ACTION} | set(rec.GOAL3_ACTIONS)
 check("all cited roadmap action ids resolve", need <= action_ids)
 r = c.get("/api/recommend/breast/90").json()
-check("Helsinki breast driver is population", r["split"]["driver"] == "population")
+check("Helsinki breast driver is population (data decomposition)", r["split"]["driver"] == "population")
+check("recommend keeps the simulation split as sim_split",
+      "sim_split" in r and r["sim_split"]["validation"] and r["split"]["composition_gap_90"])
 r2 = c.get("/api/recommend/bowel/05").json()
 check("Southwest Finland bowel driver is national", r2["split"]["driver"] == "national" and
       r2["split"]["assumption"] and any(a["id"] == rec.NATIONAL_ACTION for a in r2["pathway_actions"]))

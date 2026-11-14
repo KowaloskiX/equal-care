@@ -60,7 +60,12 @@ export type Recommend = {
   screening: { rate: number; target: number; missing_per_year: number; invited: number; source: Source } | null;
   split: { composition_gap: number | null; other_gap: number | null;
     total_gap: number | null; comp_pts: number | null; other_pts: number | null; total_pts: number | null;
-    driver: "services" | "population" | "national" | "on_target"; assumption: string | null; note: string; validation: Validation | null };
+    composition_gap_90?: [number, number] | null; expected?: number | null; real?: number | null;
+    national_real?: number | null; r2?: number | null; r2_pct?: number | null; n_municipalities?: number | null;
+    method?: string | null; source?: unknown;
+    driver: "services" | "population" | "national" | "on_target"; assumption: string | null; note: string; validation?: Validation | null };
+  sim_split?: { composition_gap: number | null; other_gap: number | null; expected?: number | null;
+    real?: number | null; total_gap: number | null; note: string; validation: Validation | null };
   scenarios: ScenarioRow[];
   pathway_actions: PathwayAction[];
   survival: { key: string; value: number; national: number; delta: number; below_national: boolean; year: number; source: Source } | null;

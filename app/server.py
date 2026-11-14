@@ -10,10 +10,18 @@ from fastapi.middleware.cors import CORSMiddleware
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
-import datastore as ds, strategy, recommend as rec
+import datastore as ds, strategy, recommend as rec, decompose
 from indicators import INDICATORS, GOALS, STAGES
 
 app = FastAPI(title="Equal Care Across Finland")
+
+
+@app.on_event("startup")
+def _warm():
+    """Precompute the decompositions (municipality bootstrap takes a few seconds) so the first
+    /api/decompose call is instant; lru_cache shares the result with the endpoint."""
+    import threading
+    threading.Thread(target=lambda: [decompose.decompose(p) for p in decompose.PROG_KEY], daemon=True).start()
 app.add_middleware(CORSMiddleware, allow_origins=os.environ.get("EC_ORIGINS", "*").split(","), allow_methods=["*"],
                    allow_headers=["*"])
 
@@ -65,6 +73,23 @@ def region(code: str, year: int | None = None):
 @app.get("/api/region/{code}/municipalities")
 def municipalities(code: str, key: str, year: int | None = None):
     return ds.municipalities(code, key, year)
+
+
+@app.get("/api/decompose/{prog}/{code}")
+def decompose_endpoint(prog: str, code: str):
+    """How much of a county's screening gap its population explains — data only (municipality WLS),
+    no simulation. See src/decompose.py."""
+    if prog not in decompose.PROG_KEY:
+        raise HTTPException(404, f"no decomposition for {prog!r}")
+    d = decompose.decompose(prog)
+    row = d["rows"].get(code)
+    if not row:
+        raise HTTPException(404, f"no decomposition for county {code!r}")
+    return {"programme": prog, "code": code, "name": ds.short_names().get(code, code), **row,
+            "national_real": d["national_real"], "r2": d["r2"], "r2_pct": round(100 * d["r2"]),
+            "n_municipalities": d["n_municipalities"], "predictors": d["predictors"],
+            "coefficients": d["coefficients"], "method": d["method"], "source": d["source"],
+            "note": "Data · municipality WLS on composition"}
 
 
 @app.get("/api/gap")

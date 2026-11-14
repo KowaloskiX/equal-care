@@ -98,6 +98,16 @@ def _sim(prog):
     return json.loads(p.read_text())
 
 
+def _decomp(prog):
+    """Data decomposition (municipality WLS, src/decompose.py) — the 'why' answer that data can back.
+    Cervix has no decomposition; the caller falls back to the simulation split."""
+    try:
+        import decompose
+        return decompose.decompose(prog)
+    except KeyError:
+        return None
+
+
 def recommend(prog, code):
     """Full recommendation payload for one programme and county."""
     ind = PROGRAMMES[prog]
@@ -106,8 +116,19 @@ def recommend(prog, code):
     row = s["levels"]["county"]["rows"].get(code) if s else None
     validation = s["validation"] if s else None
 
-    comp, other = (row or {}).get("composition_gap"), (row or {}).get("other_gap")
-    real, nat_real = (row or {}).get("real"), (s or {}).get("levels", {}).get("county", {}).get("national_real")
+    sim_comp, sim_other = (row or {}).get("composition_gap"), (row or {}).get("other_gap")
+    sim_real = (row or {}).get("real")
+    sim_nat = (s or {}).get("levels", {}).get("county", {}).get("national_real")
+    # The driver and the unexplained-gap action key off the DATA decomposition; the simulation
+    # split stays available as sim_split for the "who skips / what stops them" question.
+    D = _decomp(prog)
+    drow = (D or {}).get("rows", {}).get(code)
+    if drow:
+        comp, other = drow["composition_gap"], drow["unexplained_gap"]
+        real, nat_real = drow["real"], D["national_real"]
+    else:
+        comp, other = sim_comp, sim_other
+        real, nat_real = sim_real, sim_nat
     at_national = real is not None and nat_real is not None and abs(real - nat_real) <= NATIONAL_BAND_PTS
     driver_assumption = None
     if gap and gap["rate"] >= gap["target"]:
@@ -171,8 +192,19 @@ def recommend(prog, code):
                       "comp_pts": round(abs(comp), 1) if comp is not None else None,
                       "other_pts": round(abs(other), 1) if other is not None else None,
                       "total_pts": round(abs(real - nat_real), 1) if real is not None and nat_real is not None else None,
+                      "composition_gap_90": drow["composition_gap_90"] if drow else None,
+                      "expected": drow["expected"] if drow else (row or {}).get("expected"),
+                      "real": real, "national_real": nat_real,
+                      "r2": (D or {}).get("r2"), "r2_pct": round(100 * D["r2"]) if D else None,
+                      "n_municipalities": (D or {}).get("n_municipalities"),
                       "driver": driver,
-                      "assumption": driver_assumption, "note": _note(s), "validation": validation},
+                      "assumption": driver_assumption,
+                      "note": "Data · municipality WLS on composition" if drow else _note(s),
+                      "method": (D or {}).get("method"), "source": (D or {}).get("source")},
+            "sim_split": {"composition_gap": sim_comp, "other_gap": sim_other,
+                          "expected": (row or {}).get("expected"), "real": sim_real,
+                          "total_gap": round(sim_real - sim_nat, 1) if sim_real is not None and sim_nat is not None else None,
+                          "note": _note(s), "validation": validation},
             "scenarios": scenarios,
             "pathway_actions": pathway_actions,
             "survival": surv}
