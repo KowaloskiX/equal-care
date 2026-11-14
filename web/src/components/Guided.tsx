@@ -7,7 +7,7 @@ import { engineName, fmt, getFocus, getGap, getPathway, getRecommend, getValues,
 import type { Crowd } from "@/lib/dots";
 import { axisPos, BaselineStep, ScenarioStep } from "@/components/SimReplay";
 import QueueLapse from "@/components/QueueLapse";
-import FlowDots from "@/components/PathwayFlow";
+import FlowDots, { CountUp } from "@/components/PathwayFlow";
 import { Assumption, Cite, DataChip, people, RoadmapChip, SimChip } from "@/components/RecommendBlock";
 import { Row, Src, STAGE_LABEL, STAGE_QUESTION } from "@/components/RegionCard";
 import { Seg, Skel, Tag } from "@/components/ui";
@@ -333,6 +333,8 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
       {/* the 5-node pathway strip — dot colour = status; status word underneath, click swaps the card */}
       <div className="relative mt-4">
         <div className="absolute left-5 right-5 top-[8px] border-t border-white/15" />
+        {/* decorative stream — people moving along the pathway; carries no number */}
+        {[0, 1, 2].map((k) => <span key={k} className="flow-p" style={{ animationDelay: `${k * 1.5}s` }} />)}
         <div className="relative flex justify-between">
           {NODES.map((n, i) => {
             const st = statuses[i], s = NODE_STYLE[st], on = node === n.id;
@@ -350,7 +352,7 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
                 <span className={`text-[9px] uppercase tracking-wide leading-none ${s.text}`}>
                   {STATUS_WORD[st]}
                 </span>
-                <FlowDots key={`${prog}:${code}`} track={track} status={st} />
+                <FlowDots key={`${prog}:${code}`} track={track} status={st} col={i} />
                 {pick && <span className="text-[8.5px] uppercase tracking-wide text-sky-300 leading-none"
                                title={`${engineName(focus?.engine)} picks this stage first · simulated`}>
                            ◂ {Math.round((prob ?? 0) * 100)}%</span>}
@@ -395,7 +397,7 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
             <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3.5 flex items-center gap-4">
               <div className="min-w-0 flex-1">
                 <div className={`text-[32px] font-semibold leading-none tabular-nums ${NODE_STYLE[heroStatus].text}`}>
-                  {fmt(hero.value, hero.unit)}
+                  <CountUp v={hero.value} />{hero.unit === "%" ? " %" : ""}
                 </div>
                 <div className="t-caption mt-1.5 text-white/65 leading-snug">
                   {CAPTION[hero.key] ?? hero.label}
