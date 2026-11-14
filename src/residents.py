@@ -273,7 +273,8 @@ def run(prog, scenario="baseline", dry=False, conc=None, only=None, engine=None)
 
 
 def answers(prog, scenario="baseline", engine=None):
-    """Every eligible cell with its probability (own archetype or the nearest coarser one that was asked)."""
+    """Every eligible cell with its probability (own archetype or the nearest coarser one that was asked).
+    akey = the archetype key whose recorded answer this cell uses (its own key, or the coarser fallback)."""
     e = engine or ENGINE
     E = eligible(prog).copy()
     base = read_cache(cache_path(prog, "baseline", e))
@@ -281,14 +282,20 @@ def answers(prog, scenario="baseline", engine=None):
     memo = {}
     def look(key):
         if key in memo: return memo[key]
-        r = got.get(key)
+        r = got.get(key); mk = key
         if r is None:
-            r = next((got[k] for k in fallback(key) if k in got), None)
-        memo[key] = r
-        return r
+            mk = None
+            for k in fallback(key):
+                if k in got:
+                    r, mk = got[k], k
+                    break
+        memo[key] = (r, mk)
+        return memo[key]
     rows = [look(k) for k in E[KEY].itertuples(index=False, name=None)]
-    E["p"] = [r["attend"] if r else np.nan for r in rows]
-    E["reason"] = [r["reason"] if r else None for r in rows]
+    E["p"] = [r["attend"] if r else np.nan for r, _ in rows]
+    E["reason"] = [r["reason"] if r else None for r, _ in rows]
+    E["reasons"] = [r["reasons"] if r else None for r, _ in rows]
+    E["akey"] = [list(mk) if mk else None for _, mk in rows]
     return E
 
 

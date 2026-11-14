@@ -1,9 +1,10 @@
 "use client";
 // One county along the care pathway: every indicator against Finland, its rank among the counties, and the source.
+// The "Why & what to do" tab reuses the story's run animation — no simulated numbers before the user runs them.
 import { useEffect, useState } from "react";
 import { fmt, getRecommend, type Gap, type Pathway, type PathwayItem, type Recommend } from "@/lib/api";
-import RecommendBlock, { people } from "@/components/RecommendBlock";
-import WhatIfPanel from "@/components/WhatIf";
+import { BaselineStep, ScenarioStep } from "@/components/SimReplay";
+import { Assumption, people, RoadmapChip, SimChip, splitEngine } from "@/components/RecommendBlock";
 import { Seg, Tag } from "@/components/ui";
 
 const STAGE_LABEL: Record<string, string> = {
@@ -18,7 +19,6 @@ const STAGES = ["detection", "referral", "diagnosis", "treatment", "outcome", "c
 const TABS = [
   { id: "why", label: "Why & what to do" },
   { id: "pathway", label: "Pathway" },
-  { id: "whatif", label: "What if" },
 ] as const;
 type Tab = (typeof TABS)[number]["id"];
 const PROGS = [{ id: "breast", label: "Breast" }, { id: "bowel", label: "Colorectal" }] as const;
@@ -74,9 +74,10 @@ function Row({ it, onPick, active }: { it: PathwayItem; onPick: (k: string) => v
   );
 }
 
-export default function RegionCard({ p, gaps, active, onPick, onClose, prog, onProg }: {
+export default function RegionCard({ p, gaps, active, onPick, onClose, prog, onProg, onLive }: {
   p: Pathway; gaps: Gap[]; active: string; onPick: (k: string) => void; onClose: () => void;
   prog: "breast" | "bowel"; onProg: (p: "breast" | "bowel") => void;
+  onLive?: (v: { code: string; value: number } | null) => void;
 }) {
   const [tab, setTab] = useState<Tab>("why");
   const [recs, setRecs] = useState<Recommend[]>([]);
@@ -124,7 +125,35 @@ export default function RegionCard({ p, gaps, active, onPick, onClose, prog, onP
               <div className="t-micro mt-1">invited = attended ÷ rate; missing = 80 % × invited − attended · <Src s={gaps[0].source} /></div>
             </div>
           )}
-          {rec ? <RecommendBlock r={rec} /> : <div className="t-caption">No recommendation for this programme.</div>}
+          {rec?.survival && (
+            <p className="text-[11.5px] text-white/60 mb-2">
+              <Tag v="goal3"><i>GOAL 3</i></Tag>{" "}
+              5-year survival {fmt(rec.survival.value, "%")} (Finland {fmt(rec.survival.national, "%")})
+            </p>
+          )}
+          <div className="mb-1"><SimChip eng={splitEngine(rec?.split)} /></div>
+          {rec ? <BaselineStep key={`${prog}:${p.code}`} prog={prog} code={p.code} rec={rec} who={who} onLive={onLive} />
+               : <div className="t-caption">No recommendation for this programme.</div>}
+          <div className="mt-3 flex items-center gap-1.5"><SimChip eng={splitEngine(rec?.split)} /><RoadmapChip /></div>
+          {rec && <ScenarioStep key={`s:${prog}:${p.code}`} prog={prog} code={p.code} rec={rec} who={who} onLive={onLive} />}
+          {rec && rec.pathway_actions.length > 0 && (
+            <details className="mt-1.5 border-t border-white/10 pt-1.5">
+              <summary className="text-[11px] text-white/45 cursor-pointer select-none hover:text-white/70">More actions on the pathway</summary>
+              {rec.pathway_actions.map((a) => (
+                <div key={a.id} className="px-1 py-1">
+                  {a.why && <div className="text-[11.5px] text-white/60 leading-snug">{a.why}</div>}
+                  <div className="mt-0.5">
+                    <a href={a.url} target="_blank" rel="noreferrer" title={a.title}
+                       className="text-amber-300/90 hover:text-amber-300 underline decoration-dotted text-[11px]">
+                      Roadmap {a.id}, p.{a.page}: {a.title_en ?? a.title}
+                    </a>
+                  </div>
+                  {a.assumption && <Assumption text={a.assumption} />}
+                </div>
+              ))}
+            </details>
+          )}
+          <div className="text-[10px] text-white/35 px-1 mt-1">ASSUMPTION badges mark judgement calls. Simulated estimates, not forecasts.</div>
         </div>
       )}
 
@@ -160,10 +189,6 @@ export default function RegionCard({ p, gaps, active, onPick, onClose, prog, onP
             );
           })}
         </div>
-      )}
-
-      {tab === "whatif" && (
-        <div className="mt-3"><WhatIfPanel code={p.code} recs={recs} prog={prog} /></div>
       )}
     </div>
   );

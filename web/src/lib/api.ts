@@ -79,6 +79,29 @@ export type WhatIf = {
   scenarios: { scenario: string; label: string; actions: ActionRef[]; assumption: string | null }[];
   source: Source | null;
 };
+export type ResidentRow = {
+  key: Record<string, string>; people: number;
+  jev_attend: number; jev_attend_before?: number;
+  reason: string | null; reason_label: string | null; reason_short: string | null;
+  reasons: Record<string, number>; borrowed: boolean; answer_key: string[];
+  file: string; line: number | null;
+  cum_people: number; cum_rate: number; cum_reasons?: Record<string, number>;
+};
+export type Replay = {
+  programme: string; code: string; name: string; engine: string;
+  mode: "baseline" | "scenario"; scenarios_selected: string[];
+  files: { path: string; answers: number }[];
+  asked_live: number; people_total: number; rows: ResidentRow[];
+  final: { rate: number | null; real: number | null; national_real: number | null;
+           target: number | null; baseline_rate?: number | null };
+  anchor: { logit_shift: number; real_national: number | null };
+  validation: Validation | null; note: string; source: Source | null;
+  reason_labels: Record<string, string>; reason_shorts: Record<string, string>;
+  whatif?: WhatIf;
+};
+export type ResidentAnswer = {
+  state: unknown; questions: unknown; answer: Record<string, unknown>; file: string; line: number;
+};
 
 const get = async <T,>(path: string): Promise<T> => {
   const r = await fetch(`${API}${path}`);
@@ -98,6 +121,10 @@ export const getBrief = (prog?: string, n = 3) =>
   get<Brief>(`/api/brief?${prog ? `prog=${prog}&` : ""}n=${n}`);
 export const getWhatif = (prog: string, code: string, s: string[]) =>
   get<WhatIf>(`/api/whatif?prog=${prog}&code=${code}&s=${s.join(",")}`);
+export const getResidents = (prog: string, code: string, s?: string[]) =>
+  get<Replay>(`/api/residents/${prog}/${code}${s?.length ? `?s=${s.join(",")}` : ""}`);
+export const getResidentAnswer = (prog: string, key: string[], s?: string[]) =>
+  get<ResidentAnswer>(`/api/residents/${prog}/answer?key=${encodeURIComponent(JSON.stringify(key))}${s?.length ? `&s=${s.join(",")}` : ""}`);
 export const getCorrelation = (a: string, b: string, level = "county") =>
   get<Correlation>(`/api/correlation?a=${a}&b=${b}&level=${level}`);
 

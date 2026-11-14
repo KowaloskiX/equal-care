@@ -13,7 +13,8 @@ setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");   // Turbopack does not bundle
 import { fmt, type FC, type Feature, type Values } from "@/lib/api";
 
 const STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json";
-const HOME = { longitude: 25.5, latitude: 64.6, zoom: 4.35, pitch: 0, bearing: 0 };
+// centre shifted west so Finland sits in the map area visible right of the 456 px story column
+const HOME = { longitude: 17.5, latitude: 64.6, zoom: 4.35, pitch: 0, bearing: 0 };
 type ViewState = typeof HOME & { transitionDuration?: number; transitionInterpolator?: FlyToInterpolator };
 type RGB = [number, number, number];
 const BAD: RGB = [232, 93, 74], MID: RGB = [70, 76, 92], GOOD: RGB = [72, 196, 160], NEUTRAL: RGB = [120, 150, 220];
@@ -40,8 +41,9 @@ const coords = (f: Feature): number[][] => {
 export default function ChoroplethMap(props: {
   counties: FC | null; municipalities: FC | null; county: Values | null; muni: Values | null;
   selected: string | null; onSelect: (code: string | null) => void;
+  live?: { code: string; value: number } | null;   // running simulated rate for one county (replay animation)
 }) {
-  const { counties, municipalities, county, muni, selected, onSelect } = props;
+  const { counties, municipalities, county, muni, selected, onSelect, live } = props;
   const [view, setView] = useState<ViewState>(HOME);
   const [hover, setHover] = useState<{ x: number; y: number; name: string; value: string; n?: string; src?: string } | null>(null);
 
@@ -77,12 +79,22 @@ export default function ChoroplethMap(props: {
     layers.push(new GeoJsonLayer({
       id: "counties", data: counties as unknown as FeatureCollection, pickable: true, stroked: true, filled: true,
       getFillColor: (f: unknown) => {
-        const c = colorFor(county?.values[(f as Feature).properties.code]?.value, county);
-        return selected && (f as Feature).properties.code !== selected ? [c[0], c[1], c[2], 90] : c;
+        const code = (f as Feature).properties.code;
+        const c = code === live?.code ? colorFor(live?.value, county)
+                                     : colorFor(county?.values[code]?.value, county);
+        const focus = selected ?? live?.code;
+        return focus && code !== focus ? [c[0], c[1], c[2], 90] : c;
       },
-      getLineColor: (f: unknown) => ((f as Feature).properties.code === selected ? [255, 255, 255, 255] : [12, 13, 18, 255]),
-      getLineWidth: (f: unknown) => ((f as Feature).properties.code === selected ? 2.5 : 1), lineWidthUnits: "pixels",
-      updateTriggers: { getFillColor: [county, selected], getLineColor: [selected], getLineWidth: [selected] },
+      getLineColor: (f: unknown) => {
+        const code = (f as Feature).properties.code;
+        if (code === live?.code) return [125, 211, 252, 255];      // sky outline while the replay runs
+        return code === selected ? [255, 255, 255, 255] : [12, 13, 18, 255];
+      },
+      getLineWidth: (f: unknown) => {
+        const code = (f as Feature).properties.code;
+        return code === live?.code ? 3 : code === selected ? 2.5 : 1;
+      }, lineWidthUnits: "pixels",
+      updateTriggers: { getFillColor: [county, selected, live], getLineColor: [selected, live], getLineWidth: [selected, live] },
       onHover: tip(county),
       onClick: (info: PickingInfo) => {
         const f = info.object as Feature; const code = f.properties.code === selected ? null : f.properties.code;

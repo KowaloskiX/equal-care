@@ -33,7 +33,8 @@ a = c.get("/api/actions?goal=3").json()["actions"]
 check("roadmap goal 3 actions parsed with pages", len(a) >= 15 and all(x["page"] > 0 for x in a))
 check("grounding flags an invented number", grounding.unverified("74.3 % and 1234 more", [{"r": 74.3}]) == [1234.0])
 s = c.get("/api/sim").json()
-check("simulation summaries for 3 programmes, each with validation", len(s["programmes"]) == 3 and all("validation" in p for p in s["programmes"]))
+check("simulation summaries for breast+bowel (cervix out of the story), each with validation",
+      {p["programme"] for p in s["programmes"]} == {"breast", "bowel"} and all("validation" in p for p in s["programmes"]))
 h = c.get("/api/sim/breast/region/90").json()
 check("Helsinki breast gap splits into composition + other",
       abs(h["composition_gap"] + h["other_gap"] - (h["real"] - h["national_real"])) < 0.05 and len(h["scenarios"]) == 4)
@@ -96,5 +97,34 @@ singles = [c.get(f"/api/whatif?prog=breast&code=90&s={s}").json()["extra_people_
 all4 = c.get("/api/whatif?prog=breast&code=90&s=own_language,sms_reminder,evening_slots,mobile_unit").json()
 check("what-if all-four combo >= best single scenario",
       all4["extra_people_per_year"] >= max(singles))
+# resident replay: rows must add up exactly to the committed sim county rate / the live what-if rate
+rb = c.get("/api/residents/breast/90")
+check("replay Helsinki breast baseline: 200 OK, rows, 0 live calls",
+      rb.status_code == 200 and len(rb.json()["rows"]) > 0 and rb.json()["asked_live"] == 0)
+rb = rb.json()
+sim90 = json.load(open(ROOT / "data/sim/breast.json"))["levels"]["county"]["rows"]["90"]
+check("replay final rate equals sim expected (Helsinki breast)",
+      abs(rb["final"]["rate"] - sim90["expected"]) <= 0.01)
+check("replay last cum_rate equals final rate", rb["rows"][-1]["cum_rate"] == rb["final"]["rate"])
+rb2 = c.get("/api/residents/bowel/03").json()
+sim03 = json.load(open(ROOT / "data/sim/bowel.json"))["levels"]["county"]["rows"]["03"]
+check("replay final rate equals sim expected (West Uusimaa bowel)",
+      abs(rb2["final"]["rate"] - sim03["expected"]) <= 0.01)
+rs = c.get("/api/residents/breast/90?s=own_language,sms_reminder").json()
+check("scenario replay last cum_rate equals whatif new_rate",
+      rs["rows"][-1]["cum_rate"] == rs["whatif"]["new_rate"] and rs["asked_live"] == 0)
+_lines = {}
+def _file_line(path, n):
+    if path not in _lines:
+        _lines[path] = (ROOT / path).read_text().splitlines()
+    return json.loads(_lines[path][n - 1])
+check("every replay row's file/line resolves to its answer_key",
+      all(_file_line(r["file"], r["line"])["key"] == r["answer_key"] for r in rb["rows"] + rs["rows"]))
+check("replay answer endpoint returns the asked state and raw line",
+      c.get(f"/api/residents/breast/answer?key={json.dumps(rb['rows'][0]['answer_key'])}").json()["answer"]["key"]
+      == rb["rows"][0]["answer_key"])
+check("cervix replay is out of the story (404)", c.get("/api/residents/cervix/90").status_code == 404)
+big = c.get("/api/residents/bowel/90")
+check("largest replay payload stays under ~1.5 MB", len(big.content) < 1_500_000)
 print(f"\n{len(fails)} failed" if fails else "\nall passed")
 sys.exit(1 if fails else 0)

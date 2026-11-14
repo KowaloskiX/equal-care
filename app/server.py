@@ -114,6 +114,8 @@ def sim_index():
     out = []
     engine = None
     for prog, P in residents.PROGRAMMES.items():
+        if prog == "cervix":            # cervix simulation is out of the story (weak validation)
+            continue
         try:
             s = _sim(prog)
         except HTTPException:
@@ -159,6 +161,30 @@ def whatif_endpoint(prog: str, code: str, s: str):
     import whatif
     try:
         return whatif.whatif(prog, code, [x.strip() for x in s.split(",") if x.strip()])
+    except whatif.Unavailable as e:
+        raise HTTPException(503, str(e))
+    except KeyError as e:
+        raise HTTPException(404, str(e))
+
+
+@app.get("/api/residents/{prog}/answer")
+def resident_answer(prog: str, key: str, s: str | None = None):
+    """The exact state, questions and raw cache line behind one recorded engine answer (replay popover)."""
+    import replay
+    try:
+        return replay.answer(prog, json.loads(key),
+                             [x.strip() for x in s.split(",") if x.strip()] if s else None)
+    except (KeyError, json.JSONDecodeError) as e:
+        raise HTTPException(404, str(e))
+
+
+@app.get("/api/residents/{prog}/{code}")
+def residents_replay(prog: str, code: str, s: str | None = None):
+    """Recorded engine answers for one county, one row per archetype, for the run animation.
+    Baseline replay is pure cache (0 calls); a scenario goes through /api/whatif first (503 if uncached)."""
+    import replay, whatif
+    try:
+        return replay.replay(prog, code, [x.strip() for x in s.split(",") if x.strip()] if s else None)
     except whatif.Unavailable as e:
         raise HTTPException(503, str(e))
     except KeyError as e:
