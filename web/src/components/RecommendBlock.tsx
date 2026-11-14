@@ -2,6 +2,7 @@
 // "Why and what to do": one programme's recommendation for a county in three labelled layers —
 // DATA (public statistics), SIMULATION (residents model), ROADMAP (numbered national actions).
 import { engineName, fmt, type ActionRef, type Recommend, type ScenarioRow, type Source } from "@/lib/api";
+import { Tag } from "@/components/ui";
 
 export const DRIVER_BADGE: Record<string, string> = {
   services: "Problem: the service",
@@ -44,11 +45,33 @@ export function SimPill({ text = "Simulation" }: { text?: string }) {
 export const splitEngine = (split: Recommend["split"] | undefined | null) =>
   engineName(split?.validation?.engine) ?? engineName(split?.note?.replace("Simulation · ", ""));
 
+// Tiny 3-dot matcher meter: how directly Gemini Decisions scored this roadmap action for the gap (0–3).
+export function MatchMeter({ a }: { a: ActionRef }) {
+  if (a.score == null) return null;
+  const filled = Math.max(0, Math.min(3, Math.round(a.score)));
+  return (
+    <span className="inline-flex items-center gap-[2px] align-middle ml-1"
+          title={`matched by ${a.matched_by ?? "Gemini Decisions"} · fit score ${a.score} / 3${a.partial_match ? " — partial match" : ""}`}>
+      {[0, 1, 2].map((i) => (
+        <i key={i} className={`inline-block w-[5px] h-[5px] rounded-full ${i < filled ? "bg-amber-300/90" : "bg-white/20"}`} />
+      ))}
+    </span>
+  );
+}
+
 export function Cite({ a }: { a: ActionRef }) {
   return (
-    <a href={a.url} target="_blank" rel="noreferrer" title={a.title_en ?? a.title}
-       className="tag tag-roadmap whitespace-nowrap">{a.id} · p.{a.page}</a>
+    <a href={a.url} target="_blank" rel="noreferrer"
+       title={`${a.title_en ?? a.title}${a.score != null ? `\nmatched by ${a.matched_by ?? "Gemini Decisions"} · fit score ${a.score} / 3` : ""}`}
+       className="tag tag-roadmap whitespace-nowrap">
+      {a.id} · p.{a.page}<MatchMeter a={a} />
+    </a>
   );
+}
+
+export function PartialMatch({ a }: { a: ActionRef }) {
+  if (!a.partial_match) return null;
+  return <Tag v="note">partial match</Tag>;
 }
 
 export function Assumption({ text }: { text: string }) {

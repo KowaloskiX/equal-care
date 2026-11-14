@@ -200,15 +200,6 @@ export default function ChoroplethMap(props: {
           {hover.src && <div className="t-micro mt-0.5">{hover.src}</div>}
         </div>
       )}
-      {crowd && (
-        <div className="glass pointer-events-none absolute bottom-3 left-[472px] px-3 py-1.5 flex items-center gap-3" style={{ borderRadius: 8 }}>
-          <span className="t-micro whitespace-nowrap flex items-center gap-1.5">
-            <i className="inline-block w-2 h-2 rounded-full" style={{ background: "#4ade80" }} />takes part
-            <i className="inline-block w-2 h-2 rounded-full ml-2" style={{ background: "#f87171" }} />skips
-          </span>
-          <span className="t-micro whitespace-nowrap">1 dot ≈ {crowd.perDot} {crowd.who} · Simulation · {crowd.engine}</span>
-        </div>
-      )}
       {pick && crowd && (() => {
         const r = crowd.rows[pick.d.row], f = crowd.flip[pick.d.row];
         const left = Math.min(pick.x + 14, window.innerWidth - 296);   // the map fills the viewport

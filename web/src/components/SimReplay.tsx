@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { engineName, fmt, getBaselineReplay, getResidentAnswer, getResidents,
          type FC, type Recommend, type Replay, type ResidentAnswer, type ResidentRow } from "@/lib/api";
 import { buildCrowd, scenarioRowIndex, type Crowd } from "@/lib/dots";
-import { Assumption, Cite, DRIVER_HEADLINE, GapSplitBar, SimChip } from "@/components/RecommendBlock";
+import { Assumption, Cite, DRIVER_HEADLINE, PartialMatch, SimChip } from "@/components/RecommendBlock";
 import { Skel, Tag } from "@/components/ui";
 
 export const AXIS = { lo: 60, hi: 90 };   // attendance % axis, shared with the step-1 chart
@@ -14,6 +14,7 @@ export const axisPos = (v: number) => Math.min(100, Math.max(0, ((v - AXIS.lo) /
 const reduced = () => typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 const rowKey = (r: ResidentRow) =>
   [r.key.sex, r.key.age5, r.key.settlement, r.key.lang, r.key.edu, r.key.activity, r.key.muni_type].join("|");
+const sgn = (v: number | null | undefined) => (v == null ? "–" : v < 0 ? `−${fmt(-v)}` : `+${fmt(v)}`);
 
 // One revealed archetype: who they are, how many here, what the engine answered (raw, before anchoring).
 function Tile({ r, scenario, eng, onAsk }: { r: ResidentRow; scenario: boolean; eng: string; onAsk: () => void }) {
@@ -203,37 +204,6 @@ export function ReplayPlayer({ replay, who, onLive, onProgress, onDone, duration
   );
 }
 
-// After a run: the three numbers that answer the step, on the shared axis.
-function NumBars({ final }: { final: Replay["final"] }) {
-  const rows = [
-    { label: "Expected from who lives here", v: final.rate, bar: "bg-sky-400/70", tag: <Tag v="sim"><i>SIM</i></Tag> },
-    { label: "Actually attends", v: final.real, bar: "bg-rose-400/70", tag: <Tag v="data"><i>DATA</i></Tag> },
-    { label: "Finland", v: final.national_real, bar: "bg-white/45", tag: <Tag v="data"><i>DATA</i></Tag> },
-  ];
-  return (
-    <div className="relative mt-1.5">
-      <div className="space-y-1.5">
-        {rows.map((r) => (
-          <div key={r.label} className="grid grid-cols-[168px_1fr_52px] items-center gap-2">
-            <span className="text-[13px] text-white/80 leading-tight flex items-center gap-1.5 flex-wrap">{r.label}{r.tag}</span>
-            <span className="relative h-3 rounded-full bg-white/5 overflow-hidden">
-              <span className={`absolute inset-y-0 left-0 rounded-full ${r.bar}`} style={{ width: `${axisPos(r.v ?? 0)}%` }} />
-            </span>
-            <span className="text-right text-[12.5px] text-white/80 tabular-nums">{r.v != null ? fmt(r.v, "%") : "–"}</span>
-          </div>
-        ))}
-      </div>
-      <div className="absolute inset-y-0 pointer-events-none" style={{ left: 176, right: 60 }}>
-        {final.target != null && (
-          <div className="absolute top-0 bottom-0 border-l border-dashed border-amber-300/60" style={{ left: `${axisPos(final.target)}%` }}>
-            <span className="absolute top-0 left-1 text-[9px] text-amber-200/80 whitespace-nowrap">target {fmt(final.target, "%")}</span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 // Collapsed "how this was computed": the counter, the biggest resident types in the county
 // (still clickable for the exact engine prompt/answer popover) and the provenance line.
 function ReplayDetails({ replay, who }: { replay: Replay; who: string }) {
@@ -272,7 +242,106 @@ function ReplayDetails({ replay, who }: { replay: Replay; who: string }) {
   );
 }
 
-// Step 2 — "Why?": nothing simulated is shown until the user asks the county's resident types.
+// Step 2a — the DATA answer to "why?": a municipality-level statistical model splits the county's
+// gap into what who-lives-here explains and what it does not. All numbers from /api/recommend.split.
+const HEADLINE_TEXT: Record<string, string> = {
+  mostly_population: "Mostly who lives here",
+  mostly_unexplained: "Mostly not explained by who lives here",
+  both: "Both: who lives here and something local",
+};
+
+function DataBlock({ split, target }: { split: Recommend["split"] | null; target: number }) {
+  if (!split) return <Skel className="h-32 mt-2" />;
+  const comp = -(split.composition_gap ?? 0);             // >0 = population explains part of the shortfall
+  const other = -(split.other_gap ?? 0);                  // >0 = the gap is deeper than composition predicts
+  const compNeg = Math.max(0, comp), otherNeg = Math.max(0, other), tot = compNeg + otherNeg;
+  const ci = split.composition_gap_90
+    ? [Math.min(...split.composition_gap_90.map(Math.abs)), Math.max(...split.composition_gap_90.map(Math.abs))]
+    : null;
+  const headline = HEADLINE_TEXT[split.headline ?? ""] ?? DRIVER_HEADLINE[split.driver] ?? "";
+  const rows = [
+    { label: "Actually attends", v: split.real, bar: "bg-rose-400/70" },
+    { label: "Expected from who lives here", v: split.expected, bar: "bg-sky-400/70" },
+    { label: "Finland", v: split.national_real, bar: "bg-white/45" },
+  ];
+  return (
+    <div className="slide">
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="t-caption uppercase tracking-wide">How much does who-lives-here explain?</span>
+        <Tag v="data"><i>DATA · statistical model</i></Tag>
+      </div>
+      {headline && <div className="t-panel mt-1.5">{headline}</div>}
+      <div className="mt-3 space-y-1.5">
+        {rows.map((r) => (
+          <div key={r.label} className="grid grid-cols-[168px_1fr_52px] items-center gap-2">
+            <span className="text-[12.5px] text-white/80 leading-tight">{r.label}</span>
+            <span className="relative h-3 rounded-full bg-white/5 overflow-hidden">
+              <span className={`absolute inset-y-0 left-0 rounded-full ${r.bar}`} style={{ width: `${axisPos(r.v ?? 0)}%` }} />
+            </span>
+            <span className="text-right text-[12.5px] text-white/80 tabular-nums">{r.v != null ? fmt(r.v, "%") : "–"}</span>
+          </div>
+        ))}
+      </div>
+      {split.driver === "national" ? (
+        <p className="t-body text-white/55 mt-2.5">
+          The county is at Finland&apos;s level; the gap to {fmt(target, "%")} is national.
+        </p>
+      ) : tot > 0 ? (
+        <div className="mt-4">
+          <div className="t-caption uppercase tracking-wide">Where the {fmt(split.total_pts)}-point gap comes from</div>
+          <div className="relative mt-1.5">
+            <div className="flex h-3.5 overflow-hidden rounded-md bg-white/5 border border-white/10">
+              <div className="bg-sky-400/60 h-full" style={{ width: `${(100 * compNeg) / tot}%` }} />
+              <div className="bg-rose-400/70 h-full flex-1" />
+            </div>
+            {ci && compNeg > 0 && (
+              <div className="absolute border-b border-x border-sky-300/80 rounded-b-sm" title="90 % interval"
+                   style={{ left: `${(100 * Math.min(ci[0], tot)) / tot}%`,
+                            width: `${(100 * (Math.min(ci[1], tot) - Math.min(ci[0], tot))) / tot}%`,
+                            top: "100%", height: 5 }} />
+            )}
+          </div>
+          <div className="flex flex-col gap-0.5 text-[11.5px] text-white/60 mt-2.5">
+            <span><span className="inline-block w-2 h-2 rounded-sm bg-sky-400/70 mr-1.5 align-middle" />
+              who lives here ≈ {split.comp_pts ?? fmt(compNeg)} pts{ci ? ` (${fmt(ci[0])}–${fmt(ci[1])})` : ""}</span>
+            <span><span className={`inline-block w-2 h-2 rounded-sm ${other >= 0 ? "bg-rose-400/70" : "bg-emerald-400/70"} mr-1.5 align-middle`} />
+              {other >= 0
+                ? `not explained by who lives here ≈ ${split.other_pts ?? fmt(otherNeg)} pts`
+                : `the county actually does ${fmt(-other)} pts better than who lives here predicts`}</span>
+          </div>
+        </div>
+      ) : null}
+      <p className="t-micro mt-3 leading-snug">
+        Based on {split.n_municipalities ?? "–"} municipalities: their mix of languages, education, age and
+        size explains {split.r2_pct ?? "–"} % of the differences in attendance between them.
+      </p>
+      {split.assumption && <Assumption text={split.assumption} />}
+    </div>
+  );
+}
+
+// Top-3 who-is-skipping cards from the baseline replay (backend groups by language x activity).
+function SkipGroups({ groups, eng, who }: { groups: NonNullable<Replay["final"]["groups"]>; eng: string; who: string }) {
+  const cap = who.charAt(0).toUpperCase() + who.slice(1);
+  return (
+    <div className="space-y-1.5 mt-1.5">
+      {groups.map((g, i) => (
+        <div key={i} className="rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-2">
+          <div className="text-[12px] text-white/85 leading-snug">
+            {cap} with {g.lang_group === "Finnish or Swedish" ? "Finnish or Swedish as native language" : g.lang_group}, {g.activity}
+          </div>
+          <div className="t-micro mt-0.5 leading-snug">
+            ~{fmt(g.expected_skip)} expected to skip · {eng} {fmt(g.rate, "%")} take part
+            {g.main_barrier_short && <> · main barrier: {g.main_barrier_short}</>}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Step 2 — "Why?": (a) the data decomposition, always visible; (b) the simulated residents for
+// who-skips-and-why — nothing simulated is shown until the user clicks Run.
 export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
   prog: string; code: string; rec: Recommend | null; who: string;
   onLive?: (v: { code: string; value: number } | null) => void;
@@ -304,65 +373,60 @@ export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
   const onProgress = (n: number) => onCrowd?.((p) => (p ? { ...p, revealed: n } : p));
 
   if (err) return <div className="t-body text-rose-300 mt-2">{err}</div>;
-  const split = done ? rec?.split : null;
+  const eng = engineName(replay?.engine) ?? engineName(rec?.sim_split?.validation?.engine ?? null) ?? "the engine";
+  const simSplit = rec?.sim_split;
   return (
     <>
-      {!ran && (
-        <>
-          <p className="t-body text-white/55 mt-1.5 leading-snug">
-            Simulated residents — rebuilt from Statistics Finland tables — answer whether they take part
-            and why not. Nothing is computed until you ask them.
-          </p>
-          {!replay ? <Skel className="h-9 mt-2" /> : (
-            <button onClick={() => setRan(true)}
-                    className="mt-2 w-full rounded-lg bg-sky-400/15 border border-sky-300/35 text-sky-200 text-[12.5px] py-2
-                               hover:bg-sky-400/25">
-              Ask {replay.rows.length} simulated resident types in {replay.name}
-            </button>
-          )}
-        </>
-      )}
-      {ran && replay && !done && (
-        <ReplayPlayer replay={replay} who={who} onLive={onLive} onProgress={onProgress} onDone={() => setDone(true)} />)}
-      {done && !split && <Skel className="h-24 mt-3" />}
-      {split && replay && (
-        <div ref={resRef} className="mt-2.5 pt-2.5 border-t border-white/10 slide">
-          <div className="t-panel">{DRIVER_HEADLINE[split.driver] ?? ""}</div>
-          <div className="mt-4">
-            <div className="t-caption uppercase tracking-wide">The gap in three numbers</div>
-            <NumBars final={replay.final} />
-            <p className="t-micro mt-1.5 leading-snug">
-              From who lives here, {replay.name} would be at {fmt(replay.final.rate, "%")}. It really is at{" "}
-              {fmt(replay.final.real, "%")} (Finland {fmt(replay.final.national_real, "%")}).
-            </p>
-          </div>
-          <div className="mt-4">
-            <div className="t-caption uppercase tracking-wide">Where the gap comes from</div>
-            {split.driver === "national" ? (
-              <p className="t-body text-white/55 mt-1.5">
-                The county is at Finland&apos;s level; the gap to {fmt(rec?.screening?.target ?? 80, "%")} is national.
-              </p>
-            ) : (
-              <>
-                <GapSplitBar split={split} big />
-                <p className="t-micro mt-1">
-                  Population explains {split.comp_pts ?? "–"} of {split.total_pts ?? "–"} points
-                  {split.validation?.counties_weighted?.r != null &&
-                    <> · r = {split.validation.counties_weighted.r} vs real 2024 county rates</>}
-                </p>
-              </>
-            )}
-            {split.assumption && <Assumption text={split.assumption} />}
-          </div>
-          <div className="mt-4">
-            <div className="t-caption uppercase tracking-wide">Main barriers residents give</div>
-            <p className="t-micro mt-0.5 leading-snug">Main barriers among those expected to skip (motivators like habit excluded) · Simulation</p>
-            <Reasons cum={replay.rows[replay.rows.length - 1]?.cum_reasons}
-                     shorts={replay.reason_shorts} labels={replay.reason_labels} big />
-          </div>
-          <div className="mt-4"><ReplayDetails replay={replay} who={who} /></div>
+      <DataBlock split={rec?.split ?? null} target={rec?.screening?.target ?? 80} />
+
+      <div className="mt-5 pt-3 border-t border-white/10">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="t-caption uppercase tracking-wide">Who is likely to skip, and what stops them</span>
+          <SimChip eng={eng} />
         </div>
-      )}
+        {!ran && (
+          <>
+            <p className="t-body text-white/55 mt-1.5 leading-snug">
+              Simulated residents — rebuilt from Statistics Finland tables — answer whether they take part
+              and why not. Nothing is computed until you ask them.
+            </p>
+            {!replay ? <Skel className="h-9 mt-2" /> : (
+              <button onClick={() => setRan(true)}
+                      className="mt-2 w-full rounded-lg bg-sky-400/15 border border-sky-300/35 text-sky-200 text-[12.5px] py-2
+                                 hover:bg-sky-400/25">
+                Ask {replay.rows.length} simulated resident types in {replay.name}
+              </button>
+            )}
+          </>
+        )}
+        {ran && replay && !done && (
+          <ReplayPlayer replay={replay} who={who} onLive={onLive} onProgress={onProgress} onDone={() => setDone(true)} />)}
+        {done && !replay && <Skel className="h-24 mt-3" />}
+        {done && replay && (
+          <div ref={resRef} className="mt-2.5 slide">
+            {replay.final.groups?.length ? (
+              <div className="mt-2">
+                <div className="t-caption uppercase tracking-wide">Who is most likely to skip</div>
+                <SkipGroups groups={replay.final.groups} eng={eng} who={who} />
+              </div>
+            ) : null}
+            <div className="mt-4">
+              <div className="t-caption uppercase tracking-wide">Main barriers residents give</div>
+              <p className="t-micro mt-0.5 leading-snug">Main barriers among those expected to skip (motivators like habit excluded) · Simulation</p>
+              <Reasons cum={replay.rows[replay.rows.length - 1]?.cum_reasons}
+                       shorts={replay.reason_shorts} labels={replay.reason_labels} big />
+            </div>
+            <p className="t-micro mt-4 leading-snug text-white/45">
+              Simulated residents are a model: two engines (Jev and Gemini) disagree on how much of the gap is
+              local, so the block above uses data for that.
+              {simSplit?.composition_gap != null && simSplit.other_gap != null &&
+                <> Its own split: who lives here {fmt(Math.abs(simSplit.composition_gap))} pts /
+                  not explained {fmt(Math.abs(simSplit.other_gap))} pts · Simulation.</>}
+            </p>
+            <div className="mt-3"><ReplayDetails replay={replay} who={who} /></div>
+          </div>
+        )}
+      </div>
     </>
   );
 }
@@ -457,7 +521,14 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, pre
       {w && replay && (
         <div ref={resRef} className="mt-2.5 slide">
           <div className="t-panel text-emerald-300">
-            +{fmt(w.extra_people_per_year)} {who} a year
+            {w.other_engine?.extra_people_per_year != null && w.extra_people_per_year != null ? (
+              <>≈ {sgn(Math.min(w.extra_people_per_year, w.other_engine.extra_people_per_year))} to{" "}
+                {sgn(Math.max(w.extra_people_per_year, w.other_engine.extra_people_per_year))} {who} a year
+                <span className="text-white/55"> (two models · {engineName(w.engine)} {sgn(w.extra_people_per_year)})</span></>
+            ) : (
+              <>{sgn(w.extra_people_per_year)} {who} a year
+                <span className="text-white/55"> ({engineName(w.engine) ?? "the engine"} only)</span></>
+            )}
             {w.gap_closed_pct != null && <span className="text-white/55"> · {w.gap_closed_pct > 100
               ? "more than the whole gap (simulated upper bound)" : `${w.gap_closed_pct} % of the gap`}</span>}
           </div>
@@ -474,9 +545,13 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, pre
             <div className="t-caption uppercase tracking-wide mb-1">What the roadmap says</div>
             <div className="space-y-0.5">
               {w.scenarios.map((s) => (
-                <div key={s.scenario} className="flex flex-wrap items-baseline gap-x-2 px-0.5">
+                <div key={s.scenario} className="flex flex-wrap items-baseline gap-x-2 gap-y-1 px-0.5">
                   <span className="text-[11px] text-white/55">{s.label}</span>
-                  {s.actions.map((a) => <Cite key={a.id} a={a} />)}
+                  {s.actions.map((a) => (
+                    <span key={a.id} className="inline-flex items-center gap-1">
+                      <Cite a={a} /><PartialMatch a={a} />
+                    </span>
+                  ))}
                   {s.assumption && <Assumption text={s.assumption} />}
                 </div>
               ))}

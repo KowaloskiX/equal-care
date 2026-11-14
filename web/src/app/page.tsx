@@ -259,6 +259,13 @@ export default function Home() {
           {shown.national != null && <span className="t-micro whitespace-nowrap">· Finland {fmt(shown.national, shown.unit)}</span>}
           <span className="t-micro whitespace-nowrap flex items-center gap-1">
             <i className="inline-block w-2.5 h-2.5 rounded-sm bg-white/15" />no data</span>
+          {crowd && (
+            <span className="t-micro whitespace-nowrap flex items-center gap-1.5 border-l border-white/15 pl-3">
+              <i className="inline-block w-2 h-2 rounded-full" style={{ background: "#4ade80" }} />takes part
+              <i className="inline-block w-2 h-2 rounded-full ml-1.5" style={{ background: "#f87171" }} />skips
+              <span className="ml-1">1 dot ≈ {crowd.perDot} {crowd.who} · Simulation · {crowd.engine}</span>
+            </span>
+          )}
         </div>
       )}
 

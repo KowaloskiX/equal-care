@@ -48,7 +48,9 @@ export type SimLevel = {
   programme: string; engine?: string; label: string; level: string; year: number; national_real: number;
   national_expected: number; rows: Record<string, SimRow>; validation: Validation; note: string; source: Source;
 };
-export type ActionRef = { id: string; title: string; title_en?: string | null; page: number; url: string; responsible: string | null; metric: string | null };
+export type ActionRef = { id: string; title: string; title_en?: string | null; page: number; url: string;
+  responsible: string | null; metric: string | null;
+  score?: number | null; confidence?: number | null; matched_by?: string | null; partial_match?: boolean | null };
 export type ScenarioRow = {
   scenario: string; label: string; short?: string; delta_points: number | null; extra_people_per_year: number | null;
   share_of_missing?: number | null; actions: ActionRef[]; assumption: string | null; note: string;
@@ -63,7 +65,9 @@ export type Recommend = {
     composition_gap_90?: [number, number] | null; expected?: number | null; real?: number | null;
     national_real?: number | null; r2?: number | null; r2_pct?: number | null; n_municipalities?: number | null;
     method?: string | null; source?: unknown;
-    driver: "services" | "population" | "national" | "on_target"; assumption: string | null; note: string; validation?: Validation | null };
+    driver: "services" | "population" | "national" | "on_target";
+    headline?: "mostly_population" | "mostly_unexplained" | "both" | null;
+    assumption: string | null; note: string; validation?: Validation | null };
   sim_split?: { composition_gap: number | null; other_gap: number | null; expected?: number | null;
     real?: number | null; total_gap: number | null; note: string; validation: Validation | null };
   scenarios: ScenarioRow[];
@@ -83,6 +87,8 @@ export type WhatIf = {
   gap_closed_pct: number | null; asked_live: number; from_cache: number;
   validation: Validation | null; note: string;
   scenarios: { scenario: string; label: string; actions: ActionRef[]; assumption: string | null }[];
+  other_engine?: { engine: string; new_rate: number | null; extra_people_per_year: number | null;
+                   gap_closed_pct: number | null } | null;
   source: Source | null;
 };
 export type ResidentRow = {
@@ -101,11 +107,17 @@ export type Replay = {
   files: { path: string; answers: number }[];
   asked_live: number; people_total: number; per_dot?: number; rows: ResidentRow[];
   final: { rate: number | null; real: number | null; national_real: number | null;
-           target: number | null; baseline_rate?: number | null };
+           target: number | null; baseline_rate?: number | null; groups?: SkipGroup[] };
   anchor: { logit_shift: number; real_national: number | null };
   validation: Validation | null; note: string; source: Source | null;
   reason_labels: Record<string, string>; reason_shorts: Record<string, string>;
   whatif?: WhatIf;
+};
+// top skipper groups in a baseline replay: language group x activity, ranked by expected non-attenders
+export type SkipGroup = {
+  lang_group: string; activity: string; expected_skip: number; rate: number;
+  main_barrier: string | null; main_barrier_label: string | null; main_barrier_short: string | null;
+  barrier_share: number | null;
 };
 export type ResidentAnswer = {
   state: unknown; questions: unknown; answer: Record<string, unknown>; file: string; line: number;

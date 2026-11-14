@@ -7,7 +7,7 @@ import { engineName, fmt, getGap, getPathway, getRecommend, getValues,
 import type { Crowd } from "@/lib/dots";
 import { axisPos, BaselineStep, ScenarioStep } from "@/components/SimReplay";
 import QueueLapse from "@/components/QueueLapse";
-import { Assumption, Cite, DataChip, people, RoadmapChip, SimChip } from "@/components/RecommendBlock";
+import { Assumption, Cite, DataChip, PartialMatch, people, RoadmapChip, SimChip } from "@/components/RecommendBlock";
 import { Row, Src, STAGE_LABEL, STAGE_QUESTION } from "@/components/RegionCard";
 import { Seg, Skel, Tag } from "@/components/ui";
 
@@ -23,7 +23,7 @@ const NEXT_T = ["Why?", "What would help?", "Rest of the pathway"];
 function Chip({ step, eng, src }: { step: number; eng: string | null; src?: Parameters<typeof DataChip>[0]["s"] }) {
   if (step === 4) return <><DataChip s={src} /><span title="equal and effective care"><Tag v="goal3"><i>GOAL 3</i></Tag></span></>;
   if (step === 1) return <DataChip s={src} />;
-  if (step === 2) return <SimChip eng={eng} />;
+  if (step === 2) return <><DataChip s={src} /><SimChip eng={eng} /></>;
   return <><SimChip eng={eng} /><RoadmapChip /></>;
 }
 
@@ -66,7 +66,8 @@ export default function Guided({ prog, code, step, seen, briefProg, activeInd,
   const recF = rec && rec.code === code && rec.programme === prog ? rec : null;
   const pathF = path && path.code === code ? path : null;
   const pickF = !inTop && pick && pick.code === code ? pick : null;
-  const eng = engineName(recF?.split.validation?.engine) ?? engineName(briefProg?.note?.replace("Simulation · ", ""));
+  const eng = engineName(recF?.sim_split?.validation?.engine ?? recF?.split.validation?.engine)
+    ?? engineName(briefProg?.note?.replace("Simulation · ", ""));
   const target = briefProg?.target ?? pickF?.target ?? 80;
   const national = briefProg?.national;
   const name = recF?.name ?? pathF?.name ?? counties.find((c) => c.code === code)?.name ?? pickF?.name ?? code;
@@ -334,11 +335,13 @@ function Step4({ prog, code, name, path, rec, activeInd, onInd, onCode, onTl }: 
           {acts.length > 0 && (
             <div className="mt-2">
               <div className="t-caption mb-1 flex items-center gap-2"><RoadmapChip /> What the roadmap says</div>
-              {acts.map((a) => (
+              {acts.map((a, i) => (
                 <div key={a.id} className="px-1 py-1">
-                  {a.why && <div className="text-[11.5px] text-white/60 leading-snug">{a.why}</div>}
+                  {a.why && (i === 0 || acts[i - 1].why !== a.why) &&
+                    <div className="text-[11.5px] text-white/60 leading-snug">{a.why}</div>}
                   <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
                     <Cite a={a} />
+                    <PartialMatch a={a} />
                     {a.small_numbers && <Tag v="note">{a.small_numbers}</Tag>}
                     {a.assumption && <Assumption text={a.assumption} />}
                   </div>
