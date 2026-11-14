@@ -148,14 +148,20 @@ def replay(prog, code, scenarios=None, engine=None):
         for _, g in G0.sort_values("w", ascending=False).iterrows():
             k = tuple(g[js.KEY]); w = float(g.w)
             cum_w += w; cum_pa += float(g.pa) * w
-            skip[g.reason] = skip.get(g.reason, 0.0) + (1 - float(g.pa)) * w
-            skip_tot += (1 - float(g.pa)) * w
+            # ASSUMPTION: barriers only — the full reason distribution restricted to BARRIERS and
+            # renormalised, weighted by expected non-attendance (motivators like habit excluded).
+            dist = g["reasons"] or {}
+            sw = (1 - float(g.pa)) * w
+            skip_tot += sw * sum(dist.get(b, 0.0) for b in js.BARRIERS)
+            for r in js.BARRIERS:
+                skip[r] = skip.get(r, 0.0) + sw * dist.get(r, 0.0)
             rows.append(_row(k, g, g.akey, bidx, brel, w, int(round(cum_w)),
                              round(100 * cum_pa / cum_w, 2),
                              {"p_cal": round(float(g.pa), 4), "munis": g.munis,
                               "dots": _dots(g.munis, per_dot),
-                              "cum_reasons": {r: round(x / skip_tot, 3) for r, x in
-                                              sorted(skip.items(), key=lambda kv: -kv[1])}}))
+                              "cum_reasons": ({r: round(x / skip_tot, 3) for r, x in
+                                               sorted(skip.items(), key=lambda kv: -kv[1])}
+                                              if skip_tot else {})}))
         base.update({"people_total": int(round(float(G0.w.sum()))), "per_dot": per_dot, "rows": rows,
                      "files": _files(bpath), "asked_live": 0,
                      "final": {"rate": rows[-1]["cum_rate"] if rows else None, "real": real,

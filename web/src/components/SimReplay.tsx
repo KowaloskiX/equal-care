@@ -1,7 +1,7 @@
 "use client";
 // The recorded engine answers, replayed one resident type at a time. The animation for the screening
 // story (and the county card): every number comes from /api/residents — the API replays lines from the
-// committed data/jev/*.jsonl caches; a scenario goes through /api/whatif first for uncached combos.
+// committed data/decisions/*.jsonl caches; a scenario goes through /api/whatif first for uncached combos.
 import { useEffect, useRef, useState } from "react";
 import { engineName, fmt, getBaselineReplay, getResidentAnswer, getResidents,
          type FC, type Recommend, type Replay, type ResidentAnswer, type ResidentRow } from "@/lib/api";
@@ -15,8 +15,8 @@ const reduced = () => typeof window !== "undefined" && !!window.matchMedia?.("(p
 const rowKey = (r: ResidentRow) =>
   [r.key.sex, r.key.age5, r.key.settlement, r.key.lang, r.key.edu, r.key.activity, r.key.muni_type].join("|");
 
-// One revealed archetype: who they are, how many here, what Jev answered (raw, before anchoring).
-function Tile({ r, scenario, onAsk }: { r: ResidentRow; scenario: boolean; onAsk: () => void }) {
+// One revealed archetype: who they are, how many here, what the engine answered (raw, before anchoring).
+function Tile({ r, scenario, eng, onAsk }: { r: ResidentRow; scenario: boolean; eng: string; onAsk: () => void }) {
   const k = r.key;
   const bits = [k.sex_label, k.age5, k.lang_short, k.activity, k.muni_type].filter(Boolean).join(" · ");
   return (
@@ -27,8 +27,8 @@ function Tile({ r, scenario, onAsk }: { r: ResidentRow; scenario: boolean; onAsk
         <span className="tabular-nums text-white/70 shrink-0">{r.people === 0 ? "<1" : fmt(r.people)} here</span>
         <span className="text-sky-300/90 tabular-nums shrink-0">
           {scenario && r.jev_attend_before != null
-            ? `Jev ${Math.round(r.jev_attend_before * 100)} % → ${Math.round(r.jev_attend * 100)} %`
-            : `Jev ${Math.round(r.jev_attend * 100)} % take part`}
+            ? `${eng} ${Math.round(r.jev_attend_before * 100)} % → ${Math.round(r.jev_attend * 100)} %`
+            : `${eng} ${Math.round(r.jev_attend * 100)} % take part`}
         </span>
         {r.reason_short && <span className="truncate">· {r.reason_short}</span>}
         {r.borrowed && <Tag v="note">≈ same answer as a similar group</Tag>}
@@ -66,12 +66,12 @@ function Gauge({ value, start, real, national, target }: {
   );
 }
 
-// Share of the non-attenders by Jev's main factor, building up as rows are revealed.
+// Share of expected non-attendance by barrier, building up as rows are revealed (motivators excluded).
 function Reasons({ cum, shorts, labels, big }: { cum?: Record<string, number>; shorts: Record<string, string>; labels?: Record<string, string>; big?: boolean }) {
   if (!cum) return null;
   return (
     <div className="mt-2">
-      {!big && <div className="t-micro mb-1">why they say they skip — so far</div>}
+      {!big && <div className="t-micro mb-1">main barriers among those expected to skip — so far</div>}
       <div className={big ? "space-y-1.5" : "space-y-0.5"}>
         {Object.entries(cum).slice(0, 5).map(([r, v]) => (
           <div key={r} className="flex items-center gap-2" title={labels?.[r] ?? r}>
@@ -87,13 +87,13 @@ function Reasons({ cum, shorts, labels, big }: { cum?: Record<string, number>; s
   );
 }
 
-// The popover behind a tile: the exact JSON state and questions sent to Jev, and the raw recorded answer.
-export function Asked({ ans, onClose }: { ans: ResidentAnswer; onClose: () => void }) {
+// The popover behind a tile: the exact JSON state and questions sent to the engine, and the raw recorded answer.
+export function Asked({ ans, eng, onClose }: { ans: ResidentAnswer; eng?: string | null; onClose: () => void }) {
   const pre = (x: unknown) => JSON.stringify(x, null, 1);
   return (
     <div className="rounded-lg border border-sky-300/30 bg-[#0c0e16]/95 backdrop-blur shadow-xl p-2.5">
       <div className="flex items-start justify-between gap-2">
-        <div className="t-caption leading-tight">What Jev was asked — <span className="text-white/40">{ans.file} line {ans.line}</span></div>
+        <div className="t-caption leading-tight">What {eng ?? "the engine"} was asked — <span className="text-white/40">{ans.file} line {ans.line}</span></div>
         <button onClick={onClose} className="text-white/50 hover:text-white leading-none px-1">×</button>
       </div>
       <div className="mt-1.5 space-y-1.5 max-h-[55vh] overflow-y-auto pr-1">
@@ -182,7 +182,7 @@ export function ReplayPlayer({ replay, who, onLive, onProgress, onDone, duration
              real={replay.final.real} national={replay.final.national_real} target={replay.final.target} />
       <div className="space-y-1 mt-1">
         {stream.map((r) => (
-          <Tile key={rowKey(r)} r={r} scenario={scenario}
+          <Tile key={rowKey(r)} r={r} scenario={scenario} eng={engineName(replay.engine) ?? replay.engine}
                 onAsk={() => getResidentAnswer(replay.programme, r.answer_key,
                           replay.scenarios_selected.length ? replay.scenarios_selected : undefined)
                         .then(setAns).catch(() => null)} />
@@ -191,7 +191,7 @@ export function ReplayPlayer({ replay, who, onLive, onProgress, onDone, duration
       {!scenario && <Reasons cum={cur?.cum_reasons} shorts={replay.reason_shorts} labels={replay.reason_labels} />}
       {ans && (
         <div className="absolute inset-x-0 top-0 z-20">
-          <Asked ans={ans} onClose={() => setAns(null)} />
+          <Asked ans={ans} eng={engineName(replay.engine)} onClose={() => setAns(null)} />
         </div>
       )}
       <div className="t-micro mt-2 leading-snug">
@@ -235,7 +235,7 @@ function NumBars({ final }: { final: Replay["final"] }) {
 }
 
 // Collapsed "how this was computed": the counter, the biggest resident types in the county
-// (still clickable for the exact Jev prompt/answer popover) and the provenance line.
+// (still clickable for the exact engine prompt/answer popover) and the provenance line.
 function ReplayDetails({ replay, who }: { replay: Replay; who: string }) {
   const [ans, setAns] = useState<ResidentAnswer | null>(null);
   const scenario = replay.mode === "scenario";
@@ -251,7 +251,7 @@ function ReplayDetails({ replay, who }: { replay: Replay; who: string }) {
         <div className="t-micro mt-2">Largest groups in {replay.name}</div>
         <div className="space-y-1 mt-1">
           {replay.rows.slice(0, 3).map((r) => (
-            <Tile key={rowKey(r)} r={r} scenario={scenario}
+            <Tile key={rowKey(r)} r={r} scenario={scenario} eng={engineName(replay.engine) ?? replay.engine}
                   onAsk={() => getResidentAnswer(replay.programme, r.answer_key,
                             replay.scenarios_selected.length ? replay.scenarios_selected : undefined)
                           .then(setAns).catch(() => null)} />
@@ -265,7 +265,7 @@ function ReplayDetails({ replay, who }: { replay: Replay; who: string }) {
       </div>
       {ans && (
         <div className="absolute inset-x-0 top-6 z-20">
-          <Asked ans={ans} onClose={() => setAns(null)} />
+          <Asked ans={ans} eng={engineName(replay.engine)} onClose={() => setAns(null)} />
         </div>
       )}
     </details>
@@ -299,7 +299,7 @@ export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
   useEffect(() => {
     if (!ran || !replay || !munis) return;
     onCrowd?.((p) => (p && p.prog === replay.programme && p.code === replay.code ? p
-                     : buildCrowd(replay, munis, who, engineName(replay.engine) ?? "Jev")));
+                     : buildCrowd(replay, munis, who, engineName(replay.engine) ?? replay.engine)));
   }, [ran, replay, munis]);   // eslint-disable-line react-hooks/exhaustive-deps
   const onProgress = (n: number) => onCrowd?.((p) => (p ? { ...p, revealed: n } : p));
 
@@ -355,7 +355,8 @@ export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
             {split.assumption && <Assumption text={split.assumption} />}
           </div>
           <div className="mt-4">
-            <div className="t-caption uppercase tracking-wide">Main reasons residents give for skipping</div>
+            <div className="t-caption uppercase tracking-wide">Main barriers residents give</div>
+            <p className="t-micro mt-0.5 leading-snug">Main barriers among those expected to skip (motivators like habit excluded) · Simulation</p>
             <Reasons cum={replay.rows[replay.rows.length - 1]?.cum_reasons}
                      shorts={replay.reason_shorts} labels={replay.reason_labels} big />
           </div>
@@ -402,7 +403,7 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, pre
       if (p && p.prog === b.programme && p.code === b.code)
         return { ...p, revealed: b.rows.length, flip: {}, scenarios: [...sel],
                  pRow: b.rows.map((r) => r.p_cal ?? r.jev_attend) };
-      return { ...buildCrowd(b, munis ?? null, who, engineName(b.engine) ?? "Jev"),
+      return { ...buildCrowd(b, munis ?? null, who, engineName(b.engine) ?? b.engine),
                revealed: b.rows.length, scenarios: [...sel] };
     })).catch(() => null);
     getResidents(prog, code, [...sel])
@@ -466,7 +467,7 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, pre
           </div>
           <div className="t-micro mt-1 flex items-center gap-2">
             <SimChip eng={engineName(w.engine)} />
-            <span>{w.asked_live ? `${w.asked_live} new Jev calls` : "replayed from cache"} · cached {w.from_cache} · an upper bound, not a forecast</span>
+            <span>{w.asked_live ? `${w.asked_live} new ${engineName(w.engine) ?? "engine"} calls` : "replayed from cache"} · cached {w.from_cache} · an upper bound, not a forecast</span>
           </div>
           <div className="mt-4">
             <div className="t-caption uppercase tracking-wide mb-1">What the roadmap says</div>

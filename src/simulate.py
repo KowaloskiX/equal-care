@@ -63,13 +63,22 @@ def summarise(prog, scenarios=True):
     for level, by in (("county", "county"), ("municipality", "muni")):
         real = ds.values(ind, level)
         exp = rate(E, by)
-        skip = E.assign(s=(1 - E.pa) * E.w)
-        reasons = (skip.groupby([by, "reason"]).s.sum() / skip.groupby(by).s.sum()).round(3)
+        # ASSUMPTION: displayed reasons are barriers only — the engine's full reason
+        # distribution restricted to BARRIERS and renormalised, weighted by expected
+        # non-attendance; motivators ("habit", "health_duty") are excluded by design.
+        sw = (1 - E.pa) * E.w
+        bm = E.reasons.map(lambda q: sum((q or {}).get(b, 0.0) for b in js.BARRIERS))
+        reasons = {}
+        for code, g in E.groupby(by):
+            den = float((sw[g.index] * bm[g.index]).sum())
+            reasons[code] = ({r: round(float((sw[g.index] * g.reasons.map(
+                                  lambda q: (q or {}).get(r, 0.0))).sum()) / den, 3)
+                              for r in js.BARRIERS} if den > 0 else {})
         rows = {}
         for code, e in exp.items():
             rv = real["values"].get(code)
             r = {"expected": float(e), "composition_gap": round(float(e) - nat_sim, 2),
-                 "reasons": {k: float(v) for k, v in reasons[code].sort_values(ascending=False).items()} if code in reasons.index.get_level_values(0) else {}}
+                 "reasons": dict(sorted(reasons.get(code, {}).items(), key=lambda kv: -kv[1]))}
             if rv:
                 r["real"] = rv["value"]; r["attended"] = rv["abs_value"]
                 r["invited"] = round(rv["abs_value"] * 100 / rv["value"]) if rv["abs_value"] and rv["value"] else None

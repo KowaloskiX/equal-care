@@ -71,6 +71,9 @@ REASONS = {"time_work": "work, family duties or lack of time", "distance": "trav
            "language": "understanding the invitation or the language", "private": "uses private or occupational health care instead",
            "fear": "fear, embarrassment, pain or discomfort", "no_need": "feels healthy and sees no need",
            "habit": "routine: always takes part when invited", "health_duty": "sense of responsibility for own health"}
+# ASSUMPTION: "why they skip" statistics show barriers only — "habit" and "health_duty" are
+# motivators to take part, not obstacles a county can act on, so they are excluded.
+BARRIERS = ("time_work", "distance", "language", "private", "fear", "no_need")
 LANG_EN = {"fi": "Finnish", "sv": "Swedish", "ru": "Russian", "et": "Estonian", "ar": "Arabic", "so": "Somali", "en": "English",
            "other": "another foreign language (not Finnish or Swedish)"}
 

@@ -43,7 +43,7 @@ action_ids = {x["id"] for x in c.get("/api/actions").json()["actions"]}
 need = {aid for m in rec.SCENARIO_ACTIONS.values() for aid in m["actions"]} | {rec.MONITORING_ACTION} | set(rec.GOAL3_ACTIONS)
 check("all cited roadmap action ids resolve", need <= action_ids)
 r = c.get("/api/recommend/breast/90").json()
-check("Helsinki breast driver is services", r["split"]["driver"] == "services")
+check("Helsinki breast driver is population", r["split"]["driver"] == "population")
 r2 = c.get("/api/recommend/bowel/05").json()
 check("Southwest Finland bowel driver is national", r2["split"]["driver"] == "national" and
       r2["split"]["assumption"] and any(a["id"] == rec.NATIONAL_ACTION for a in r2["pathway_actions"]))
@@ -113,6 +113,8 @@ sim90 = json.load(open(ROOT / "data/sim/breast.json"))["levels"]["county"]["rows
 check("replay final rate equals sim expected (Helsinki breast)",
       abs(rb["final"]["rate"] - sim90["expected"]) <= 0.01)
 check("replay last cum_rate equals final rate", rb["rows"][-1]["cum_rate"] == rb["final"]["rate"])
+check("replay final cum_reasons equals sim county barriers",
+      rb["rows"][-1]["cum_reasons"] == sim90["reasons"])
 rb2 = c.get("/api/residents/bowel/03").json()
 sim03 = json.load(open(ROOT / "data/sim/bowel.json"))["levels"]["county"]["rows"]["03"]
 check("replay final rate equals sim expected (West Uusimaa bowel)",

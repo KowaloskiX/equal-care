@@ -35,7 +35,7 @@ const TOUR: TourStep[] = [
   { target: "ranking", title: "Real public data",
     body: "The counties furthest from the target. Click a row — or a county on the map — to pick one." },
   { target: "chips", title: "Three kinds of evidence",
-    body: "Grey DATA = public statistics with a source link. Blue SIMULATION = residents simulated with Jev, checked against real county rates. Yellow ROADMAP = numbered actions from the national cancer strategy roadmap." },
+    body: "Grey DATA = public statistics with a source link. Blue SIMULATION = residents simulated with the Gemini Decisions API, checked against real county rates. Yellow ROADMAP = numbered actions from the national cancer strategy roadmap." },
   { target: "map", title: "The map follows",
     body: "Real attendance first, then the chosen county lights up live while its simulated residents answer." },
   { target: "next", title: "Start here", body: "Step through the story — or jump to the map anytime." },

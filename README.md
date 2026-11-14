@@ -46,7 +46,7 @@ make sim-residents  # re-ask the simulated residents (needs the engine key)
 ```
 
 The demo needs no keys: committed caches cover every scenario shown. The simulation engine is chosen by `SIM_ENGINE`
-in `.env` (`jev` or `gemini`, default `jev`) or `--engine`; `TYPESAFE_API_KEY` / `GEMINI_API_KEY` are needed only when
+in `.env` (`gemini` or `jev`, default `gemini`) or `--engine`; `TYPESAFE_API_KEY` / `GEMINI_API_KEY` are needed only when
 questions or resident states change (the cache invalidates and new calls run). A what-if combination outside the cache
 needs the active engine's key or the API returns 503 — simulated numbers are never fabricated.
 

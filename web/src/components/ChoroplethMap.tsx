@@ -174,7 +174,7 @@ export default function ChoroplethMap(props: {
         if (!d || d.row >= crowd.revealed) return setHover(null);
         const r = crowd.flip[d.row] ?? crowd.rows[d.row];
         setHover({ x: info.x, y: info.y, name: d.tip,
-                   value: `Jev ${Math.round(r.jev_attend * 100)} % takes part`,
+                   value: `${crowd.engine} ${Math.round(r.jev_attend * 100)} % takes part`,
                    src: `simulation · ${crowd.engine}` });
       },
       onClick: (info: PickingInfo) => {
@@ -224,8 +224,8 @@ export default function ChoroplethMap(props: {
             </div>
             <div className="text-[11px] mt-1 leading-snug">
               <span className="text-sky-300/90 tabular-nums">
-                {f ? `Jev ${Math.round((f.jev_attend_before ?? 0) * 100)} % → ${Math.round(f.jev_attend * 100)} % take part`
-                    : `Jev ${Math.round(r.jev_attend * 100)} % take part`}
+                {f ? `${crowd.engine} ${Math.round((f.jev_attend_before ?? 0) * 100)} % → ${Math.round(f.jev_attend * 100)} % take part`
+                    : `${crowd.engine} ${Math.round(r.jev_attend * 100)} % take part`}
               </span>
               {r.reason_short && <span className="text-white/55"> · main factor: {r.reason_short}</span>}
             </div>
@@ -234,7 +234,7 @@ export default function ChoroplethMap(props: {
                     className="t-micro mt-1.5 underline decoration-dotted text-sky-300/90 hover:text-sky-200">
               See what {crowd.engine} was asked
             </button>
-            {ans && <div className="mt-1.5 max-h-[38vh] overflow-y-auto"><Asked ans={ans} onClose={() => setAns(null)} /></div>}
+            {ans && <div className="mt-1.5 max-h-[38vh] overflow-y-auto"><Asked ans={ans} eng={crowd.engine} onClose={() => setAns(null)} /></div>}
           </div>
         );
       })()}

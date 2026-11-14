@@ -119,18 +119,19 @@ export default function Story() {
           <div className="flex items-center gap-3">
             <span className="w-44 text-[13px] text-white/60 text-right">population composition</span>
             <div className="flex-1 h-7 rounded bg-white/5 overflow-hidden">{bar(Math.abs(split?.composition_gap ?? 0), 8, "#38bdf8aa")}</div>
-            <span className="w-20 tabular-nums text-white/80">{Math.abs(split?.composition_gap ?? 0).toFixed(1)} pts</span>
+            <span className={`w-20 tabular-nums ${Math.abs(split?.composition_gap ?? 0) >= Math.abs(split?.other_gap ?? 0) ? "text-sky-300 font-semibold" : "text-white/80"}`}>{Math.abs(split?.composition_gap ?? 0).toFixed(1)} pts</span>
           </div>
           <div className="flex items-center gap-3">
             <span className="w-44 text-[13px] text-white/60 text-right">services — unexplained</span>
             <div className="flex-1 h-7 rounded bg-white/5 overflow-hidden">{bar(Math.abs(split?.other_gap ?? 0), 8, "#f43f5eaa")}</div>
-            <span className="w-20 tabular-nums text-rose-300 font-semibold">{Math.abs(split?.other_gap ?? 0).toFixed(1)} pts</span>
+            <span className={`w-20 tabular-nums ${Math.abs(split?.composition_gap ?? 0) >= Math.abs(split?.other_gap ?? 0) ? "text-white/80" : "text-rose-300 font-semibold"}`}>{Math.abs(split?.other_gap ?? 0).toFixed(1)} pts</span>
           </div>
         </div>
         <p className="mt-6 text-[14px] text-white/55 leading-relaxed">
           We rebuilt Finland&apos;s 50–74 year olds from Statistics Finland tables and asked simulated residents whether they
-          would attend. Almost none of the capital&apos;s gap is explained by who lives there — the lever is services:
-          access, appointment times, and private mammography counted as absence.
+          would attend. {split?.driver === "services"
+            ? "Almost none of the capital’s gap is explained by who lives there — the lever is services: access, appointment times, and private mammography counted as absence."
+            : "In Helsinki the simulated gap tracks who lives there — age, language and where people get their care — so the lever is targeted outreach: invitations and reminders in people’s own language."}
         </p>
         <p className="mt-3 text-[12.5px] text-white/40">Validated against real 2024 county rates: r = {r ?? "…"} {split?.note ? `· ${split.note}` : ""}</p>
       </div>
@@ -246,7 +247,7 @@ export default function Story() {
         <ul className="space-y-3 text-[15px] text-white/70 leading-relaxed list-disc pl-5">
           <li>A pilot with one county: monthly refresh from THL and Sotkanet, the what-if run before each procurement round.</li>
           <li>Stage-at-diagnosis coverage the day the Cancer Registry publishes its county table — the schema is ready for it.</li>
-          <li>Switch the simulation engine to Gemini Decisions with one setting (<code className="text-amber-300/80">SIM_ENGINE=gemini</code>) — caches and code paths are already engine-aware.</li>
+          <li>The simulation engine is switchable — Gemini Decisions today, Jev with one setting (<code className="text-amber-300/80">SIM_ENGINE=jev</code>); both caches ship in the repo.</li>
         </ul>
         <p className="mt-7 text-center text-[19px] text-white/85 font-medium">
           Public data, a source behind every number,<br />and an action a county can put in its next procurement.

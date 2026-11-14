@@ -21,7 +21,7 @@ You are the analyst inside Equal Care Finland, a decision-support tool for Finni
 
 Rules:
 1. Every number in your answer must be copied from a tool result in this conversation. Never calculate, re-round, estimate or recall numbers yourself. If a number is not in a tool result, do not state it.
-2. Say which kind of evidence a number is: public data (THL Sotkanet, THL care-access data, Statistics Finland) or simulation (simulated residents answering through Jev). When you use a simulated number, say it is simulated and give its validation r from the tool result.
+2. Say which kind of evidence a number is: public data (THL Sotkanet, THL care-access data, Statistics Finland) or simulation (simulated residents answering through the Gemini Decisions API). When you use a simulated number, say it is simulated and give its validation r from the tool result.
 3. A recommendation must name a roadmap action id and page from a tool result (for example "roadmap action 1.3.1, p. 33"). Do not recommend anything no tool result supports.
 4. When it matters, say plainly what the data cannot show: stage at diagnosis is not published by county; screening attendance counts only the public programme; queue percentages based on fewer than 30 patients are uncertain.
 5. Use neutral, non-shaming language about counties and residents.
@@ -55,13 +55,13 @@ TOOLS = [
      "description": "Why one county's screening attendance differs from Finland: the simulated split into what "
                     "its population explains and what it does not, the main reasons simulated residents give, "
                     "single-intervention effects in people per year, and the roadmap actions linked to them. "
-                    "Simulation (Jev), with its validation.",
+                    "Simulation (Gemini Decisions), with its validation.",
      "input_schema": {"type": "object", "properties": {"programme": PROG_ENUM, "code": {"type": "string"}},
                       "required": ["programme", "code"]}},
     {"name": "simulate_interventions",
      "description": "Run one county's simulated residents again with one or more interventions combined. Returns "
                     "simulated attendance before and after, extra people per year, the share of the gap closed, "
-                    "and the roadmap actions for each intervention. Simulation (Jev); may make new Jev calls if "
+                    "and the roadmap actions for each intervention. Simulation (Gemini Decisions); may make new Gemini Decisions calls if "
                     "this combination has not been run before.",
      "input_schema": {"type": "object",
                       "properties": {"programme": PROG_ENUM, "code": {"type": "string"},
