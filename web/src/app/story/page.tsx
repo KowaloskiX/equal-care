@@ -44,7 +44,7 @@ export default function Story() {
       getBrief().then(setBrief),
       getRecommend("breast", "90").then(setRec),
       getRecommend("breast", "06").then(setRecQ),
-      getWhatif("breast", "90", ["own_language", "sms_reminder"]).then(setWi),
+      getWhatif("breast", "90", ["own_language", "evening_slots"]).then(setWi),
       getValues("onc_wait_90").then(setWait),
       Promise.all([
         getCorrelation("screen_breast", "surv_breast"),
@@ -69,7 +69,7 @@ export default function Story() {
 
   const breast = brief?.programmes.find((p) => p.programme === "breast");
   const hel = breast?.counties[0];
-  const r = breast?.validation?.counties_weighted?.r;
+  const r = rec?.sim_split?.validation?.counties_weighted?.r ?? breast?.validation?.counties_weighted?.r;
   const split = rec?.split;
   const corrRange = cors.length ? [Math.min(...cors.map((c) => c.r)), Math.max(...cors.map((c) => c.r))] : null;
   const waitRows = wait
@@ -110,61 +110,76 @@ export default function Story() {
       <SrcLine><SrcName s={hel?.screening?.source} />{hel?.screening?.source?.indicator ? ` · Sotkanet indicator #${hel.screening.source.indicator}` : ""}</SrcLine>
     </div>,
 
-    // 3 — The gap is services, not residents
+    // 3 — Where the gap comes from: data regression + simulated residents
     <div key={2} className="w-full max-w-3xl">
-      <Kicker>Where the gap comes from — simulated residents <SimChip eng={split?.note?.replace("Simulation · ", "")} /></Kicker>
+      <Kicker>
+        Where the gap comes from · <DataChip s={hel?.screening?.source} />{" "}
+        <SimChip eng={engineName(rec?.sim_split?.validation?.engine)} />
+      </Kicker>
       <div className="glass p-8">
-        <div className="text-[16px] text-white/60">Helsinki&apos;s gap to the national rate, in points:</div>
+        <div className="text-[16px] text-white/70">Helsinki&apos;s {split?.total_pts ?? "7.3"}-point shortfall to Finland (291-municipality WLS model):</div>
         <div className="mt-5 space-y-3">
           <div className="flex items-center gap-3">
-            <span className="w-44 text-[13px] text-white/60 text-right">population composition</span>
-            <div className="flex-1 h-7 rounded bg-white/5 overflow-hidden">{bar(Math.abs(split?.composition_gap ?? 0), 8, "#38bdf8aa")}</div>
-            <span className={`w-20 tabular-nums ${Math.abs(split?.composition_gap ?? 0) >= Math.abs(split?.other_gap ?? 0) ? "text-sky-300 font-semibold" : "text-white/80"}`}>{Math.abs(split?.composition_gap ?? 0).toFixed(1)} pts</span>
+            <span className="w-48 text-[13px] text-white/70 text-right">demographics (who lives here)</span>
+            <div className="flex-1 h-7 rounded-md bg-white/5 overflow-hidden">{bar(Math.abs(split?.composition_gap ?? 0), 8, "#38bdf8aa")}</div>
+            <span className="w-20 tabular-nums text-sky-300 font-semibold">{Math.abs(split?.composition_gap ?? 0).toFixed(1)} pts</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="w-44 text-[13px] text-white/60 text-right">services — unexplained</span>
-            <div className="flex-1 h-7 rounded bg-white/5 overflow-hidden">{bar(Math.abs(split?.other_gap ?? 0), 8, "#f43f5eaa")}</div>
-            <span className={`w-20 tabular-nums ${Math.abs(split?.composition_gap ?? 0) >= Math.abs(split?.other_gap ?? 0) ? "text-white/80" : "text-rose-300 font-semibold"}`}>{Math.abs(split?.other_gap ?? 0).toFixed(1)} pts</span>
+            <span className="w-48 text-[13px] text-white/70 text-right">unexplained (local / services)</span>
+            <div className="flex-1 h-7 rounded-md bg-white/5 overflow-hidden">{bar(Math.abs(split?.other_gap ?? 0), 8, "#f43f5eaa")}</div>
+            <span className="w-20 tabular-nums text-rose-300 font-semibold">{Math.abs(split?.other_gap ?? 0).toFixed(1)} pts</span>
           </div>
         </div>
-        <p className="mt-6 text-[14px] text-white/55 leading-relaxed">
-          We rebuilt Finland&apos;s 50–74 year olds from Statistics Finland tables and asked simulated residents whether they
-          would attend. {split?.driver === "services"
-            ? "Almost none of the capital’s gap is explained by who lives there — the lever is services: access, appointment times, and private mammography counted as absence."
-            : "In Helsinki the simulated gap tracks who lives there — age, language and where people get their care — so the lever is targeted outreach: invitations and reminders in people’s own language."}
+        <p className="mt-6 text-[14.5px] text-white/70 leading-relaxed">
+          Demographics — language, education, age and municipality type — explain most of Helsinki&apos;s gap ({split?.r2_pct ?? 60} % of municipal variation).
+          Simulated residents ({engineName(rec?.sim_split?.validation?.engine) ?? "Gemini Decisions"}) independently identify <b className="text-white">language</b> and <b className="text-white">work / time</b> as the top barriers among non-attendees.
         </p>
-        <p className="mt-3 text-[12.5px] text-white/40">Validated against real 2024 county rates: r = {r ?? "…"} {split?.note ? `· ${split.note}` : ""}</p>
+        <p className="mt-3 text-[12.5px] text-white/45">
+          Resident simulation validated against real 2024 county attendance: r = {r ?? "…"} · {engineName(rec?.sim_split?.validation?.engine) ?? "Gemini Decisions"}
+        </p>
       </div>
-      <SrcLine>Simulated residents ({split?.note?.replace("Simulation · ", "") ?? "…"}) vs THL / Sotkanet 2024 · Statistics Finland population tables</SrcLine>
+      <SrcLine>THL / Sotkanet 2024 · Statistics Finland 291-municipality WLS · Simulated residents ({engineName(rec?.sim_split?.validation?.engine) ?? "Gemini Decisions"})</SrcLine>
     </div>,
 
     // 4 — Actions and the live what-if
     <div key={3} className="w-full max-w-3xl">
       <Kicker>What to do — every recommendation cites a roadmap action <RoadmapChip /></Kicker>
       <div className="glass p-7">
-        <div className="space-y-2">
-          {rec?.scenarios.map((s) => (
-            <div key={s.scenario} className="flex items-baseline gap-3 border-b border-white/5 pb-2">
-              <span className="flex-1 text-[13.5px] text-white/80 leading-tight">{s.label}</span>
-              <span className="tabular-nums text-emerald-300 font-semibold w-24 text-right">+{fmt(s.extra_people_per_year)}/yr</span>
-              <span className="w-44 text-right space-x-1.5">
-                {s.actions.map((a) => (
-                  <a key={a.id} href={a.url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}
-                     title={a.title_en ?? a.title}
-                     className="tag tag-roadmap">{a.id} · p.{a.page}</a>
-                ))}
-              </span>
-            </div>
-          ))}
+        <div className="space-y-2.5">
+          {rec?.scenarios.map((s) => {
+            const v = s.extra_people_per_year ?? 0;
+            const sign = v > 0 ? `+${fmt(v)}` : v < 0 ? `−${fmt(-v)}` : "0";
+            return (
+              <div key={s.scenario} className="flex items-baseline gap-3 border-b border-white/[0.07] pb-2">
+                <span className="flex-1 text-[14px] text-white/85 leading-tight">{s.label}</span>
+                <span className={`tabular-nums font-semibold w-24 text-right ${v > 0 ? "text-emerald-300" : v < 0 ? "text-rose-300" : "text-white/50"}`}>{sign}/yr</span>
+                <span className="w-44 text-right space-x-1.5">
+                  {s.actions.map((a) => (
+                    <a key={a.id} href={a.url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}
+                       title={a.title_en ?? a.title}
+                       className="tag tag-roadmap">{a.id} · p.{a.page}</a>
+                  ))}
+                </span>
+              </div>
+            );
+          })}
         </div>
         <div className="mt-5 rounded-xl border border-emerald-300/25 bg-emerald-300/[0.06] p-4">
-          <div className="text-[11px] uppercase tracking-wide text-emerald-300/80">Live simulation · combine interventions <SimChip eng={engineName(wi?.engine)} /></div>
-          <div className="mt-1.5 text-[20px] font-semibold text-emerald-300 tabular-nums">
-            +{fmt(wi?.extra_people_per_year)} people/yr
-            <span className="text-white/60 font-normal text-[14px]"> · {wi?.gap_closed_pct != null && wi.gap_closed_pct > 100 ? "more than closes the gap (upper bound)" : <>closes {fmt(wi?.gap_closed_pct, "%")} of the gap</>} · {wi?.delta_points != null && wi.delta_points > 0 ? "+" : ""}{wi?.delta_points} pts</span>
+          <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-emerald-300/90">
+            <span>Combined simulation · own language + evening slots</span>
+            <SimChip eng={engineName(wi?.engine)} />
           </div>
-          <div className="text-[11.5px] text-white/40 mt-1">
-            {wi?.name}: own language + SMS reminder · live calls {wi?.asked_live ?? "…"} · cached {wi?.from_cache ?? "…"} · an upper bound from the model, not a forecast
+          <div className="mt-1.5 text-[22px] font-semibold text-emerald-300 tabular-nums">
+            {wi?.extra_people_per_year != null ? `+${fmt(wi.extra_people_per_year)} women/yr` : "Loading simulation…"}
+            {wi?.gap_closed_pct != null && (
+              <span className="text-white/65 font-normal text-[14px]">
+                {" "}· {wi.gap_closed_pct > 100 ? "closes up to the full gap (upper bound)" : <>closes {fmt(wi.gap_closed_pct, "%")} of the gap</>}
+                {wi.delta_points != null && <> · +{wi.delta_points} pts</>}
+              </span>
+            )}
+          </div>
+          <div className="text-[11.5px] text-white/45 mt-1">
+            {wi ? `${wi.name} · ${wi.from_cache} resident types changed · simulated upper bound, not a forecast` : "Fetching recorded engine answers…"}
           </div>
         </div>
       </div>

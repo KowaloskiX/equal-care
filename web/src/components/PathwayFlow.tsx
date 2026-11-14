@@ -42,19 +42,19 @@ export default function FlowDots({ track, status, col }: {
         {dots.map((i) => {
           const c = i % 10, row = Math.floor(i / 10);
           const isGood = i < good;
-          const cls = track == null ? "fill-white/10"
-                      : isGood ? "fill-emerald-400/80" : "fill-rose-400/60";
-          const delay = col * 480 + c * 38 + row * 4;   // column starts after the previous one ends
+          const cls = track == null ? "fill-white/[0.08]"
+                      : isGood ? "fill-emerald-400/85" : "fill-rose-400/75";
+          const delay = col * 110 + c * 16 + row * 2;   // crisp left→right cascade (~0.7s across all 5 stages)
           return (
-            <circle key={i} cx={3 + c * 6} cy={3 + row * 3.2} r={1.25} className={cls}
+            <circle key={i} cx={3 + c * 6} cy={3 + row * 3.2} r={1.3} className={cls}
                     style={{ opacity: on ? 1 : 0, transform: on ? "scale(1)" : "scale(0.3)",
                              transformBox: "fill-box", transformOrigin: "center",
-                             transition: `opacity 200ms ease ${delay}ms, transform 200ms ease ${delay}ms` }} />
+                             transition: `opacity 180ms ease ${delay}ms, transform 180ms ease ${delay}ms` }} />
           );
         })}
         {track == null && (
-          <text x="30" y="20" textAnchor="middle" className="fill-white/30" fontSize="9"
-                style={{ opacity: on ? 1 : 0, transition: `opacity 300ms ease ${col * 480}ms` }}>?</text>
+          <text x="30" y="20" textAnchor="middle" className="fill-white/40" fontSize="9"
+                style={{ opacity: on ? 1 : 0, transition: `opacity 240ms ease ${col * 110}ms` }}>—</text>
         )}
       </svg>
     </div>

@@ -3,7 +3,7 @@
 import type { FC, Feature, Replay, ResidentRow } from "./api";
 import type { Position } from "geojson";
 
-export type CrowdDot = { lon: number; lat: number; u: number; row: number; muni: string; tip: string };
+export type CrowdDot = { lon: number; lat: number; u: number; order: number; row: number; muni: string; tip: string };
 export type Crowd = {
   prog: string; code: string;
   dots: CrowdDot[]; rows: ResidentRow[]; perDot: number; who: string; engine: string;
@@ -79,7 +79,7 @@ export function buildCrowd(replay: Replay, munis: FC | null, who: string, engine
       if (!f) continue;
       const seed = `${rowKey(r)}|${muni}`;
       for (const [j, [lon, lat]] of sample(f, seed, k).entries())
-        dots.push({ lon, lat, u: u01(`${seed}|${j}`), row: i, muni, tip: tipOf(r) });
+        dots.push({ lon, lat, u: u01(`${seed}|${j}`), order: u01(`${seed}|ord|${j}`), row: i, muni, tip: tipOf(r) });
     }
   });
   return { prog: replay.programme, code: replay.code, dots, rows: replay.rows,

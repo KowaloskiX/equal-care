@@ -92,41 +92,46 @@ export default function Tour({ steps, onDone, startAt = 0, onActivate }: {
                        fill="none" stroke="rgba(125,211,252,0.75)" strokeWidth="1.5" />}
       </svg>
 
-      <div className="absolute bottom-5 right-5 w-[360px] max-w-[calc(100vw-40px)] rounded-2xl border border-white/10
-                      bg-[#0d1017]/95 backdrop-blur p-4 shadow-2xl">
+      <div className="absolute bottom-5 right-5 w-[380px] max-w-[calc(100vw-40px)] glass p-4 z-10">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="shrink-0 rounded-full bg-sky-400/15 border border-sky-300/30 px-2 py-0.5
-                             font-mono text-[10px] text-sky-300 tabular-nums">
+            <span className="shrink-0 rounded-md bg-sky-400/15 border border-sky-300/35 px-2 py-0.5
+                             font-mono text-[10.5px] text-sky-200 tabular-nums font-medium">
               {String(n + 1).padStart(2, "0")} / {String(steps.length).padStart(2, "0")}
             </span>
-            {st.location && <span className="truncate t-micro uppercase tracking-wider">{st.location}</span>}
+            {st.location && <span className="truncate t-micro uppercase tracking-wider text-white/55">{st.location}</span>}
           </div>
-          <button onClick={onDone} aria-label="Close" className="text-white/45 hover:text-white/80 leading-none px-1">×</button>
+          <button onClick={onDone} aria-label="Close" className="text-white/50 hover:text-white leading-none px-1 text-base">×</button>
         </div>
 
-        <div className="t-section mt-2">{st.title}</div>
-        <div className="mt-2 space-y-1.5">
-          <div className="flex gap-2"><span className="w-14 shrink-0 t-micro uppercase tracking-wider pt-px">See</span>
-            <p className="text-[12px] text-white/65 leading-snug">{st.where}</p></div>
-          <div className="flex gap-2"><span className="w-14 shrink-0 t-micro uppercase tracking-wider pt-px text-sky-300/70">Try</span>
-            <p className="text-[12px] text-white/65 leading-snug">{st.action}</p></div>
-          <div className="flex gap-2"><span className="w-14 shrink-0 t-micro uppercase tracking-wider pt-px text-emerald-300/70">Keep</span>
-            <p className="text-[12px] text-white/65 leading-snug">{st.takeaway}</p></div>
+        <div className="text-[15px] font-semibold text-white mt-2.5 leading-snug">{st.title}</div>
+        <div className="mt-2.5 space-y-2">
+          <div className="grid grid-cols-[44px_1fr] gap-2 items-baseline">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-white/45">See</span>
+            <p className="text-[12.5px] text-white/80 leading-snug">{st.where}</p>
+          </div>
+          <div className="grid grid-cols-[44px_1fr] gap-2 items-baseline">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-sky-300/85">Try</span>
+            <p className="text-[12.5px] text-white/80 leading-snug">{st.action}</p>
+          </div>
+          <div className="grid grid-cols-[44px_1fr] gap-2 items-baseline">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-300/85">Keep</span>
+            <p className="text-[12.5px] text-white/75 leading-snug">{st.takeaway}</p>
+          </div>
         </div>
 
         <div className="flex items-center justify-between mt-3.5 pt-2.5 border-t border-white/10">
-          <div className="flex items-center gap-1" role="tablist" aria-label="Steps">
+          <div className="flex items-center gap-[3px]" role="tablist" aria-label="Steps">
             {steps.map((_, i) => (
               <button key={i} role="tab" aria-selected={i === n} aria-label={`Step ${i + 1}`} onClick={() => setN(i)}
-                      className={`h-1.5 rounded-full transition-all ${i === n ? "w-4 bg-sky-300" : "w-1.5 bg-white/20 hover:bg-white/35"}`} />
+                      className={`h-1.5 rounded-full transition-all ${i === n ? "w-3 bg-sky-300" : "w-1 bg-white/20 hover:bg-white/45"}`} />
             ))}
           </div>
-          <div className="flex items-center gap-2.5">
-            <button onClick={onDone} className="t-caption text-white/50 hover:text-white/80">Skip</button>
-            {n > 0 && <button onClick={() => setN(n - 1)} className="t-caption text-white/60 hover:text-white">Back</button>}
+          <div className="flex items-center gap-2 shrink-0">
+            <button onClick={onDone} className="t-caption text-white/55 hover:text-white px-1">Skip</button>
+            {n > 0 && <button onClick={() => setN(n - 1)} className="nav-btn !h-7 !px-2.5 !text-[11.5px]">Back</button>}
             <button onClick={() => (last ? onDone() : setN(n + 1))}
-                    className="rounded-lg bg-sky-400/20 border border-sky-300/40 text-sky-200 text-[12px] px-3 py-1 hover:bg-sky-400/30">
+                    className="rounded-lg bg-sky-400/20 border border-sky-300/45 text-sky-100 font-medium text-[12px] px-3 py-1 hover:bg-sky-400/30">
               {last ? "Done" : "Next"}
             </button>
           </div>

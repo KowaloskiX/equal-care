@@ -15,8 +15,8 @@ import type { Crowd, CrowdDot } from "@/lib/dots";
 import { Asked } from "@/components/SimReplay";
 
 const STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json";
-// centre shifted west so Finland sits in the map area visible right of the 456 px story column
-const HOME = { longitude: 17.5, latitude: 64.6, zoom: 4.35, pitch: 0, bearing: 0 };
+// fallback before geometry arrives; once counties load, fitHome frames all of Finland cleanly right of the story column
+const HOME = { longitude: 19.5, latitude: 65.3, zoom: 4.15, pitch: 0, bearing: 0 };
 type ViewState = typeof HOME & { transitionDuration?: number; transitionInterpolator?: FlyToInterpolator };
 type RGB = [number, number, number];
 const BAD: RGB = [232, 93, 74], MID: RGB = [70, 76, 92], GOOD: RGB = [72, 196, 160], NEUTRAL: RGB = [120, 150, 220];
@@ -37,8 +37,21 @@ export function colorFor(v: number | undefined, vals: Values | null): [number, n
 const coords = (f: Feature): number[][] => {
   if (f.geometry.type === "Polygon") return f.geometry.coordinates.flat(1);
   if (f.geometry.type === "MultiPolygon") return f.geometry.coordinates.flat(2);
-  return [];   // GeometryCollection or other types do not occur in the boundary files
+  return [];
 };
+
+function fitFinland(fc: FC | null) {
+  if (typeof window === "undefined" || !fc?.features.length) return HOME;
+  const w = window.innerWidth, h = window.innerHeight;
+  if (!w || !h) return HOME;
+  const pts = fc.features.flatMap(coords);
+  if (!pts.length) return HOME;
+  const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+  const vp = new WebMercatorViewport({ width: w, height: h });
+  const fit = vp.fitBounds([[Math.min(...xs), Math.min(...ys)], [Math.max(...xs), Math.max(...ys)]],
+                           { padding: { left: 488, top: 76, right: 36, bottom: 72 }, maxZoom: 6 });
+  return { longitude: fit.longitude, latitude: fit.latitude, zoom: fit.zoom, pitch: 0, bearing: 0 };
+}
 
 export default function ChoroplethMap(props: {
   counties: FC | null; municipalities: FC | null; county: Values | null; muni: Values | null;
@@ -49,18 +62,30 @@ export default function ChoroplethMap(props: {
   const { counties, municipalities, county, muni, selected, onSelect, live, crowd } = props;
   const [view, setView] = useState<ViewState>(HOME);
   const wrap = useRef<HTMLDivElement>(null);
+  const fittedHome = useRef(false);
   const wasFocus = useRef(false);
   // The crowd outlives `live` (cleared on every step change), so driving the camera off the
   // crowd keeps the county framed through the whole step 2 -> step 3 run, incl. fetch waits.
   const focusCode = live?.code ?? crowd?.code ?? null;
 
+  // Frame the entire country (Åland to Utsjoki) inside the canvas right of the story column at any viewport size.
+  useEffect(() => {
+    if (!counties?.features.length || fittedHome.current) return;
+    const next = fitFinland(counties);
+    fittedHome.current = true;
+    if (focusCode == null) {
+      const t = setTimeout(() => setView(next), 0);
+      return () => clearTimeout(t);
+    }
+  }, [counties, focusCode]);
+
   // "the map comes alive": while a replay crowd exists, the camera fits that county inside the
-  // free area right of the 440 px story column; when the crowd clears, back to all of Finland.
+  // free area right of the story column; when the crowd clears, back to all of Finland.
   useEffect(() => {
     const t = setTimeout(() => {
       if (focusCode == null) {
         if (wasFocus.current)
-          setView({ ...HOME, transitionDuration: 800, transitionInterpolator: new FlyToInterpolator() });
+          setView({ ...fitFinland(counties), transitionDuration: 800, transitionInterpolator: new FlyToInterpolator() });
         wasFocus.current = false;
         return;
       }
@@ -72,7 +97,7 @@ export default function ChoroplethMap(props: {
       const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
       const vp = new WebMercatorViewport({ width: el.clientWidth, height: el.clientHeight });
       const fit = vp.fitBounds([[Math.min(...xs), Math.min(...ys)], [Math.max(...xs), Math.max(...ys)]],
-                               { padding: { left: 480, top: 84, right: 48, bottom: 96 }, maxZoom: 6.4 });
+                               { padding: { left: 500, top: 96, right: 56, bottom: 96 }, maxZoom: 9.4 });
       setView({ longitude: fit.longitude, latitude: fit.latitude, zoom: fit.zoom, pitch: 0, bearing: 0,
                 transitionDuration: 900, transitionInterpolator: new FlyToInterpolator() });
     }, 0);
@@ -103,7 +128,7 @@ export default function ChoroplethMap(props: {
   }, [municipalities, muni]);
 
   const fly = (f: Feature | null) => {
-    if (!f) return setView({ ...HOME, transitionDuration: 700, transitionInterpolator: new FlyToInterpolator() });
+    if (!f) return setView({ ...fitFinland(counties), transitionDuration: 700, transitionInterpolator: new FlyToInterpolator() });
     const pts = coords(f);
     const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
     const lon = (Math.min(...xs) + Math.max(...xs)) / 2, lat = (Math.min(...ys) + Math.max(...ys)) / 2;
@@ -168,16 +193,16 @@ export default function ChoroplethMap(props: {
   }
   if (crowd) {
     layers.push(new ScatterplotLayer({
-      id: "crowd", data: crowd.dots.filter((d) => d.u <= crowd.revealFrac), pickable: true,
+      id: "crowd", data: crowd.dots.filter((d) => d.order <= crowd.revealFrac), pickable: true,
       getPosition: (d: CrowdDot) => [d.lon, d.lat],
-      getRadius: 3, radiusUnits: "pixels", radiusMinPixels: 1.5,
-      getFillColor: (d: CrowdDot) => (d.u < crowd.pRow[d.row] ? [74, 222, 128, 235] : [248, 113, 113, 235]),
-      stroked: true, getLineColor: [255, 255, 255, 90], getLineWidth: 0.5, lineWidthUnits: "pixels",
+      getRadius: 4, radiusUnits: "pixels", radiusMinPixels: 2.2,
+      getFillColor: (d: CrowdDot) => (d.u < crowd.pRow[d.row] ? [52, 211, 153, 240] : [251, 113, 133, 240]),
+      stroked: true, getLineColor: [9, 11, 16, 185], getLineWidth: 0.75, lineWidthUnits: "pixels",
       transitions: { getRadius: 250, getFillColor: 300 },   // grow on reveal, fade on scenario flip
       updateTriggers: { getFillColor: [crowd.pRow, crowd.flip] },
       onHover: (info: PickingInfo) => {
         const d = info.object as CrowdDot | undefined;
-        if (!d || d.u > crowd.revealFrac) return setHover(null);
+        if (!d || d.order > crowd.revealFrac) return setHover(null);
         const r = crowd.flip[d.row] ?? crowd.rows[d.row];
         setHover({ x: info.x, y: info.y, name: d.tip,
                    value: `${crowd.engine} ${Math.round(r.jev_attend * 100)} % takes part`,
@@ -185,7 +210,7 @@ export default function ChoroplethMap(props: {
       },
       onClick: (info: PickingInfo) => {
         const d = info.object as CrowdDot | undefined;
-        if (d && d.u <= crowd.revealFrac) { setAns(null); setPick({ x: info.x, y: info.y, d }); }
+        if (d && d.order <= crowd.revealFrac) { setAns(null); setPick({ x: info.x, y: info.y, d }); }
       },
     }));
   }

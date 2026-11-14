@@ -19,6 +19,7 @@ const PROGS = [
 type Prog = (typeof PROGS)[number]["id"];
 const PROG_KEY: Record<Prog, string> = { breast: "screen_breast", bowel: "screen_bowel" };
 const TITLES = ["Where is the gap?", "Why?", "What would help?", "Rest of the pathway"];
+const SHORT_STEPS = ["Where", "Why", "What helps", "Pathway"];
 const NEXT_T = ["Why?", "What would help?", "Rest of the pathway"];
 
 function Chip({ step, eng, src }: { step: number; eng: string | null; src?: Parameters<typeof DataChip>[0]["s"] }) {
@@ -86,82 +87,123 @@ export default function Guided({ prog, code, step, seen, briefProg, activeInd,
 
   const bar = (r: { code: string; name: string; rate: number | null | undefined; missing: number | null | undefined }, hi: boolean, extra?: string) => (
     <button key={r.code} onClick={() => onCode(r.code)}
-            className={`grid w-full grid-cols-[128px_1fr_44px_84px] gap-x-2 items-center rounded px-1.5 py-1 text-left
-              ${hi ? "rowsel" : "hover:bg-white/5"}`}>
-      <span className={`text-[11.5px] truncate ${hi ? "text-white font-medium" : "text-white/70"}`} title={r.name}>
+            className={`grid w-full grid-cols-[126px_1fr_48px_84px] gap-x-2 items-center rounded-md px-2 py-1.5 text-left transition-colors
+              ${hi ? "rowsel" : "hover:bg-white/[0.05]"}`}>
+      <span className={`text-[12px] truncate ${hi ? "text-white font-semibold" : "text-white/78"}`} title={r.name}>
         {extra ?? r.name}
       </span>
-      <span className="relative h-2.5 rounded-full bg-white/5">
-        <span className={`absolute inset-y-0 left-0 rounded-full ${hi ? "bg-white/70" : "bg-rose-400/55"}`}
+      <span className="relative h-2.5 rounded-full bg-white/[0.07]">
+        <span className={`absolute inset-y-0 left-0 rounded-full ${hi ? "bg-rose-300" : "bg-rose-400/60"}`}
               style={{ width: `${r.rate != null ? axisPos(r.rate) : 0}%` }} />
       </span>
-      <span className="text-right text-[10px] tabular-nums text-white/60">{r.rate != null ? fmt(r.rate, "%") : "–"}</span>
-      <span className="text-right text-[10px] tabular-nums text-white/60">
-        {r.missing != null ? <>{fmt(r.missing)} <span className="text-white/35">/ yr</span></> : "–"}
+      <span className={`text-right text-[11.5px] tabular-nums ${hi ? "text-white font-medium" : "text-white/75"}`}>
+        {r.rate != null ? fmt(r.rate, "%") : "–"}
+      </span>
+      <span className={`text-right text-[11.5px] tabular-nums ${hi ? "text-rose-200 font-medium" : "text-white/65"}`}>
+        {r.missing != null ? <>{fmt(r.missing)} <span className="text-white/40 text-[10.5px]">/yr</span></> : "–"}
       </span>
     </button>
   );
 
+  const screenSrc = topRow?.screening?.source ?? pickF?.source ?? counties[0]?.screening?.source;
+
   return (
     <>
-      {/* progress header: step dots (visited are clickable) + the step's data/simulation/roadmap chip */}
-      <div className="flex items-center justify-between gap-2" data-tour="dots">
-        <div className="t-caption">Step {step} of 4 · <span className="text-white/75">{TITLES[step - 1]}</span></div>
-        <div className="flex items-center gap-1.5">
-          {TITLES.map((t, i) => (
-            <button key={t} title={t} disabled={!seen.includes(i + 1)} onClick={() => onStep(i + 1)}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      i + 1 === step ? "bg-sky-300" : seen.includes(i + 1) ? "bg-white/40 hover:bg-white/70" : "bg-white/15"}`} />
-          ))}
+      {/* 4-step segmented progress bar + context header */}
+      <div data-tour="dots">
+        <div className="grid grid-cols-4 gap-1 rounded-lg bg-white/[0.035] border border-white/[0.08] p-1">
+          {TITLES.map((t, i) => {
+            const active = i + 1 === step, ok = seen.includes(i + 1);
+            return (
+              <button key={t} title={t} disabled={!ok} onClick={() => onStep(i + 1)}
+                      className={`rounded-md py-1 px-1.5 text-[11px] leading-tight transition-all disabled:cursor-default ${
+                        active ? "bg-white/[0.14] text-white font-semibold shadow-sm"
+                               : ok ? "text-white/65 hover:text-white hover:bg-white/[0.05]" : "text-white/30"}`}>
+                <span className="opacity-55 mr-1 tabular-nums">{i + 1}.</span>{SHORT_STEPS[i]}
+              </button>
+            );
+          })}
         </div>
-      </div>
-      <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 mt-1.5">
-        <div className="t-caption min-w-0 leading-tight">{PROGS.find((p) => p.id === prog)?.label} · <span className="text-white/75">{name}</span></div>
-        <div className="flex gap-1 shrink-0" data-tour="chips"><Chip step={step} eng={eng} src={counties[0]?.screening?.source} /></div>
+        <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 mt-2.5">
+          <div className="t-micro uppercase tracking-wider text-white/50">
+            Step {step} of 4 · <span className="text-white/80 font-medium normal-case tracking-normal">{name}</span>
+            {step > 1 && <span className="text-white/45 normal-case tracking-normal"> · {PROGS.find((p) => p.id === prog)?.label.split(" · ")[0]}</span>}
+          </div>
+          <div className="flex gap-1 shrink-0" data-tour="chips"><Chip step={step} eng={eng} src={screenSrc} /></div>
+        </div>
+        {step < 4 && <h1 className="t-title mt-1">{TITLES[step - 1]}</h1>}
+        {step === 4 && <span className="sr-only">{TITLES[3]}</span>}
       </div>
 
-      <div className="mt-1 flex-1 overflow-y-auto min-h-0 pr-1">
+      <div className="mt-2 flex-1 overflow-y-auto min-h-0 pr-1">
         {step === 1 && (
-          <div className="mt-2">
+          <div>
             <div data-tour="prog"><Seg options={PROGS} value={prog} onChange={onProg} /></div>
             {rate != null && missing != null ? (
-              <p className="t-body text-white/75 mt-2.5 leading-snug">
-                {name}: {fmt(rate, "%")} of invited {who} attend —{" "}
-                {missing > 0
-                  ? <>about {fmt(missing)} {who} a year short of the {fmt(target, "%")} target.</>
-                  : <>meets the {fmt(target, "%")} target.</>}
-              </p>
-            ) : <Skel className="h-8 mt-2.5" />}
-            {!counties.length ? <Skel className="h-28 mt-2" /> : (
+              <div className="mt-3 rounded-xl border border-white/10 bg-white/[0.035] px-3.5 py-3 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-[30px] font-semibold leading-none tabular-nums text-rose-300">
+                    {fmt(rate, "%")}
+                  </div>
+                  <div className="t-caption text-white/70 mt-1">
+                    of invited {who} attend in <span className="text-white font-medium">{name}</span>
+                  </div>
+                  {screenSrc && <div className="t-micro mt-1"><Src s={screenSrc} /></div>}
+                </div>
+                <div className="shrink-0 text-right">
+                  {missing > 0 ? (
+                    <>
+                      <div className="text-[20px] font-semibold leading-none tabular-nums text-white">
+                        ~{fmt(missing)}
+                      </div>
+                      <div className="t-micro text-rose-200/85 mt-1">{who} / yr short of {fmt(target, "%")}</div>
+                    </>
+                  ) : (
+                    <span className="tag" style={{ color: "#6ee7b7", borderColor: "rgba(110,231,183,0.4)", background: "rgba(110,231,183,0.08)" }}>
+                      meets {fmt(target, "%")} target
+                    </span>
+                  )}
+                  {national != null && <div className="t-micro mt-1">Finland {fmt(national, "%")}</div>}
+                </div>
+              </div>
+            ) : <Skel className="h-20 mt-3" />}
+            {!counties.length ? <Skel className="h-28 mt-3" /> : (
               <>
-                <div className="t-caption mt-3 mb-1">Counties furthest from the {fmt(target, "%")} target</div>
+                <div className="flex items-baseline justify-between mt-3.5 mb-1.5">
+                  <span className="t-caption font-medium text-white/75">Counties furthest from {fmt(target, "%")} target</span>
+                  <span className="t-micro">rate · missing/yr</span>
+                </div>
                 <div className="relative" data-tour="ranking">
-                  <div className="space-y-1">
+                  <div className="space-y-0.5">
                     {counties.map((c) => bar({ code: c.code, name: c.name, rate: c.screening?.rate,
                                               missing: c.screening?.missing_per_year }, c.code === code))}
                     {pickF && bar({ code: pickF.code, name: pickF.name, rate: pickF.rate,
-                                   missing: pickF.missing_per_year }, true, `${pickF.name} · your pick`)}
+                                   missing: pickF.missing_per_year }, true, `${pickF.name} · selected`)}
                   </div>
                   <div className="absolute inset-y-0 pointer-events-none"
-                       style={{ left: "calc(128px + 8px)", right: "calc(84px + 8px + 44px + 8px)" }}>
-                    {target != null && <div className="absolute inset-y-0 border-l border-dashed border-amber-300/70" style={{ left: `${axisPos(target)}%` }} />}
-                    {national != null && <div className="absolute inset-y-0 border-l border-white/40" style={{ left: `${axisPos(national)}%` }} />}
+                       style={{ left: "calc(126px + 8px)", right: "calc(84px + 8px + 48px + 8px)" }}>
+                    {target != null && <div className="absolute inset-y-0 border-l border-dashed border-amber-300/75" style={{ left: `${axisPos(target)}%` }} />}
+                    {national != null && <div className="absolute inset-y-0 border-l border-white/45" style={{ left: `${axisPos(national)}%` }} />}
                   </div>
                 </div>
-                <div className="t-micro mt-1 flex items-center gap-3">
-                  {target != null && <span><span className="text-amber-300/80">┆</span> target {fmt(target, "%")}</span>}
-                  {national != null && <span><span className="text-white/50">│</span> Finland {fmt(national, "%")}</span>}
-                  <span className="ml-auto">attendance · {who} missing / yr</span>
+                <div className="t-micro mt-1.5 flex items-center gap-3">
+                  {target != null && <span><span className="text-amber-300">┆</span> target {fmt(target, "%")}</span>}
+                  {national != null && <span><span className="text-white/60">│</span> Finland {fmt(national, "%")}</span>}
+                  <span className="ml-auto text-white/40">Click a row or the map to switch</span>
                 </div>
               </>
             )}
             {recF?.survival && (
-              <p className="text-[11.5px] text-white/60 mt-2">
-                <Tag v="goal3"><i>GOAL 3</i></Tag>{" "}
-                5-year survival {fmt(recF.survival.value, "%")} (Finland {fmt(recF.survival.national, "%")})
-              </p>
+              <div className="mt-3 rounded-lg border border-white/[0.08] bg-white/[0.025] px-3 py-2 flex items-center justify-between gap-2">
+                <span className="flex items-center gap-2 text-[12px] text-white/75">
+                  <Tag v="goal3">GOAL 3</Tag>
+                  5-year relative survival
+                </span>
+                <span className="text-[12px] tabular-nums text-white/90 font-medium">
+                  {fmt(recF.survival.value, "%")} <span className="text-white/50 font-normal">· Finland {fmt(recF.survival.national, "%")}</span>
+                </span>
+              </div>
             )}
-            <p className="t-caption mt-2 text-white/50">Click a row — or a county on the map — to choose where to look.</p>
           </div>
         )}
 
@@ -186,23 +228,23 @@ export default function Guided({ prog, code, step, seen, briefProg, activeInd,
       </div>
 
       {/* sticky footer — Back / Next (step 4: start over or leave the story) */}
-      <div className="border-t border-white/10 pt-2.5 mt-2 flex items-center justify-between gap-2">
+      <div className="border-t border-white/10 pt-3 mt-2.5 flex items-center justify-between gap-2">
         <button onClick={() => onStep(step - 1)} disabled={step === 1}
-                className="t-caption text-white/60 hover:text-white disabled:opacity-30">← Back</button>
+                className="nav-btn disabled:opacity-25 disabled:pointer-events-none">← Back</button>
         {step < 4 ? (
           <button data-tour="next" onClick={() => onStep(step + 1)}
-                  className="rounded-lg bg-sky-400/20 border border-sky-300/40 text-sky-200 text-[12px] px-3.5 py-1.5 hover:bg-sky-400/30">
+                  className="rounded-lg bg-sky-400/20 border border-sky-300/45 text-sky-100 font-medium text-[12.5px] px-4 py-1.5 hover:bg-sky-400/30 transition-colors">
             Next: {NEXT_T[step - 1]} →
           </button>
         ) : (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {reportHref && (
-              <a href={reportHref} className="t-caption text-white/60 hover:text-white underline decoration-dotted underline-offset-2">
+              <a href={reportHref} className="nav-btn">
                 Generate report
               </a>
             )}
             <button onClick={() => onStep(1)}
-                    className="rounded-lg bg-sky-400/20 border border-sky-300/40 text-sky-200 text-[12px] px-3.5 py-1.5 hover:bg-sky-400/30">
+                    className="rounded-lg bg-sky-400/20 border border-sky-300/45 text-sky-100 font-medium text-[12.5px] px-3.5 py-1.5 hover:bg-sky-400/30 transition-colors">
               Try another county
             </button>
           </div>
@@ -331,11 +373,11 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
       )}
 
       {/* the 5-node pathway strip — dot colour = status; status word underneath, click swaps the card */}
-      <div className="relative mt-4" data-tour="s4-strip">
-        <div className="absolute left-5 right-5 top-[8px] border-t border-white/15" />
+      <div className="relative mt-3" data-tour="s4-strip">
+        <div className="absolute left-6 right-6 top-[9px] border-t border-white/15" />
         {/* decorative stream — people moving along the pathway; carries no number */}
         {[0, 1, 2].map((k) => <span key={k} className="flow-p" style={{ animationDelay: `${k * 1.5}s` }} />)}
-        <div className="relative flex justify-between">
+        <div className="relative grid grid-cols-5 gap-1">
           {NODES.map((n, i) => {
             const st = statuses[i], s = NODE_STYLE[st], on = node === n.id;
             const track = onTrack(n.keys);
@@ -343,37 +385,40 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
             const prob = focus?.answer.probabilities[n.id];
             return (
               <button key={n.id} data-tour={`s4-node-${n.id}`} onClick={() => setSel(n.id)} title={STAGE_QUESTION[n.id]}
-                      className={`flex flex-col items-center gap-1 px-1 py-1 rounded-lg border w-[78px] transition
+                      className={`flex flex-col items-center gap-1 px-1 py-1.5 rounded-lg border transition
                         ${on ? s.ring : "border-transparent hover:bg-white/5"}`}>
-                <span className={`w-3.5 h-3.5 rounded-full shrink-0 ${s.dot} ${on ? "ring-2 ring-white/25" : ""}`} />
-                <span className={`text-[11px] leading-tight text-center ${on ? "text-white" : "text-white/70"}`}>
+                <span className={`w-3.5 h-3.5 rounded-full shrink-0 ${s.dot} ${on ? "ring-2 ring-white/30" : ""}`} />
+                <span className={`text-[11.5px] leading-tight text-center ${on ? "text-white font-semibold" : "text-white/75"}`}>
                   {STAGE_LABEL[n.id] ?? n.id}
                 </span>
-                <span className={`text-[9px] uppercase tracking-wide leading-none ${s.text}`}>
+                <span className={`text-[9.5px] font-semibold uppercase tracking-wide leading-none ${s.text}`}>
                   {STATUS_WORD[st]}
                 </span>
                 <FlowDots key={`${prog}:${code}`} track={track} status={st} col={i} />
-                {pick && <span className="text-[8.5px] uppercase tracking-wide text-sky-300 leading-none"
-                               title={`${engineName(focus?.engine)} picks this stage first · simulated`}>
-                           ◂ {Math.round((prob ?? 0) * 100)}%</span>}
+                {pick && (
+                  <span className="mt-0.5 rounded bg-sky-400/15 border border-sky-300/35 px-1.5 py-0.5 text-[9.5px] font-semibold text-sky-200 leading-none tabular-nums"
+                        title={`${engineName(focus?.engine)} picks this stage first · simulated`}>
+                    ◂ {Math.round((prob ?? 0) * 100)}%
+                  </span>
+                )}
               </button>
             );
           })}
         </div>
       </div>
 
-      <div className="mt-1.5 flex items-center gap-1.5 flex-wrap" data-tour="s4-focus">
-        {focus && (
-          <>
+      <div className="mt-2 rounded-lg border border-sky-300/20 bg-sky-400/[0.05] px-2.5 py-1.5" data-tour="s4-focus">
+        {focus ? (
+          <div className="flex items-center gap-2 flex-wrap">
             <SimChip eng={engineName(focus.engine)} />
-            <span className="t-micro text-white/55">
-              {engineName(focus.engine)} would focus on{" "}
-              <span className="text-sky-300 font-medium">{(STAGE_LABEL[focus.answer.choice] ?? focus.answer.choice).toLowerCase()}</span>
-              {" "}first — ranked from this county&apos;s real numbers; a prioritisation aid, not a diagnosis.
+            <span className="text-[11.5px] text-white/75 leading-snug">
+              Focus first on <span className="text-sky-300 font-semibold">{(STAGE_LABEL[focus.answer.choice] ?? focus.answer.choice).toLowerCase()}</span>
+              <span className="text-white/50"> — ranked from county stats (prioritisation aid, not diagnosis)</span>
             </span>
-          </>
+          </div>
+        ) : (
+          <div className="t-micro">100 dots per stage = cohort share on track (each stage has its own denominator)</div>
         )}
-        <span className="t-micro text-white/30 ml-auto">1 dot = 1 of 100 people at that stage · each stage its own cohort</span>
       </div>
 
       {/* one hero card for the selected node — giant number, one-line caption, Finland + status + n */}
@@ -445,12 +490,13 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
 
       {tops.length > 0 && (
         <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-          <span className="t-micro text-white/50">Longest oncology queues now:</span>
+          <span className="t-micro text-white/55">Longest oncology queues:</span>
           {tops.map((t) => (
             <button key={t.code} onClick={() => onCode(t.code)}
-                    className={`chip text-[10.5px] ${t.code === code ? "chip-primary" : ""}`}
+                    className={`chip text-[11px] inline-flex items-center gap-1.5 ${t.code === code ? "chip-primary" : ""}`}
                     title="switch county — stays on this step">
-              {t.name} <span className="tabular-nums text-rose-300/90">{fmt(t.value, "%")}</span>
+              <span>{t.name}</span>
+              <span className={`tabular-nums ${t.code === code ? "text-rose-200 font-semibold" : "text-rose-300"}`}>{fmt(t.value, "%")}</span>
             </button>
           ))}
         </div>
@@ -474,7 +520,7 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
           </div>
         </details>
       )}
-      <div className="text-[10px] text-white/35 px-1 mt-1.5">ASSUMPTION badges mark judgement calls. Public data, except the stage pick labelled SIMULATION.</div>
+      <div className="t-micro px-0.5 mt-2">Each stage waffle = 100 people in that stage&apos;s cohort. Public data except the SIMULATION stage pick.</div>
     </div>
   );
 }

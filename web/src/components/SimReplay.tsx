@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { engineName, fmt, getBaselineReplay, getResidentAnswer, getResidents,
          type FC, type Recommend, type Replay, type ResidentAnswer, type ResidentRow } from "@/lib/api";
 import { buildCrowd, scenarioRowIndex, type Crowd } from "@/lib/dots";
-import { Assumption, Cite, DRIVER_HEADLINE, PartialMatch, SimChip } from "@/components/RecommendBlock";
+import { Assumption, Cite, DRIVER_HEADLINE, SimChip } from "@/components/RecommendBlock";
 import { Skel, Tag } from "@/components/ui";
 
 export const AXIS = { lo: 60, hi: 90 };   // attendance % axis, shared with the step-1 chart
@@ -125,21 +125,22 @@ export function ReplayPlayer({ replay, who, onLive, onProgress, onDone, duration
   const doneRef = useRef(onDone);
   const progRef = useRef(onProgress);
   const iRef = useRef(i);
+  const rafRef = useRef(0);
   useEffect(() => { liveRef.current = onLive; doneRef.current = onDone; progRef.current = onProgress; });
 
   useEffect(() => {
     if (instant) return;
-    let raf = 0; const t0 = performance.now();
+    const t0 = performance.now();
     const tick = (t: number) => {
       const x = Math.min(1, (t - t0) / duration);
       const n = Math.round(x * rows.length);   // linear — the counter, tiles and map stay in sync
       iRef.current = n; setI(n); progRef.current?.(n);
       const r = n ? rows[n - 1] : null;                     // live map rate emitted from the tick —
       liveRef.current?.(r ? { code: replay.code, value: r.cum_rate } : null);   // not an effect, so no nested updates
-      if (x < 1) raf = requestAnimationFrame(tick); else setDone(true);
+      if (x < 1) rafRef.current = requestAnimationFrame(tick); else setDone(true);
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
   }, [rows, rows.length, duration, instant, replay.code]);
 
   useEffect(() => {   // counter/gauge/map follow `i` per frame; a new tile enters ~1.4×/s so each stays readable
@@ -170,7 +171,8 @@ export function ReplayPlayer({ replay, who, onLive, onProgress, onDone, duration
         <div className="text-[11px] text-white/70 tabular-nums">
           Asked {i} / {rows.length} resident types · {fmt(cur?.cum_people ?? 0)} of {fmt(replay.people_total)} {who}
         </div>
-        <button onClick={() => { const last = rows[rows.length - 1];
+        <button onClick={() => { cancelAnimationFrame(rafRef.current);
+                               const last = rows[rows.length - 1];
                                iRef.current = rows.length; setI(rows.length); progRef.current?.(rows.length);
                                if (last) liveRef.current?.({ code: replay.code, value: last.cum_rate });
                                setDone(true); }}
@@ -293,69 +295,66 @@ function DataBlock({ split, target }: { split: Recommend["split"] | null; target
     : null;
   const headline = HEADLINE_TEXT[split.headline ?? ""] ?? DRIVER_HEADLINE[split.driver] ?? "";
   const rows = [
-    { label: "Actually attends", v: split.real, bar: "bg-rose-400/70" },
-    { label: "Expected from who lives here", v: split.expected, bar: "bg-sky-400/70" },
-    { label: "Finland", v: split.national_real, bar: "bg-white/45" },
+    { label: "Actual attendance", v: split.real, bar: "bg-rose-400/80" },
+    { label: "Expected from demographics", v: split.expected, bar: "bg-sky-400/80" },
+    { label: "Finland average", v: split.national_real, bar: "bg-white/50" },
   ];
   return (
-    <div className="slide">
-      <div className="flex items-center gap-2 flex-wrap">
-        <span className="t-caption uppercase tracking-wide">How much does who-lives-here explain?</span>
-        <Tag v="data"><i>DATA · statistical model</i></Tag>
+    <div className="slide rounded-xl border border-white/10 bg-white/[0.025] p-3.5">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="t-panel">{headline || "Demographics vs unexplained"}</div>
+        <Tag v="data">DATA · {split.n_municipalities ?? 291} munis</Tag>
       </div>
-      {headline && <div className="t-panel mt-1.5">{headline}</div>}
-      <div className="mt-3 space-y-1.5">
+      <div className="mt-2.5 space-y-1.5">
         {rows.map((r) => (
-          <div key={r.label} className="grid grid-cols-[168px_1fr_52px] items-center gap-2">
-            <span className="text-[12.5px] text-white/80 leading-tight">{r.label}</span>
-            <span className="relative h-3 rounded-full bg-white/5 overflow-hidden">
+          <div key={r.label} className="grid grid-cols-[164px_1fr_50px] items-center gap-2">
+            <span className="text-[12px] text-white/80 leading-tight truncate">{r.label}</span>
+            <span className="relative h-2.5 rounded-full bg-white/[0.07] overflow-hidden">
               <span className={`absolute inset-y-0 left-0 rounded-full ${r.bar}`} style={{ width: `${axisPos(r.v ?? 0)}%` }} />
             </span>
-            <span className="text-right text-[12.5px] text-white/80 tabular-nums">{r.v != null ? fmt(r.v, "%") : "–"}</span>
+            <span className="text-right text-[12px] font-medium text-white/90 tabular-nums">{r.v != null ? fmt(r.v, "%") : "–"}</span>
           </div>
         ))}
       </div>
       {split.driver === "national" ? (
-        <p className="t-body text-white/55 mt-2.5">
-          The county is at Finland&apos;s level; the gap to {fmt(target, "%")} is national.
+        <p className="t-caption text-white/65 mt-2.5">
+          At Finland&apos;s level — the shortfall to {fmt(target, "%")} is national.
         </p>
       ) : tot > 0 ? (
-        <div className="mt-4">
-          <div className="t-caption uppercase tracking-wide">Where the {fmt(split.total_pts)}-point gap comes from</div>
+        <div className="mt-3 pt-2.5 border-t border-white/[0.08]">
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="t-caption font-medium text-white/75">{fmt(split.total_pts)}-pt gap to Finland</span>
+            <span className="t-micro">R² = {split.r2_pct ?? "–"} % across municipalities</span>
+          </div>
           <div className="relative mt-1.5">
-            <div className="flex h-3.5 overflow-hidden rounded-md bg-white/5 border border-white/10">
-              <div className="bg-sky-400/60 h-full" style={{ width: `${(100 * compNeg) / tot}%` }} />
-              <div className="bg-rose-400/70 h-full flex-1" />
+            <div className="flex h-3 overflow-hidden rounded-full bg-white/[0.07]">
+              <div className="bg-sky-400/75 h-full" style={{ width: `${(100 * compNeg) / tot}%` }} />
+              <div className="bg-rose-400/75 h-full flex-1" />
             </div>
             {ci && compNeg > 0 && (
-              <>
-                <div className="absolute pointer-events-none border-t-2 border-x-2 border-sky-300 rounded-t-[3px]"
-                     title={`90 % interval: ${fmt(ci[0])}–${fmt(ci[1])} pts`}
-                     style={{ left: `${(100 * Math.min(ci[0], tot)) / tot}%`,
-                              width: `${(100 * (Math.min(ci[1], tot) - Math.min(ci[0], tot))) / tot}%`,
-                              top: 2, height: 9 }} />
-                <span className="absolute text-[9px] text-white/85 whitespace-nowrap -translate-y-1/2" title="90 % interval"
-                      style={{ left: `min(calc(100% - 64px), calc(${(100 * Math.min(ci[1], tot)) / tot}% + 5px))`, top: "50%" }}>
-                  {fmt(ci[0])}–{fmt(ci[1])} pts
-                </span>
-              </>
+              <div className="absolute pointer-events-none border-t-2 border-x-2 border-white/85 rounded-t-[2px]"
+                   title={`90 % interval: ${fmt(ci[0])}–${fmt(ci[1])} pts`}
+                   style={{ left: `${(100 * Math.min(ci[0], tot)) / tot}%`,
+                            width: `${(100 * (Math.min(ci[1], tot) - Math.min(ci[0], tot))) / tot}%`,
+                            top: 2, height: 8 }} />
             )}
           </div>
-          <div className="flex flex-col gap-0.5 text-[11.5px] text-white/60 mt-2.5">
-            <span><span className="inline-block w-2 h-2 rounded-sm bg-sky-400/70 mr-1.5 align-middle" />
-              who lives here ≈ {split.comp_pts ?? fmt(compNeg)} pts{ci ? ` (${fmt(ci[0])}–${fmt(ci[1])})` : ""}</span>
-            <span><span className={`inline-block w-2 h-2 rounded-sm ${other >= 0 ? "bg-rose-400/70" : "bg-emerald-400/70"} mr-1.5 align-middle`} />
+          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-0.5 text-[11.5px] text-white/75 mt-2">
+            <span>
+              <span className="inline-block w-2 h-2 rounded-full bg-sky-400 mr-1.5 align-middle" />
+              Demographics <b className="font-semibold text-white tabular-nums">{split.comp_pts ?? fmt(compNeg)} pts</b>
+              {ci && <span className="text-white/45 text-[10.5px]"> ({fmt(ci[0])}–{fmt(ci[1])})</span>}
+            </span>
+            <span>
+              <span className={`inline-block w-2 h-2 rounded-full ${other >= 0 ? "bg-rose-400" : "bg-emerald-400"} mr-1.5 align-middle`} />
               {other >= 0
-                ? `not explained by who lives here ≈ ${split.other_pts ?? fmt(otherNeg)} pts`
-                : `the county actually does ${fmt(-other)} pts better than who lives here predicts`}</span>
+                ? <>Unexplained <b className="font-semibold text-white tabular-nums">{split.other_pts ?? fmt(otherNeg)} pts</b></>
+                : <>{fmt(-other)} pts better than predicted</>}
+            </span>
           </div>
         </div>
       ) : null}
-      <p className="t-micro mt-3 leading-snug">
-        Based on {split.n_municipalities ?? "–"} municipalities: their mix of languages, education, age and
-        size explains {split.r2_pct ?? "–"} % of the differences in attendance between them.
-      </p>
-      {split.assumption && <Assumption text={split.assumption} />}
+      {split.assumption && <div className="mt-1.5"><Assumption text={split.assumption} /></div>}
     </div>
   );
 }
@@ -366,14 +365,19 @@ function SkipGroups({ groups, eng, who }: { groups: NonNullable<Replay["final"][
   return (
     <div className="space-y-1.5 mt-1.5">
       {groups.map((g, i) => (
-        <div key={i} className="rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-2">
-          <div className="text-[12px] text-white/85 leading-snug">
-            {cap} with {g.lang_group === "Finnish or Swedish" ? "Finnish or Swedish as native language" : g.lang_group}, {g.activity}
+        <div key={i} className="rounded-lg border border-white/10 bg-white/[0.035] px-3 py-2 flex items-center justify-between gap-2.5">
+          <div className="min-w-0">
+            <div className="text-[12px] text-white/90 font-medium leading-snug truncate">
+              {cap} · {g.lang_group === "Finnish or Swedish" ? "Finnish / Swedish" : g.lang_group} · {g.activity}
+            </div>
+            <div className="t-micro mt-0.5 leading-snug">
+              {eng} {fmt(g.rate, "%")} attend
+              {g.main_barrier_short && <> · top barrier: <span className="text-sky-300 font-medium">{g.main_barrier_short}</span></>}
+            </div>
           </div>
-          <div className="t-micro mt-0.5 leading-snug">
-            ~{fmt(g.expected_skip)} expected to skip · {eng} {fmt(g.rate, "%")} take part
-            {g.main_barrier_short && <> · main barrier: {g.main_barrier_short}</>}
-          </div>
+          <span className="shrink-0 rounded-md bg-rose-400/12 border border-rose-300/25 px-2 py-0.5 text-[11px] font-medium text-rose-200 tabular-nums">
+            ~{fmt(g.expected_skip)} skip
+          </span>
         </div>
       ))}
     </div>
@@ -394,9 +398,6 @@ export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
   const [done, setDone] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const resRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {   // bring the revealed result into view inside the column
-    if (done) resRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }, [done]);
   useEffect(() => {   // callers key this component by prog:code, so a change remounts it
     let live = true;
     getBaselineReplay(prog, code)
@@ -420,22 +421,21 @@ export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
     <>
       <div data-tour="s2-split"><DataBlock split={rec?.split ?? null} target={rec?.screening?.target ?? 80} /></div>
 
-      <div className="mt-5 pt-3 border-t border-white/10">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="t-caption uppercase tracking-wide">Who is likely to skip, and what stops them</span>
+      <div className="mt-3.5 rounded-xl border border-white/10 bg-white/[0.025] p-3.5">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <span className="t-section">Who skips, and what stops them</span>
           <SimChip eng={eng} />
         </div>
         {!ran && (
           <>
-            <p className="t-body text-white/55 mt-1.5 leading-snug">
-              Simulated residents — rebuilt from Statistics Finland tables — answer whether they take part
-              and why not. Nothing is computed until you ask them.
+            <p className="t-caption mt-1.5 leading-snug">
+              Synthetic residents built from Statistics Finland census tables answer whether they attend and what blocks them.
             </p>
-            {!replay ? <Skel className="h-9 mt-2" /> : (
+            {!replay ? <Skel className="h-9 mt-2.5" /> : (
               <button data-tour="s2-ask" onClick={() => setRan(true)}
-                      className="mt-2 w-full rounded-lg bg-sky-400/15 border border-sky-300/35 text-sky-200 text-[12.5px] py-2
-                                 hover:bg-sky-400/25">
-                Ask {replay.rows.length} simulated resident types in {replay.name}
+                      className="mt-2.5 w-full rounded-lg bg-sky-400/18 border border-sky-300/40 text-sky-100 font-medium text-[12.5px] py-2
+                                 hover:bg-sky-400/28 transition-colors">
+                Ask {replay.rows.length} simulated resident types in {replay.name} →
               </button>
             )}
           </>
@@ -446,25 +446,22 @@ export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
         {done && replay && (
           <div ref={resRef} className="mt-2.5 slide" data-tour="s2-groups">
             {replay.final.groups?.length ? (
-              <div className="mt-2">
-                <div className="t-caption uppercase tracking-wide">Who is most likely to skip</div>
+              <div>
+                <div className="t-micro uppercase tracking-wider text-white/50">Largest non-attending groups</div>
                 <SkipGroups groups={replay.final.groups} eng={eng} who={who} />
               </div>
             ) : null}
-            <div className="mt-4">
-              <div className="t-caption uppercase tracking-wide">Main barriers residents give</div>
-              <p className="t-micro mt-0.5 leading-snug">Main barriers among those expected to skip (motivators like habit excluded) · Simulation</p>
+            <div className="mt-3">
+              <div className="t-micro uppercase tracking-wider text-white/50">Top barriers among non-attendees</div>
               <Reasons cum={replay.rows[replay.rows.length - 1]?.cum_reasons}
                        shorts={replay.reason_shorts} labels={replay.reason_labels} big />
             </div>
-            <p className="t-micro mt-4 leading-snug text-white/45">
-              Simulated residents are a model: two engines (Jev and Gemini) disagree on how much of the gap is
-              local, so the block above uses data for that.
-              {simSplit?.composition_gap != null && simSplit.other_gap != null &&
-                <> Its own split: who lives here {fmt(Math.abs(simSplit.composition_gap))} pts /
-                  not explained {fmt(Math.abs(simSplit.other_gap))} pts · Simulation.</>}
-            </p>
-            <div className="mt-3"><ReplayDetails replay={replay} who={who} /></div>
+            {simSplit?.composition_gap != null && simSplit.other_gap != null && (
+              <p className="t-micro mt-3 leading-snug">
+                Model split ({eng}): demographics {fmt(Math.abs(simSplit.composition_gap))} pts · unexplained {fmt(Math.abs(simSplit.other_gap))} pts.
+              </p>
+            )}
+            <div className="mt-2 pt-2 border-t border-white/[0.08]"><ReplayDetails replay={replay} who={who} /></div>
           </div>
         )}
       </div>
@@ -585,23 +582,36 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCro
 
   return (
     <>
-      <div className="t-caption mt-1.5 mb-1.5">Pick interventions — the residents answer again.</div>
-      <div className="flex flex-wrap gap-1.5" data-tour="s3-interv">
-        {opts.map((s, i) => (
-          <button key={s.scenario} data-tour={i === 0 ? "s3-chip0" : undefined}
-                  onClick={() => toggle(s.scenario)} title={s.label}
-                  className={`chip text-[11px] ${sel.has(s.scenario) ? "chip-primary" : ""}`}>
-            {s.short ?? s.label}
-            {s.actions[0] && <span className="text-[9px] opacity-60 ml-1.5">{s.actions[0].id}·p.{s.actions[0].page}</span>}
-          </button>
-        ))}
+      <div className="t-caption mb-2">Choose interventions to re-run simulated residents:</div>
+      <div className="grid grid-cols-2 gap-2" data-tour="s3-interv">
+        {opts.map((s, i) => {
+          const on = sel.has(s.scenario);
+          return (
+            <button key={s.scenario} data-tour={i === 0 ? "s3-chip0" : undefined}
+                    onClick={() => toggle(s.scenario)} title={s.label}
+                    className={`rounded-lg border px-2.5 py-2 text-left transition-all ${
+                      on ? "border-emerald-400/60 bg-emerald-400/12 text-white shadow-[inset_0_1px_0_rgba(110,231,183,0.15)]"
+                         : "border-white/10 bg-white/[0.03] text-white/80 hover:border-white/25 hover:bg-white/[0.06]"}`}>
+              <div className="flex items-center justify-between gap-1.5">
+                <span className="text-[12px] font-medium leading-tight truncate">{s.short ?? s.label}</span>
+                <span className={`w-3.5 h-3.5 rounded flex items-center justify-center text-[9px] shrink-0 border ${
+                  on ? "border-emerald-300 bg-emerald-400 text-slate-950 font-bold" : "border-white/20 bg-transparent text-transparent"}`}>✓</span>
+              </div>
+              {s.actions[0] && (
+                <div className="text-[10px] text-amber-300/80 mt-0.5 tabular-nums">
+                  Action {s.actions[0].id} · p.{s.actions[0].page}
+                </div>
+              )}
+            </button>
+          );
+        })}
       </div>
       <button data-tour="s3-run" onClick={run} disabled={!sel.size || busy}
-              className="mt-2 w-full rounded-lg bg-emerald-400/15 border border-emerald-300/30 text-emerald-300 text-[12px] py-1.5
-                         hover:bg-emerald-400/25 disabled:opacity-40 disabled:cursor-not-allowed">
-        {busy ? "asking simulated residents…" : "Run simulation"}
+              className="mt-2.5 w-full rounded-lg bg-emerald-400/20 border border-emerald-300/45 text-emerald-100 font-medium text-[12.5px] py-2
+                         hover:bg-emerald-400/30 disabled:opacity-35 disabled:cursor-not-allowed transition-colors">
+        {busy ? "Asking simulated residents…" : "Run simulation →"}
       </button>
-      {err && <div className="t-body text-rose-300 mt-1.5">{err}</div>}
+      {err && <div className="t-body text-rose-300 mt-2">{err}</div>}
       {replay && !busy && !done && (
         <ReplayPlayer key={runId} replay={replay} who={who} onLive={onLive} onProgress={onProgress} onDone={onDone} />)}
       {w && replay && (() => {
@@ -616,77 +626,83 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCro
         const missing = w.missing_per_year;
         const gapLine = missing != null && low != null && high != null
           ? low >= missing
-            ? `would close the whole gap of ${fmt(missing)}`
+            ? `Closes the entire gap of ${fmt(missing)} / yr`
             : high >= missing
-              ? `up to the whole gap of ${fmt(missing)}`
+              ? `Closes up to the entire gap of ${fmt(missing)} / yr`
               : loPct != null && hiPct != null
-                ? `${loPct === hiPct ? loPct : `${loPct}–${hiPct}`} % of the gap of ${fmt(missing)}`
+                ? `Closes ${loPct === hiPct ? loPct : `${loPct}–${hiPct}`} % of the ${fmt(missing)} annual gap`
                 : null
           : null;
         return (
-        <div ref={resRef} className="mt-2.5 slide" data-tour="s3-result">
-          <div className="t-panel text-emerald-300">
-            {both ? `+${fmt(low)} to +${fmt(high)} ${who} a year` : `${sgn(ex)} ${who} a year`}
-          </div>
-          <div className="t-caption mt-0.5 text-white/60">
-            {both
-              ? <>{engineName(w.engine) ?? w.engine} {sgn(ex)} · {engineName(oe!.engine) ?? oe!.engine} {sgn(oe!.extra_people_per_year)} · simulated upper bound, not a forecast</>
-              : <>simulated upper bound, not a forecast</>}
-          </div>
-          {gapLine && <div className="text-[12px] text-white/75 mt-1">{gapLine}</div>}
-          <div className="flex items-center gap-2 mt-1.5">
-            <div className="relative flex-1 h-3.5 rounded bg-white/5 overflow-hidden" title="share of the gap closed, per model">
+        <div ref={resRef} className="mt-3 slide" data-tour="s3-result">
+          <div className="rounded-xl border border-emerald-400/25 bg-emerald-400/[0.06] p-3.5">
+            <div className="text-[24px] font-semibold leading-none tabular-nums text-emerald-300">
+              {both ? `+${fmt(low)} to +${fmt(high)}` : sgn(ex)}{" "}
+              <span className="text-[14px] font-normal text-emerald-200/80">{who} / yr</span>
+            </div>
+            {gapLine && <div className="text-[12px] text-white/85 mt-1.5 font-medium">{gapLine}</div>}
+            <div className="relative h-2.5 rounded-full bg-white/[0.08] overflow-hidden mt-2" title="share of the gap closed, per model">
               {loPct != null && hiPct != null && (
-                <div className="absolute inset-y-0 bg-emerald-400/35"
+                <div className="absolute inset-y-0 bg-emerald-400/40 rounded-full"
                      style={{ left: `${Math.max(0, Math.min(100, loPct))}%`,
                               width: `${Math.min(100, Math.max(0, hiPct)) - Math.max(0, Math.min(100, loPct))}%` }} />
               )}
               {w.gap_closed_pct != null && (
-                <div className="absolute inset-y-[-1px] w-[3px] bg-emerald-300 rounded-full"
+                <div className="absolute inset-y-0 w-[3px] bg-emerald-300 rounded-full"
                      title={`${engineName(w.engine) ?? w.engine}: ${w.gap_closed_pct} %`}
                      style={{ left: `calc(${Math.max(0, Math.min(100, w.gap_closed_pct))}% - 1.5px)` }} />
               )}
             </div>
+            <div className="t-micro mt-2 text-white/55">
+              {both
+                ? <>{engineName(w.engine) ?? w.engine} {sgn(ex)} · {engineName(oe!.engine) ?? oe!.engine} {sgn(oe!.extra_people_per_year)} · </>
+                : null}
+              simulated upper bound · {w.from_cache} resident types changed{w.asked_live ? ` · ${w.asked_live} live calls` : ""}
+            </div>
           </div>
-          <div className="t-micro mt-1 flex items-center gap-2">
-            <SimChip eng={engineName(w.engine)} />
-            <span>{w.asked_live ? `${w.asked_live} new ${engineName(w.engine) ?? "engine"} calls` : "replayed from recorded answers"} · {w.from_cache} resident types changed</span>
-          </div>
-          <div className="mt-4">
-            <div className="t-caption uppercase tracking-wide mb-1">What the roadmap says</div>
-            <div className="t-micro text-white/40 mb-1.5">●●● direct match · ●● partial · scored by {engineName(w.engine) ?? "Gemini Decisions"} against the roadmap text</div>
-            <div className="space-y-1">
+
+          <div className="mt-3.5">
+            <div className="flex items-baseline justify-between gap-2 mb-1.5">
+              <span className="t-caption font-medium text-white/80">Cited roadmap actions</span>
+              <span className="t-micro">●●● direct · ●● partial fit</span>
+            </div>
+            <div className="space-y-1.5">
               {w.scenarios.map((s) => (
-                <div key={s.scenario} className="flex flex-wrap items-baseline gap-x-2 gap-y-1 px-0.5">
-                  <span className="text-[11px] text-white/55 shrink-0">{s.label}</span>
-                  <span className="inline-flex flex-wrap items-center gap-1.5">
-                    {s.actions.map((a) => <Cite key={a.id} a={a} />)}
-                    {s.actions.length > 0 && <PartialMatch a={s.actions.find((a) => a.partial_match) ?? s.actions[0]} />}
-                    {s.assumption && <Assumption text={s.assumption} />}
-                  </span>
+                <div key={s.scenario} className="rounded-lg border border-white/[0.08] bg-white/[0.025] px-2.5 py-2 space-y-1.5">
+                  <div className="text-[11.5px] font-medium text-white/80 leading-snug">{s.label}</div>
+                  {s.actions.map((a) => (
+                    <div key={a.id} className="flex items-start gap-2">
+                      <Cite a={a} />
+                      <span className="text-[11.5px] text-white/65 leading-snug">
+                        {a.title_en ?? a.title}
+                        {a.partial_match && <span className="text-white/40"> · partial fit</span>}
+                      </span>
+                    </div>
+                  ))}
+                  {s.assumption && <Assumption text={s.assumption} />}
                 </div>
               ))}
             </div>
           </div>
           {tried.length > 0 && (
-            <div className="mt-4 pt-2 border-t border-white/10">
-              <div className="t-caption uppercase tracking-wide mb-1">Tried</div>
-              <div className="space-y-0.5">
+            <div className="mt-3.5 pt-2.5 border-t border-white/10">
+              <div className="t-micro uppercase tracking-wider text-white/50 mb-1.5">Session runs</div>
+              <div className="space-y-1">
                 {tried.map((t, i) => (
                   <div key={i} className="flex items-center gap-2">
-                    <span className="w-28 shrink-0 text-[10.5px] text-white/55 leading-tight" title={t.label}>{t.label}</span>
-                    <div className="flex-1 h-2 rounded bg-white/5 overflow-hidden">
-                      <div className="h-full rounded bg-emerald-400/50" style={{ width: `${Math.min(100, t.pct ?? 0)}%` }} />
+                    <span className="w-32 shrink-0 text-[11px] text-white/70 truncate" title={t.label}>{t.label}</span>
+                    <div className="flex-1 h-2 rounded-full bg-white/[0.07] overflow-hidden">
+                      <div className="h-full rounded-full bg-emerald-400/60" style={{ width: `${Math.min(100, Math.max(0, t.pct ?? 0))}%` }} />
                     </div>
-                    <span className="w-28 text-right text-[10px] tabular-nums text-emerald-300 shrink-0">
-                      +{fmt(t.extra)} /yr{t.pct != null && <> · {t.pct > 100 ? "> whole gap" : `${t.pct} %`}</>}
+                    <span className="w-28 text-right text-[11px] tabular-nums text-emerald-300 shrink-0">
+                      {sgn(t.extra)} /yr{t.pct != null && <> · {t.pct > 100 ? "> gap" : `${t.pct} %`}</>}
                     </span>
                   </div>
                 ))}
               </div>
             </div>
           )}
-          <div className="mt-4"><ReplayDetails replay={replay} who={who} /></div>
+          <div className="mt-3"><ReplayDetails replay={replay} who={who} /></div>
         </div>
         );
       })()}

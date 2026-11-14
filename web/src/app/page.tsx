@@ -6,7 +6,7 @@ import Guided from "@/components/Guided";
 import Analyst from "@/components/Analyst";
 import Tour, { type TourStep } from "@/components/Tour";
 import { Skel, StepNo, Tag } from "@/components/ui";
-import { engineName, fmt, getBrief, getGap, getGeo, getMeta, getPathway, getValues,
+import { fmt, getBrief, getGap, getGeo, getMeta, getPathway, getValues,
          type Brief, type FC, type Gap, type Meta, type Pathway, type Values } from "@/lib/api";
 import type { Crowd } from "@/lib/dots";
 
@@ -277,25 +277,31 @@ export default function Home() {
       </div>
 
       {/* top bar */}
-      <header className="absolute left-4 right-4 top-3 glass px-4 h-[52px] flex items-center justify-between gap-4">
-        <div className="flex items-baseline gap-3 min-w-0">
-          <span className="t-panel whitespace-nowrap">Equal Care Finland</span>
-          <span className="t-caption truncate hidden md:block">Where cancer care falls behind, and what each county can do</span>
+      <header className="absolute left-4 right-4 top-3 glass px-4 h-[52px] flex items-center justify-between gap-4 z-10">
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="inline-flex items-center gap-2 whitespace-nowrap font-semibold text-[15px] tracking-tight text-white">
+            <span className="w-2 h-2 rounded-full bg-rose-400 shadow-[0_0_10px_rgba(251,113,133,0.6)]" />
+            Equal Care Finland
+          </span>
+          <span className="hidden lg:inline-block h-3.5 w-px bg-white/15 shrink-0" />
+          <span className="t-caption truncate hidden lg:block">Cancer care pathway gaps &amp; roadmap actions across 23 counties</span>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          {reportHref && <a href={reportHref} className="tag tag-data">Generate report</a>}
-          <button onClick={() => setAsk((a) => !a)} className="tag tag-sim">Ask the analyst</button>
-          <button onClick={restartTour} title="Show me around"
-                  className="tag tag-data w-6 h-6 justify-center !px-0">?</button>
+        <div className="flex items-center gap-1.5 shrink-0">
           {mode === "guided"
-            ? <button onClick={explore} className="tag tag-data">Explore all indicators</button>
-            : <button onClick={guided} className="tag tag-data">← Guided story</button>}
-          <a href="/story" className="tag tag-data">Story ▸</a>
+            ? <button onClick={explore} className="nav-btn">Explore all indicators</button>
+            : <button onClick={guided} className="nav-btn">← Guided story</button>}
+          <a href="/story" className="nav-btn">Story ▸</a>
+          <button onClick={restartTour} title="Show me around" className="nav-btn" aria-label="Show me around">
+            <span className="text-sky-300 font-semibold">?</span>
+            <span className="hidden sm:inline">Walkthrough</span>
+          </button>
+          <button onClick={() => setAsk((a) => !a)} className="nav-btn nav-btn-accent">Ask the analyst</button>
+          {reportHref && <a href={reportHref} className="nav-btn nav-btn-primary">Generate report</a>}
         </div>
       </header>
 
       {/* left column: the guided story, or the whole care pathway in explore mode */}
-      <div className="absolute left-4 top-[72px] bottom-4 w-[440px] glass p-4 flex flex-col min-h-0">
+      <div className="absolute left-4 top-[74px] bottom-4 w-[448px] glass p-4 flex flex-col min-h-0 z-10">
         {mode === "guided" && code ? (
           <Guided prog={prog} code={code} step={step} seen={seen} briefProg={briefProg}
                   activeInd={step === 4 ? pathKey : null}
@@ -388,27 +394,29 @@ export default function Home() {
         )}
       </div>
 
-      {/* map legend — centred in the free area right of the column, bounded so it never leaves the viewport */}
+      {/* map legend — centred in the free area right of the column, shifts left when the analyst drawer opens */}
       {shown && (
-        <div className="absolute bottom-4 left-[472px] right-4 flex justify-center pointer-events-none">
-          <div className="glass px-4 py-2 flex items-center gap-3 min-w-0 overflow-hidden">
-          <span className="t-caption font-semibold text-white/85 whitespace-nowrap max-w-[300px] truncate">
-            {live ? `Simulated attendance · ${liveName}` : (ind?.short ?? shown.label)}
-            {crowd ? ` · Simulation · ${engineName(crowd.engine) ?? crowd.engine}` : ""}</span>
-          <span className="t-micro whitespace-nowrap">worse</span>
-          <div className="w-24 h-2 rounded-full shrink-0"
-               style={{ background: "linear-gradient(90deg, rgb(232,93,74) 0%, rgb(70,76,92) 50%, rgb(72,196,160) 100%)" }} />
-          <span className="t-micro whitespace-nowrap">better</span>
-          {shown.national != null && <span className="t-micro whitespace-nowrap">· Finland {fmt(shown.national, shown.unit)}</span>}
-          <span className="t-micro whitespace-nowrap flex items-center gap-1">
-            <i className="inline-block w-2.5 h-2.5 rounded-sm bg-white/15" />no data</span>
-          {crowd && (
-            <span className="t-micro whitespace-nowrap flex items-center gap-1.5 border-l border-white/15 pl-3">
-              <i className="inline-block w-2 h-2 rounded-full" style={{ background: "#4ade80" }} />takes part
-              <i className="inline-block w-2 h-2 rounded-full ml-1.5" style={{ background: "#f87171" }} />skips
-              <span className="ml-1">1 dot ≈ {crowd.perDot}</span>
+        <div className={`absolute bottom-7 left-[480px] ${ask ? "right-[452px]" : "right-4"} flex justify-center pointer-events-none z-10`}>
+          <div className="glass px-3.5 py-1.5 flex items-center gap-2.5 min-w-0 overflow-hidden">
+            <span className="text-[11.5px] font-medium text-white/90 whitespace-nowrap max-w-[260px] truncate">
+              {live ? `Simulated attendance · ${liveName}` : (ind?.short ?? shown.label)}
             </span>
-          )}
+            {crowd && !live && <span className="tag tag-sim">SIMULATION</span>}
+            <span className="t-micro whitespace-nowrap">worse</span>
+            <div className="w-20 h-2 rounded-full shrink-0"
+                 style={{ background: "linear-gradient(90deg, rgb(232,93,74) 0%, rgb(70,76,92) 50%, rgb(72,196,160) 100%)" }} />
+            <span className="t-micro whitespace-nowrap">better</span>
+            {shown.national != null && <span className="t-micro whitespace-nowrap">· Finland {fmt(shown.national, shown.unit)}</span>}
+            <span className="t-micro whitespace-nowrap hidden xl:inline-flex items-center gap-1">
+              <i className="inline-block w-2 h-2 rounded-sm bg-white/15" />no data
+            </span>
+            {crowd && (
+              <span className="t-micro whitespace-nowrap flex items-center gap-1.5 border-l border-white/15 pl-2.5">
+                <i className="inline-block w-2 h-2 rounded-full bg-emerald-400" />attends
+                <i className="inline-block w-2 h-2 rounded-full bg-rose-400 ml-1" />skips
+                <span className="text-white/55 ml-0.5">1 dot ≈ {crowd.perDot}</span>
+              </span>
+            )}
           </div>
         </div>
       )}
