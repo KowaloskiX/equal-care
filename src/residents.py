@@ -33,6 +33,7 @@ CACHE = {"jev": ROOT / "data/jev", "gemini": ROOT / "data/decisions"}
 PRICE_PER_MTOK = {"jev": 0.042, "gemini": 0.10}
 CONCURRENCY = {"jev": 40, "gemini": 20}
 MODEL = "gemini-decision-1"
+STATE_VERSION = "2"   # gemini only: v2 describes "capital region" by city size (see state()); jev hash unchanged
 API_KEY = {"jev": "TYPESAFE_API_KEY", "gemini": "GEMINI_API_KEY"}
 KEY = ["sex", "age5", "settlement", "lang", "edu", "activity", "muni_type"]
 MIN_PEOPLE = 15          # archetypes standing for fewer people borrow the answer of a coarser archetype (see fallback)
@@ -101,9 +102,16 @@ def eligible(prog):
     return C[C.sex.isin(P["sex"]) & C.age5.isin(P["ages"])]
 
 
-def state(key, prog, scenario="baseline"):
+def state(key, prog, scenario="baseline", engine=None):
+    e = engine or ENGINE
     k = dict(zip(KEY, key)); P = PROGRAMMES[prog]
-    person = {"age": k["age5"], "gender": "female" if k["sex"] == "F" else "male", "lives_in": f"Finland, {k['muni_type']}",
+    place = k["muni_type"]
+    # ASSUMPTION (gemini only, state v2): "capital region" is a Finland-specific place type that can read as a
+    # status cue rather than a city; describe it by size like every other municipality. The archetype KEY keeps
+    # "capital region", so weights and municipality assignment are unchanged; jev states stay byte-identical.
+    if e == "gemini" and place == "capital region":
+        place = "city of 50 000+"
+    person = {"age": k["age5"], "gender": "female" if k["sex"] == "F" else "male", "lives_in": f"Finland, {place}",
               "home_area": k["settlement"], "native_language": LANG_EN[k["lang"]], "education": pop.EDU[k["edu"]],
               "main_activity": k["activity"]}
     if k["activity"] == "employed":
@@ -119,9 +127,9 @@ def combo_name(scenarios):
     return "+".join(sorted(set(scenarios)))
 
 
-def combo_state(key, prog, scenarios):
+def combo_state(key, prog, scenarios, engine=None):
     """Baseline state with the facts of every selected scenario merged (same wording as SCENARIOS)."""
-    return state(key, prog, combo_name(scenarios))
+    return state(key, prog, combo_name(scenarios), engine)
 
 
 def _questions_jev(prog):
@@ -161,13 +169,13 @@ def fallback(key):
 
 def cache_path(prog, scenario, engine=None):
     e = engine or ENGINE
-    ref = json.dumps(state(tuple(archetypes(prog).iloc[0][KEY]), prog, scenario), sort_keys=True)
+    ref = json.dumps(state(tuple(archetypes(prog).iloc[0][KEY]), prog, scenario, e), sort_keys=True)
     if e == "jev":   # hash identical to the original jev_sim.py: committed data/jev/*.jsonl hits with zero calls
         qjson = json.dumps({k: v.model_dump(exclude_none=True) for k, v in _questions_jev(prog).items()}, sort_keys=True)
         tag = hashlib.sha1((qjson + ref).encode()).hexdigest()[:8]
     else:
         qjson = json.dumps(_questions_gemini(prog), sort_keys=True, ensure_ascii=False)
-        tag = hashlib.sha1((MODEL + qjson + ref).encode()).hexdigest()[:8]
+        tag = hashlib.sha1((MODEL + STATE_VERSION + qjson + ref).encode()).hexdigest()[:8]
     return CACHE[e] / f"{prog}_{scenario}_{tag}.jsonl"
 
 
@@ -256,7 +264,7 @@ def run(prog, scenario="baseline", dry=False, conc=None, only=None, engine=None)
     if only is not None:
         asked = asked[asked.apply(only, axis=1)]
     path = cache_path(prog, scenario, e); have = read_cache(path)
-    todo = [(tuple(r[KEY]), state(tuple(r[KEY]), prog, scenario)) for _, r in asked.iterrows() if tuple(r[KEY]) not in have]
+    todo = [(tuple(r[KEY]), state(tuple(r[KEY]), prog, scenario, e)) for _, r in asked.iterrows() if tuple(r[KEY]) not in have]
     print(f"{prog}/{scenario} [{e}]: {len(A)} archetypes, {len(asked)} asked ({asked.w.sum() / A.w.sum():.1%} of people), "
           f"{len(have)} cached, {len(todo)} to ask")
     if dry or not todo:
