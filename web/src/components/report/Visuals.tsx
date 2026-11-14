@@ -2,11 +2,17 @@
 // Fixed slide visuals for the generated deck/briefing. Every number comes from the backend `visuals`
 // payload (built in src/report.py from the same sources as FACTS); these components only draw.
 // Font sizes use cqw so the same component scales inside the 16:9 slide and the inline briefing block.
-import { useMemo } from "react";
+import { createContext, useContext, useMemo } from "react";
 import { engineName, fmt } from "@/lib/api";
 import type { ItemVisuals, Slide, VCombo, VFeature } from "@/lib/report";
 
-const fs = (cqw: number) => ({ fontSize: `${cqw}cqw` });
+// Font floor in cqw: inside the 16:9 deck a slide at 1280x720 makes 1 cqw ~ 11.3 px, so the deck
+// renders visuals with MinFs=1.15 (~13 px effective); the inline briefing block leaves the floor at 0.
+export const MinFs = createContext(0);
+const useFs = () => {
+  const m = useContext(MinFs);
+  return useMemo(() => (cqw: number) => ({ fontSize: `${Math.max(cqw, m)}cqw` }), [m]);
+};
 const SKY = "rgba(56,189,248,0.75)", ROSE = "rgba(251,113,133,0.75)", AMBER = "#fbbf24";
 
 // ---------- shared bits
@@ -26,12 +32,13 @@ function Meter({ score }: { score?: number | null }) {
 
 function ActionChip({ a }: { a: { id: string; title_en?: string | null; page?: number | null; score?: number | null;
                                 partial_match?: boolean | null; matched_by?: string | null } }) {
+  const F = useFs();
   return (
     <span className="inline-flex items-center gap-[0.5cqw] rounded-full border border-amber-300/40 bg-amber-300/10
-                     text-amber-200 px-[0.9cqw] py-[0.25cqw] whitespace-nowrap" style={fs(1.1)}
+                     text-amber-200 px-[0.9cqw] py-[0.25cqw] whitespace-nowrap" style={F(1.15)}
           title={`${a.title_en ?? a.id}${a.score != null ? ` · matched by ${a.matched_by ?? "Gemini Decisions"} · fit ${a.score}/3` : ""}`}>
       {a.id} · p.{a.page} <Meter score={a.score} />
-      {a.partial_match && <span className="text-white/45" style={fs(0.9)}>partial</span>}
+      {a.partial_match && <span className="text-white/45" style={F(1)}>partial</span>}
     </span>
   );
 }
@@ -74,29 +81,33 @@ function MiniMap({ features, highlight }: { features: VFeature[]; highlight?: st
 // ---------- per-kind visuals
 
 function Where({ v }: { v: NonNullable<ItemVisuals["where"]> }) {
+  const F = useFs();
   const rows = v.ranking ?? [];
   const hi = v.map?.highlight;
   const vals = rows.map((r) => r.rate).concat([v.target ?? 80, v.national ?? 85]);
   const lo = Math.max(0, Math.floor(Math.min(...vals) - 6));
   const span = Math.max(...vals) + 2 - lo || 1;
   const x = (val: number) => (Math.min(Math.max(val, lo), lo + span) - lo) / span * 100;
+  const tx = v.target == null ? 0 : x(v.target);
   return (
     <div className="flex items-stretch gap-[2.5cqw] h-full">
       <div className="w-[34%] min-w-0 flex flex-col">
-        <div className="text-white/45 uppercase tracking-[0.18em]" style={fs(0.9)}>Wellbeing services counties</div>
+        <div className="text-white/45 uppercase tracking-[0.18em]" style={F(1)}>Wellbeing services counties</div>
         <div className="flex-1 min-h-0 mt-[0.6cqw]">
           {v.map?.features?.length ? <MiniMap features={v.map.features} highlight={hi} /> : null}
         </div>
-        <div className="text-amber-300/90 mt-[0.4cqw]" style={fs(1.15)}>
+        <div className="text-amber-300/90 mt-[0.4cqw]" style={F(1.15)}>
           {v.county?.name} · {fmt(v.county?.rate, v.unit)} · {fmt(v.county?.missing_per_year)} missing a year
         </div>
       </div>
       <div className="flex-1 min-w-0 flex flex-col justify-center">
-        <div className="text-white/45 uppercase tracking-[0.18em]" style={fs(0.9)}>Counties furthest from the target</div>
+        <div className="text-white/45 uppercase tracking-[0.18em]" style={F(1)}>Counties furthest from the target</div>
         <div className="relative mt-[1cqw]">
           {v.target != null && (
-            <div className="absolute top-[-0.5cqw] bottom-[-0.5cqw] w-px bg-white/40 z-10" style={{ left: `${x(v.target)}%` }}>
-              <span className="absolute -top-[1.6cqw] -translate-x-1/2 text-white/50 whitespace-nowrap" style={fs(0.9)}>
+            <div className="absolute top-[-0.5cqw] bottom-[-0.5cqw] w-px bg-white/40 z-10" style={{ left: `${tx}%` }}>
+              <span className="absolute -top-[1.7cqw] text-white/50 whitespace-nowrap"
+                    style={{ ...F(1), left: 0,
+                             transform: tx > 86 ? "translateX(-100%)" : tx < 14 ? "none" : "translateX(-50%)" }}>
                 target {fmt(v.target, "%")}
               </span>
             </div>
@@ -104,10 +115,10 @@ function Where({ v }: { v: NonNullable<ItemVisuals["where"]> }) {
           <div className="space-y-[0.9cqw] pt-[1.6cqw]">
             {rows.map((r) => (
               <div key={r.code}>
-                <div className="flex justify-between items-baseline" style={fs(1.25)}>
+                <div className="flex justify-between items-baseline" style={F(1.25)}>
                   <span className={r.code === hi ? "text-amber-300 font-medium" : "text-white/80"}>{r.name}</span>
                   <span className="tabular-nums text-white/70">{fmt(r.rate, "%")}
-                    {r.missing_per_year != null && <span className="text-white/40" style={fs(0.95)}> · {fmt(r.missing_per_year)}/yr</span>}
+                    {r.missing_per_year != null && <span className="text-white/40" style={F(1)}> · {fmt(r.missing_per_year)}/yr</span>}
                   </span>
                 </div>
                 <div className="rounded-full bg-white/[0.07] mt-[0.3cqw]" style={{ height: "0.75cqw" }}>
@@ -125,6 +136,7 @@ function Where({ v }: { v: NonNullable<ItemVisuals["where"]> }) {
 }
 
 function Why({ v }: { v: NonNullable<ItemVisuals["why"]> }) {
+  const F = useFs();
   const bars = [
     { label: "Actually attends", val: v.real, color: "rgba(251,113,133,0.8)" },
     { label: "Expected from who lives here", val: v.expected, color: SKY },
@@ -141,7 +153,7 @@ function Why({ v }: { v: NonNullable<ItemVisuals["why"]> }) {
       <div className="space-y-[1.3cqw]">
         {bars.map((b) => (
           <div key={b.label}>
-            <div className="flex justify-between items-baseline" style={fs(1.25)}>
+            <div className="flex justify-between items-baseline" style={F(1.25)}>
               <span className="text-white/80">{b.label}</span>
               <span className="tabular-nums text-white/70">{fmt(b.val, "%")}</span>
             </div>
@@ -152,7 +164,7 @@ function Why({ v }: { v: NonNullable<ItemVisuals["why"]> }) {
         ))}
       </div>
       <div className="mt-[2.6cqw]">
-        <div className="text-white/45 uppercase tracking-[0.18em]" style={fs(0.9)}>
+        <div className="text-white/45 uppercase tracking-[0.18em]" style={F(1)}>
           Where the {Math.abs(v.total_gap ?? 0).toFixed(1)}-point distance to Finland comes from
         </div>
         <div className="relative mt-[0.8cqw]">
@@ -168,14 +180,14 @@ function Why({ v }: { v: NonNullable<ItemVisuals["why"]> }) {
             </div>
           )}
         </div>
-        <div className="flex justify-between mt-[0.8cqw]" style={fs(1.1)}>
+        <div className="flex justify-between mt-[0.8cqw]" style={F(1.15)}>
           <span className="text-sky-300/90">
             who lives here ≈ {Math.abs(v.composition_gap ?? 0).toFixed(1)} pts
             {blo != null && bhi != null && <span className="text-white/45"> ({Math.abs(blo).toFixed(1)}–{Math.abs(bhi).toFixed(1)})</span>}
           </span>
           <span className="text-rose-300/90">not explained ≈ {Math.abs(v.unexplained_gap ?? 0).toFixed(1)} pts</span>
         </div>
-        <div className="text-white/45 mt-[0.6cqw]" style={fs(0.95)}>
+        <div className="text-white/45 mt-[0.6cqw]" style={F(1)}>
           Based on {v.n_municipalities} municipalities — composition explains {v.r2_pct} % of their differences.
         </div>
       </div>
@@ -184,6 +196,7 @@ function Why({ v }: { v: NonNullable<ItemVisuals["why"]> }) {
 }
 
 function Who({ v, prog }: { v: NonNullable<ItemVisuals["who"]>; prog?: string }) {
+  const F = useFs();
   const skipN = v.expected_skip_per_100 ?? 0;
   const barriers = Object.entries(v.barriers ?? {}).sort((a, b) => b[1] - a[1]);
   const maxB = barriers[0]?.[1] || 1;
@@ -197,7 +210,7 @@ function Who({ v, prog }: { v: NonNullable<ItemVisuals["who"]>; prog?: string })
               background: i < skipN ? ROSE : "rgba(72,196,160,0.55)" }} />
           ))}
         </div>
-        <div className="mt-[0.9cqw] text-white/70 leading-snug" style={fs(1.05)}>
+        <div className="mt-[0.9cqw] text-white/70 leading-snug" style={F(1.1)}>
           Out of 100 invited, about <span className="text-rose-300 font-medium">{skipN}</span> are expected to skip
           <span className="text-white/40"> · {v.note ?? "simulation"}</span>
         </div>
@@ -206,8 +219,8 @@ function Who({ v, prog }: { v: NonNullable<ItemVisuals["who"]>; prog?: string })
         <div className="space-y-[0.7cqw]">
           {(v.groups ?? []).map((g, i) => (
             <div key={i} className="rounded-xl border border-white/10 bg-white/[0.04] px-[1cqw] py-[0.6cqw]">
-              <div style={fs(1.2)} className="text-white/85">{prog === "breast" ? "Women" : "People"} with {g.lang_group === "another native language" ? "another native language" : "Finnish or Swedish"} · {g.activity}</div>
-              <div style={fs(1)} className="text-white/50 mt-[0.15cqw]">
+              <div style={F(1.2)} className="text-white/85">{prog === "breast" ? "Women" : "People"} with {g.lang_group === "another native language" ? "another native language" : "Finnish or Swedish"} · {g.activity}</div>
+              <div style={F(1)} className="text-white/50 mt-[0.15cqw]">
                 ~{fmt(g.expected_skip)} expected to skip · {fmt(g.rate, "%")} take part
                 {g.main_barrier_short && <> · main barrier: <span className="text-amber-300/90">{g.main_barrier_short}</span></>}
               </div>
@@ -215,10 +228,10 @@ function Who({ v, prog }: { v: NonNullable<ItemVisuals["who"]>; prog?: string })
           ))}
         </div>
         <div>
-          <div className="text-white/45 uppercase tracking-[0.18em]" style={fs(0.9)}>Main barriers residents give</div>
+          <div className="text-white/45 uppercase tracking-[0.18em]" style={F(1)}>Main barriers residents give</div>
           <div className="space-y-[0.5cqw] mt-[0.5cqw]">
             {barriers.map(([k, share]) => (
-              <div key={k} className="flex items-center gap-[0.8cqw]" style={fs(1)}>
+              <div key={k} className="flex items-center gap-[0.8cqw]" style={F(1.05)}>
                 <span className="w-[7.5cqw] text-white/60 truncate">{v.barrier_labels?.[k] ?? k}</span>
                 <div className="flex-1 rounded-full bg-white/[0.07]" style={{ height: "0.55cqw" }}>
                   <div className="h-full rounded-full bg-sky-400/70" style={{ width: `${(share / maxB) * 100}%` }} />
@@ -234,43 +247,69 @@ function Who({ v, prog }: { v: NonNullable<ItemVisuals["who"]>; prog?: string })
 }
 
 function What({ v }: { v: NonNullable<ItemVisuals["what"]> }) {
-  const combos = (v.combos ?? []).filter((c) => c.main);
+  const F = useFs();
+  const combos = v.combos ?? [];
   const missing = v.missing_per_year;
   return (
-    <div className="flex flex-col justify-center h-full gap-[1.4cqw]">
+    <div className="flex flex-col justify-center h-full" style={{ gap: combos.length > 4 ? "0.9cqw" : "1.5cqw" }}>
+      {missing != null && (
+        <div className="text-white/45" style={F(1.05)}>
+          <span className="uppercase tracking-[0.18em]">Simulated reach per year</span>
+          {" — "}{fmt(missing)} people a year short of the target
+        </div>
+      )}
       {combos.map((c: VCombo, i) => {
-        const m = c.main!, o = c.other;
-        const ex = m.extra_people_per_year;
+        const m = c.main, o = c.other;
+        const ex = m?.extra_people_per_year;
         const lo = o?.extra_people_per_year != null && ex != null ? Math.min(ex, o.extra_people_per_year) : ex;
         const hi = o?.extra_people_per_year != null && ex != null ? Math.max(ex, o.extra_people_per_year) : ex;
-        const pcts = [m.gap_closed_pct, o?.gap_closed_pct].filter((x): x is number => x != null);
+        const pcts = [m?.gap_closed_pct, o?.gap_closed_pct].filter((x): x is number => x != null);
         const loP = pcts.length ? Math.min(...pcts) : null, hiP = pcts.length ? Math.max(...pcts) : null;
+        const bandL = loP != null ? Math.max(0, Math.min(100, loP)) : 0;
+        const bandW = hiP != null ? Math.min(100, Math.max(0, hiP)) - bandL : 0;
         return (
-          <div key={i}>
-            <div className="flex justify-between items-baseline" style={fs(1.25)}>
-              <span className="text-white/85">{c.label}</span>
-              <span className="tabular-nums text-emerald-300">
-                {lo != null && hi != null && lo !== hi ? `+${fmt(lo)} to +${fmt(hi)}` : `+${fmt(ex)}`} a year
+          <div key={i} className="rounded-xl border border-white/10 bg-white/[0.04] px-[1.2cqw] py-[0.8cqw] min-w-0">
+            <div className="flex items-baseline justify-between gap-[1.5cqw]" style={F(1.35)}>
+              <span className="text-white/90 font-medium min-w-0 leading-snug">{c.label}</span>
+              <span className="tabular-nums text-emerald-300 shrink-0 whitespace-nowrap">
+                {m
+                  ? lo != null && hi != null && lo !== hi
+                    ? `+${fmt(lo)} to +${fmt(hi)} a year`
+                    : `+${fmt(ex)} a year`
+                  : "no cached run"}
               </span>
             </div>
-            <div className="relative rounded bg-white/[0.07] mt-[0.35cqw] overflow-hidden" style={{ height: "1.15cqw" }}>
+            <div className="relative rounded-full bg-white/[0.07] mt-[0.5cqw]" style={{ height: "1.3cqw" }}>
               {loP != null && hiP != null && (
-                <div className="absolute inset-y-0 bg-emerald-400/35"
-                     style={{ left: `${Math.max(0, Math.min(100, loP))}%`,
-                              width: `${Math.min(100, Math.max(0, hiP)) - Math.max(0, Math.min(100, loP))}%` }} />
+                <div className="absolute inset-y-0 rounded-full bg-emerald-400/30"
+                     style={{ left: `${bandL}%`, width: `${bandW}%` }} />
               )}
-              {m.gap_closed_pct != null && (
-                <div className="absolute inset-y-0 w-[0.28cqw] bg-emerald-300"
-                     title={`${engineName(m.engine)}: ${m.gap_closed_pct} %`}
-                     style={{ left: `calc(${Math.max(0, Math.min(100, m.gap_closed_pct))}% - 0.14cqw)` }} />
+              {m?.gap_closed_pct != null && (
+                <div className="absolute inset-y-0 w-[0.3cqw] rounded bg-emerald-300"
+                     title={`${engineName(m.engine)}: ${m.gap_closed_pct} % of the gap`}
+                     style={{ left: `calc(${Math.max(0, Math.min(100, m.gap_closed_pct))}% - 0.15cqw)` }} />
+              )}
+              {o?.gap_closed_pct != null && (
+                <div className="absolute inset-y-0 w-[0.3cqw] rounded bg-sky-300/80"
+                     title={`${engineName(o.engine)}: ${o.gap_closed_pct} % of the gap`}
+                     style={{ left: `calc(${Math.max(0, Math.min(100, o.gap_closed_pct))}% - 0.15cqw)` }} />
+              )}
+              {bandW > 0 && bandL + bandW < 88 && (
+                <span className="absolute right-[0.6cqw] inset-y-0 flex items-center text-white/40 whitespace-nowrap" style={F(0.95)}>
+                  share of the gap →
+                </span>
               )}
             </div>
-            <div className="flex items-center gap-[0.7cqw] mt-[0.4cqw] flex-wrap" style={fs(0.95)}>
-              <span className="text-white/45">
-                {engineName(m.engine) ?? m.engine}
-                {o?.extra_people_per_year != null && <> {`+${fmt(m.extra_people_per_year)}`} · {engineName(o.engine) ?? o.engine} {`+${fmt(o.extra_people_per_year)}`}</>}
-                {missing != null && ex != null && ` · ${ex >= missing ? "up to the whole gap" : `${m.gap_closed_pct ?? "?"} % of the gap`}`}
-                {" · simulated upper bound"}
+            <div className="flex items-center gap-[0.7cqw] mt-[0.5cqw] flex-wrap" style={F(1.05)}>
+              <span className="text-white/50 min-w-0">
+                {m
+                  ? <>
+                      {engineName(m.engine) ?? m.engine} +{fmt(m.extra_people_per_year)}
+                      {o?.extra_people_per_year != null && <> · {engineName(o.engine) ?? o.engine} +{fmt(o.extra_people_per_year)}</>}
+                      {missing != null && ex != null && ` · ${ex >= missing ? "up to the whole gap" : `${m.gap_closed_pct ?? "?"} % of the gap`}`}
+                      {" · simulated upper bound"}
+                    </>
+                  : (c.note ?? "combination not cached — the report never asks the engine live")}
               </span>
               <span className="flex-1" />
               {(c.actions ?? []).slice(0, 3).map((a) => <ActionChip key={a.id} a={a} />)}
@@ -278,7 +317,7 @@ function What({ v }: { v: NonNullable<ItemVisuals["what"]> }) {
           </div>
         );
       })}
-      {!combos.length && <div className="text-white/50" style={fs(1.2)}>No cached scenario for this item.</div>}
+      {!combos.length && <div className="text-white/50" style={F(1.2)}>No intervention runs for this item.</div>}
     </div>
   );
 }
@@ -294,6 +333,7 @@ const NODE_LABEL: Record<string, string> = {
 };
 
 function Pathway({ v }: { v: NonNullable<ItemVisuals["pathway"]> }) {
+  const F = useFs();
   const nodes = v.nodes ?? [];
   const q = v.queue;
   const line = useMemo(() => {
@@ -321,10 +361,10 @@ function Pathway({ v }: { v: NonNullable<ItemVisuals["pathway"]> }) {
               <div key={n.id} className="flex flex-col items-center gap-[0.4cqw] w-[16%]">
                 <span className="rounded-full" style={{ width: "1.15cqw", height: "1.15cqw", background: st.dot,
                   ...(n.status === "gap" ? { border: "0.15cqw dashed rgba(255,255,255,0.4)", background: "transparent" } : {}) }} />
-                <span className="text-center uppercase tracking-wide" style={{ ...fs(1.05), color: st.text }}>
+                <span className="text-center uppercase tracking-wide" style={{ ...F(1.1), color: st.text }}>
                   {NODE_LABEL[n.id] ?? n.id}
                 </span>
-                <span className="tabular-nums text-white/60 text-center" style={fs(1.05)}>
+                <span className="tabular-nums text-white/60 text-center" style={F(1.1)}>
                   {n.value != null ? fmt(n.value, n.unit ?? "") : "no data"}
                   {n.small_n && <span className="text-amber-300/80"> · small n</span>}
                 </span>
@@ -335,7 +375,7 @@ function Pathway({ v }: { v: NonNullable<ItemVisuals["pathway"]> }) {
       </div>
       {line && q && (
         <div className="mt-[2cqw]">
-          <div className="text-white/45 uppercase tracking-[0.18em]" style={fs(0.9)}>
+          <div className="text-white/45 uppercase tracking-[0.18em]" style={F(1)}>
             {q.label} — monthly
           </div>
           <svg viewBox={`0 0 ${line.W} ${line.H}`} className="w-full mt-[0.5cqw]" style={{ height: "13cqw" }}
@@ -343,7 +383,7 @@ function Pathway({ v }: { v: NonNullable<ItemVisuals["pathway"]> }) {
             <polyline points={line.fLine} fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="0.5" />
             <polyline points={line.cLine} fill="none" stroke={AMBER} strokeWidth="0.7" />
           </svg>
-          <div className="flex justify-between mt-[0.4cqw] text-white/45" style={fs(0.95)}>
+          <div className="flex justify-between mt-[0.4cqw] text-white/45" style={F(1)}>
             <span><span style={{ color: AMBER }}>—</span> county &nbsp; <span className="text-white/60">—</span> Finland</span>
             <span>{line.n} months · oncology patients waiting &gt; 90 days</span>
           </div>
@@ -356,6 +396,7 @@ function Pathway({ v }: { v: NonNullable<ItemVisuals["pathway"]> }) {
 const LIMIT_ICONS = ["M12 4v8l4 4", "M4 12h16M12 4v16", "M6 6l12 12M18 6L6 18", "M12 3a9 9 0 100 18 9 9 0 000-18"];
 
 function Limits({ v }: { v: { limits?: string[] } }) {
+  const F = useFs();
   return (
     <div className="grid grid-cols-2 gap-[1.2cqw] h-full content-center">
       {(v.limits ?? []).map((l, i) => (
@@ -364,7 +405,7 @@ function Limits({ v }: { v: { limits?: string[] } }) {
                fill="none" stroke="#fbbf24" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
             <path d={LIMIT_ICONS[i % LIMIT_ICONS.length]} />
           </svg>
-          <span className="text-white/80 leading-snug" style={fs(1.25)}>{l}</span>
+          <span className="text-white/80 leading-snug" style={F(1.25)}>{l}</span>
         </div>
       ))}
     </div>
@@ -372,6 +413,7 @@ function Limits({ v }: { v: { limits?: string[] } }) {
 }
 
 function Next({ v }: { v: NonNullable<ItemVisuals["next"]> }) {
+  const F = useFs();
   return (
     <div className="flex flex-col justify-center h-full gap-[2cqw]">
       <div className="relative">
@@ -381,15 +423,15 @@ function Next({ v }: { v: NonNullable<ItemVisuals["next"]> }) {
             <div key={i} className="flex flex-col items-center gap-[0.6cqw] w-[30%] text-center">
               <span className="rounded-full bg-emerald-400/20 border border-emerald-300/50 text-emerald-300
                                flex items-center justify-center tabular-nums"
-                    style={{ width: "2.1cqw", height: "2.1cqw", ...fs(1.1) }}>{i + 1}</span>
-              <span className="text-white/80 leading-snug" style={fs(1.15)}>{s}</span>
+                    style={{ width: "2.1cqw", height: "2.1cqw", ...F(1.15) }}>{i + 1}</span>
+              <span className="text-white/80 leading-snug" style={F(1.15)}>{s}</span>
             </div>
           ))}
         </div>
       </div>
       {(v.actions ?? []).length > 0 && (
         <div className="flex flex-wrap items-center gap-[0.7cqw]">
-          <span className="text-white/45 uppercase tracking-[0.18em]" style={fs(0.9)}>Roadmap</span>
+          <span className="text-white/45 uppercase tracking-[0.18em]" style={F(1)}>Roadmap</span>
           {v.actions!.map((a) => <ActionChip key={a.id} a={a} />)}
         </div>
       )}
@@ -397,24 +439,29 @@ function Next({ v }: { v: NonNullable<ItemVisuals["next"]> }) {
   );
 }
 
-/** The fixed visual for a slide kind, drawn from the item's backend visuals. */
-export function SlideVisual({ slide, v }: { slide: Slide; v: ItemVisuals | null }) {
+/** The fixed visual for a slide kind, drawn from the item's backend visuals. `minFs` floors every cqw
+    font size inside the visual (the deck passes ~1.15 so a 720p projection still reads ~13 px). */
+export function SlideVisual({ slide, v, minFs = 0 }: { slide: Slide; v: ItemVisuals | null; minFs?: number }) {
   if (!v) return null;
-  switch (slide.kind) {
-    case "where": return v.where && !v.where.error ? <Where v={v.where} /> : null;
-    case "why": return v.why && !v.why.error ? <Why v={v.why} /> : null;
-    case "who": return v.who && !v.who.error ? <Who v={v.who} prog={v.prog} /> : null;
-    case "what": return v.what && !v.what.error ? <What v={v.what} /> : null;
-    case "pathway": return v.pathway && !v.pathway.error ? <Pathway v={v.pathway} /> : null;
-    case "limits": return v.limits?.length ? <Limits v={v} /> : null;
-    case "next": return v.next ? <Next v={v.next} /> : null;
-    default: return null;
-  }
+  const inner = (() => {
+    switch (slide.kind) {
+      case "where": return v.where && !v.where.error ? <Where v={v.where} /> : null;
+      case "why": return v.why && !v.why.error ? <Why v={v.why} /> : null;
+      case "who": return v.who && !v.who.error ? <Who v={v.who} prog={v.prog} /> : null;
+      case "what": return v.what && !v.what.error ? <What v={v.what} /> : null;
+      case "pathway": return v.pathway && !v.pathway.error ? <Pathway v={v.pathway} /> : null;
+      case "limits": return v.limits?.length ? <Limits v={v} /> : null;
+      case "next": return v.next ? <Next v={v.next} /> : null;
+      default: return null;
+    }
+  })();
+  return <MinFs.Provider value={minFs}>{inner}</MinFs.Provider>;
 }
 
 /** Hero numbers for the title slide: "N people a year missing" per item. */
 export function HeroStats({ data }: { data: { items?: { prog: string; code: string }[];
                                              visuals?: Record<string, ItemVisuals> } }) {
+  const F = useFs();
   const rows = (data.items ?? []).map((it) => {
     const w = data.visuals?.[`c${it.code}_${it.prog}`]?.where;
     return w?.county ? { name: w.county.name, missing: w.county.missing_per_year, rate: w.county.rate,
@@ -425,8 +472,8 @@ export function HeroStats({ data }: { data: { items?: { prog: string; code: stri
     <div className="flex gap-[3cqw] mt-[2cqw]">
       {rows.map((r) => (
         <div key={r.name}>
-          <div className="font-semibold text-amber-300 tabular-nums leading-none" style={fs(3.4)}>{fmt(r.missing)}</div>
-          <div className="text-white/55 mt-[0.5cqw]" style={fs(1.05)}>
+          <div className="font-semibold text-amber-300 tabular-nums leading-none" style={F(3.4)}>{fmt(r.missing)}</div>
+          <div className="text-white/55 mt-[0.5cqw]" style={F(1.1)}>
             people a year missing in {r.name} · {fmt(r.rate, "%")} attends · target {fmt(r.target, "%")}
           </div>
         </div>

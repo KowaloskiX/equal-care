@@ -67,6 +67,7 @@ export default function Home() {
   const [ask, setAsk] = useState(false);                                            // analyst drawer
   const [preRun, setPreRun] = useState<{ scenarios: string[]; key: number } | null>(null);
   const [reportRuns, setReportRuns] = useState<string[]>([]);                        // "prog:code:scen+scen" combos run in step 3 this session
+  const [visited, setVisited] = useState<string[]>([]);                              // "prog:code" counties clicked in the guided flow
 
   useEffect(() => {
     getMeta().then(setMeta).catch((e) => setErr(String(e)));
@@ -107,31 +108,42 @@ export default function Home() {
                                   if (n === 1) setCrowd(null); };
   const pickProg = (p: Prog) => { setProg(p); setPicked(null); setPathKey(null); setLive(null); setCrowd(null);
                                   setTl(null); setPreRun(null); setStep(1); setSeen([1]); };
-  const pickCode = (c: string) => { setPicked(c); setLive(null); setPathKey(null); setCrowd(null); setTl(null); setPreRun(null); };
+  const markVisited = (p: string, c: string) =>
+    setVisited((v) => (v.includes(`${p}:${c}`) ? v : [...v, `${p}:${c}`]));
+  const pickCode = (c: string) => { setPicked(c); setLive(null); setPathKey(null); setCrowd(null); setTl(null); setPreRun(null);
+                                    markVisited(prog, c); };
   const explore = () => { setMode("explore"); setLive(null); setTl(null); };
   const guided = () => { setMode("guided"); setSel(null); setLive(null); setTl(null); setPreRun(null); };
   const explain = (c: string) => { setPicked(c); setSel(null); setMode("guided"); setLive(null); setTl(null);
-                                   setPreRun(null); setStep(2); setSeen([1, 2]); };
+                                   setPreRun(null); setStep(2); setSeen([1, 2]); markVisited(prog, c); };
   const restartTour = () => { guided(); setStep(1); setSeen([1]); setPreRun(null); setTour(true); };
   const tourDone = () => { setTour(false); localStorage.setItem("ec_tour_done", "1"); };
   // analyst drawer actions: jump into the guided story at the answered county
   const showInStory = (f: { prog: string; code: string }) => {
     setProg(f.prog as Prog); setPicked(f.code); setSel(null); setMode("guided");
     setLive(null); setCrowd(null); setTl(null); setPreRun(null); setStep(2); setSeen([1, 2]); setAsk(false);
+    markVisited(f.prog, f.code);
   };
   const playRun = (r: { prog: string; code: string; scenarios: string[] }) => {
     setProg(r.prog as Prog); setPicked(r.code); setSel(null); setMode("guided");
     setLive(null); setCrowd(null); setTl(null); setStep(3); setSeen([1, 2, 3]);
+    markVisited(r.prog, r.code);
     setPreRun({ scenarios: r.scenarios, key: Date.now() }); setAsk(false);
   };
 
   const activeStage = ind?.stage;
   const liveName = live ? county?.values[live.code]?.name ?? live.code : null;
   const addReportRun = (item: string) => setReportRuns((r) => (r.includes(item) ? r : [...r, item]));
-  // /report entry point: the current guided county first, then every step-3 combo run this session (deduped)
-  const reportHref = mode === "guided" && code
-    ? `/report?items=${[`${prog}:${code}`, ...reportRuns.filter((x) => x !== `${prog}:${code}`)].slice(0, 6).join(",")}`
-    : null;
+  // /report entry point: the current guided county first, then every step-3 combo run this session,
+  // then the other counties clicked along the way — all deduped (a combo already covers its county)
+  const reportHref = (() => {
+    if (mode !== "guided" || !code) return null;
+    const cur = `${prog}:${code}`;
+    const runs = reportRuns.filter((x) => x !== cur);
+    const runKeys = new Set(runs.map((x) => x.split(":").slice(0, 2).join(":")));
+    const counties = visited.filter((x) => x !== cur && !runKeys.has(x));
+    return `/report?items=${[...new Set([cur, ...runs, ...counties])].slice(0, 6).join(",")}`;
+  })();
 
   return (
     <main className="relative h-screen w-screen overflow-hidden">

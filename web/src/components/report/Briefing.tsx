@@ -19,6 +19,18 @@ export function Briefing({ data, cover }: { data: ReportResponse; cover: Cover |
   const sources = sourcesOf(facts);
   const u = data.usage;
 
+  // what this report covers: "Breast · Helsinki · 2 intervention runs · 2 counties"
+  const progs = [...new Set(data.items.map((i) => (i.prog === "bowel" ? "Colorectal" : "Breast")))];
+  const codes = [...new Set(data.items.map((i) => i.code))];
+  const countyNames = codes.map((c) => String(facts[`c${c}_name`]?.value ?? c));
+  const runs = data.items.filter((i) => i.scenarios?.length).length;
+  const covers = [
+    progs.join(" · "),
+    countyNames.length <= 3 ? countyNames.join(" · ") : `${countyNames.length} counties`,
+    runs ? `${runs} intervention run${runs === 1 ? "" : "s"}` : "no intervention runs",
+    `${codes.length} ${codes.length === 1 ? "county" : "counties"}`,
+  ].join(" · ");
+
   return (
     <article className="report-doc mx-auto w-full max-w-3xl px-6 pb-20">
       {cover?.image && (
@@ -28,6 +40,7 @@ export function Briefing({ data, cover }: { data: ReportResponse; cover: Cover |
       <div className="t-caption uppercase tracking-[0.18em] mb-2">Equal Care Across Finland · generated briefing</div>
       <h1 className="text-[30px] font-semibold leading-tight">{r.title}</h1>
       <p className="text-[16px] text-white/60 mt-2">{r.subtitle}</p>
+      <p className="t-caption mt-2 text-white/45">{covers}</p>
       <div className="mt-3" style={{ containerType: "inline-size" }}><HeroStats data={data} /></div>
 
       {data.flags.length > 0 && (

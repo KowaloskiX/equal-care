@@ -3,7 +3,7 @@
 // Sizes use container query units (cqw) so the slide scales with the stage.
 import { useEffect, useRef, useState } from "react";
 import { EvidenceChips } from "@/components/report/Evidence";
-import { HeroStats, SlideVisual } from "@/components/report/Visuals";
+import { HeroStats, MinFs, SlideVisual } from "@/components/report/Visuals";
 import { Tag } from "@/components/ui";
 import { visualFor, type Cover, type ReportResponse, type Slide } from "@/lib/report";
 
@@ -59,8 +59,9 @@ export function Deck({ data, cover, scenes, onExit }: { data: ReportResponse; co
                  style={{ background: "linear-gradient(90deg, #0b0c10 0%, rgba(11,12,16,0.82) 45%, rgba(11,12,16,0.15) 100%)" }} />
           </>
         )}
+        <MinFs.Provider value={1.15}>
         <div key={i} className="slide absolute inset-0 flex flex-col" style={{ padding: "5.5cqw 6.5cqw 4.5cqw" }}>
-          <div className="uppercase text-white/45" style={{ fontSize: "1.05cqw", letterSpacing: "0.22em" }}>
+          <div className="uppercase text-white/45" style={{ fontSize: "1.15cqw", letterSpacing: "0.22em" }}>
             {isTitle ? "Equal Care Across Finland · generated briefing" : KICKER[s.kind] ?? s.kind}
           </div>
           {isTitle ? (
@@ -72,21 +73,22 @@ export function Deck({ data, cover, scenes, onExit }: { data: ReportResponse; co
               )}
               <HeroStats data={data} />
               {s.bullets.length > 0 && (
-                <ul className="mt-[1.6cqw] space-y-[0.7cqw] text-white/70" style={{ fontSize: "1.35cqw" }}>
-                  {s.bullets.map((b, j) => <li key={j}>{b}</li>)}
+                <ul className="mt-[1.6cqw] space-y-[0.7cqw] text-white/70" style={{ fontSize: "1.4cqw" }}>
+                  {s.bullets.slice(0, 3).map((b, j) => <li key={j}>{b}</li>)}
                 </ul>
               )}
             </div>
           ) : vis ? (
-            <div className="flex-1 flex items-center gap-[3.5cqw] min-h-0">
+            <div className="flex-1 flex items-center gap-[3cqw] min-h-0">
+              {/* the visual keeps >= ~55 % of the slide width; the text column takes the rest */}
               <div className="flex-1 min-w-0 h-full flex flex-col justify-center" style={{ containerType: "inline-size" }}>
-                <SlideVisual slide={s} v={vis} />
+                <SlideVisual slide={s} v={vis} minFs={1.15} />
               </div>
-              <div className="w-[34%] shrink-0">
-                <h2 className="font-semibold leading-[1.15]" style={{ fontSize: "2.5cqw" }}>{s.headline}</h2>
+              <div className="w-[33%] shrink-0">
+                <h2 className="font-semibold leading-[1.15]" style={{ fontSize: "3cqw" }}>{s.headline}</h2>
                 <ul className="mt-[1.8cqw] space-y-[1cqw]">
                   {s.bullets.slice(0, 3).map((b, j) => (
-                    <li key={j} className="flex gap-[0.8cqw] text-white/80 leading-snug" style={{ fontSize: "1.3cqw" }}>
+                    <li key={j} className="flex gap-[0.8cqw] text-white/80 leading-snug" style={{ fontSize: "1.4cqw" }}>
                       <span className="text-amber-300/80 shrink-0">—</span><span>{b}</span>
                     </li>
                   ))}
@@ -97,7 +99,7 @@ export function Deck({ data, cover, scenes, onExit }: { data: ReportResponse; co
             <div className="flex-1 flex flex-col justify-center">
               <h2 className="font-semibold leading-[1.15] max-w-[88%]" style={{ fontSize: "3.1cqw" }}>{s.headline}</h2>
               <ul className="mt-[2.6cqw] space-y-[1.3cqw] max-w-[82%]">
-                {s.bullets.map((b, j) => (
+                {s.bullets.slice(0, 3).map((b, j) => (
                   <li key={j} className="flex gap-[1.2cqw] text-white/85 leading-snug" style={{ fontSize: "1.75cqw" }}>
                     <span className="text-amber-300/80 shrink-0">—</span><span>{b}</span>
                   </li>
@@ -105,7 +107,7 @@ export function Deck({ data, cover, scenes, onExit }: { data: ReportResponse; co
               </ul>
             </div>
           )}
-          <div className="flex items-end justify-between gap-4" style={{ fontSize: "1cqw" }}>
+          <div className="flex items-end justify-between gap-4" style={{ fontSize: "1.1cqw" }}>
             <div className="flex items-center gap-2 flex-wrap">
               <EvidenceChips kinds={s.evidence} big />
               {flagged.length > 0 && <Tag v="warn">{flagged.length} grounding flag{flagged.length > 1 ? "s" : ""}</Tag>}
@@ -113,6 +115,7 @@ export function Deck({ data, cover, scenes, onExit }: { data: ReportResponse; co
             <div className="text-white/40 tabular-nums">{i + 1} / {N}</div>
           </div>
         </div>
+        </MinFs.Provider>
       </div>
       {notes && (
         <div className="mt-2 shrink-0 max-h-[24vh] overflow-y-auto rounded-lg bg-black/85 border border-white/15 text-white/80 text-[13px] leading-snug px-4 py-2.5"

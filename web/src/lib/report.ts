@@ -32,7 +32,7 @@ export type ReportItem = { prog: string; code: string; scenarios?: string[] };
 
 export type ReportResponse = {
   id: string; report: ReportDoc; raw: ReportDoc; facts: Record<string, Fact | string[]>; flags: ReportFlag[];
-  items: ReportItem[]; visuals?: Record<string, ItemVisuals>;
+  items: ReportItem[]; visuals?: Record<string, ItemVisuals>; image?: Cover;
   model: string; model_note?: string | null; latency_s?: number; cached?: boolean;
   usage?: { prompt_token_count?: number | null; candidates_token_count?: number | null;
             thoughts_token_count?: number | null; total_token_count?: number | null } | null;
@@ -112,9 +112,9 @@ async function asJson<T>(r: Response): Promise<T> {
   return r.json();
 }
 
-export const postReport = (items: ReportItem[], base = "") =>
+export const postReport = (items: ReportItem[], base = "", image = false) =>
   fetch(`${base}/api/report`, {
-    method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ items, image: false }),
+    method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ items, image }),
   }).then((r) => asJson<ReportResponse>(r));
 
 export const getCover = (base = "", scene?: string) =>
