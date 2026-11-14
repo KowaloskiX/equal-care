@@ -26,13 +26,13 @@ make app              # API: http://localhost:8010
 make web              # frontend: http://localhost:3010 (drugi terminal)
 ```
 
-Klucze nie są potrzebne do demo: dane i odpowiedzi Jev są w repo (`data/`). `TYPESAFE_API_KEY` w `.env` jest potrzebny tylko, jeśli zmieniasz pytania albo stan osób w `src/jev_sim.py` (wtedy cache się unieważnia i idą nowe zapytania, ok. $0.07 za program). Klucz weź od Łukasza, nie commituj `.env`.
+Klucze nie są potrzebne do demo: dane i odpowiedzi silnika są w repo (`data/`). Silnik symulacji wybiera `SIM_ENGINE` w `.env` (`jev` albo `gemini`; domyślnie `jev`) albo flaga `--engine`. `TYPESAFE_API_KEY`/`GEMINI_API_KEY` są potrzebne tylko, jeśli zmieniasz pytania albo stan osób w `src/residents.py` (wtedy cache się unieważnia i idą nowe zapytania). Klucz weź od Łukasza, nie commituj `.env`.
 
 ## Co już jest
 
 - **Dane** (`src/fetch_*.py`, `src/strategy.py`): 14 wskaźników THL Sotkanet dla kraju, regionów i gmin; granice z Tilastokeskus; tabele ludności z Tilastokeskus; strategia i plan wdrożenia strona po stronie, 73 działania z planu sparsowane (odpowiedzialny, budżet, miernik, strona).
 - **API** (`app/server.py`): `/api/values`, `/api/region/{code}`, `/api/gap`, `/api/actions`, `/api/sim/...`. Każda liczba ma `source`.
-- **Symulacja z krakow-sim** (`src/population.py`, `src/jev_sim.py`, `src/simulate.py`): mieszkańcy 30–74 jako ważone komórki (gmina × płeć × wiek × język × typ zabudowy × wykształcenie × aktywność), Jev odpowiada raz na archetyp „czy pójdzie na badanie i co jest główną barierą”, scenariusze „co jeśli”.
+- **Symulacja z krakow-sim** (`src/population.py`, `src/residents.py`, `src/simulate.py`): mieszkańcy 30–74 jako ważone komórki (gmina × płeć × wiek × język × typ zabudowy × wykształcenie × aktywność), silnik decyzyjny (`SIM_ENGINE`: Jev/TypeSafe albo Gemini Decisions `gemini-decision-1`) odpowiada raz na archetyp „czy pójdzie na badanie i co jest główną barierą”, scenariusze „co jeśli”. Obecnie skomitowane dane pochodzą z Jev.
 - **Frontend** (`web/`): mapa regionów z przełącznikiem wskaźnika i karta regionu ze ścieżką leczenia. Nie było jeszcze testowane w przeglądarce, zacznij od sprawdzenia, czy się renderuje.
 
 ## Co wiemy z danych (do pitchu)
@@ -40,7 +40,7 @@ Klucze nie są potrzebne do demo: dane i odpowiedzi Jev są w repo (`data/`). `T
 - Mammografia: najniższe uczestnictwo w stolicy (Helsinki 74,3 %, cel 80 %), nie na prowincji. Helsinkom brakuje ok. 2 200 kobiet rocznie.
 - Przeżywalność 5-letnia, rak jelita grubego (Goal 3): od 63 % (Päijät-Häme) do 74 % (Keski-Uusimaa), Finlandia 68 %.
 - Na poziomie regionów uczestnictwo w badaniach nie koreluje z przeżywalnością (r od −0,24 do 0,03): luka w przeżywalności powstaje dalej na ścieżce.
-- Symulacja vs rzeczywistość 2024 (r po regionach): mammografia 0,75, jelito grube 0,58, cytologia 0,24. Cytologia słaba, bo dużo badań robi się prywatnie, poza programem. W historii używamy mammografii i jelita grubego.
+- Symulacja vs rzeczywistość 2024 (r po regionach, Jev): mammografia 0,75, jelito grube 0,58, cytologia 0,24. Cytologia słaba, bo dużo badań robi się prywatnie, poza programem. W historii używamy mammografii i jelita grubego. Po przełączeniu na Gemini trzeba zwalidować ponownie.
 - Rozbicie luki, mammografia, Helsinki: 7,3 pkt poniżej Finlandii, z czego skład ludności (wiek, język, wykształcenie, praca) tłumaczy 0,4 pkt, a 6,9 pkt nie. West Uusimaa: 0,4 vs 5,1 pkt, Vantaa i Kerava: 1,0 vs 3,9 pkt. To nasz „insight”: luka w stolicy to nie mieszkańcy, tylko usługi (dostęp, terminy, badania prywatne liczone jako nieobecność; to ostatnie trzeba potwierdzić z mentorką).
 - Scenariusze (symulacja, cała Finlandia, dodatkowe osoby rocznie):
 

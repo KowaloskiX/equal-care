@@ -1,19 +1,26 @@
-"""Jev (TypeSafe System One) answers for synthetic residents: will this person take part in cancer screening, and why not?
+"""Decision-engine answers for synthetic residents: will this person take part in cancer screening, and why not?
 
-Ported from krakow-sim (src/jev_sim.py, src/archetypes.py). Same rules:
+Ported from krakow-sim (src/jev_sim.py, src/archetypes.py). Two interchangeable engines, selected by
+SIM_ENGINE in .env / environment or the --engine flag (default jev):
+- jev    Jev (TypeSafe System One) — cache data/jev/, the committed answers, needs TYPESAFE_API_KEY only for new calls
+- gemini Gemini Decisions API (model gemini-decision-1, https://aistudio.google.com/docs/decisions-api)
+         — cache data/decisions/, needs GEMINI_API_KEY
+
+Same rules either way:
 - state = a small English JSON of facts about one person + the situation; no numbers for the model to compare
 - typed questions (Noul = probability, Choice = distribution over reasons); no free text, no parsing
-- archetypes: residents with the same decision-relevant traits share one Jev answer, so ~1-3 thousand calls cover Finland
+- archetypes: residents with the same decision-relevant traits share one answer, so ~1-3 thousand calls cover Finland
 - arithmetic in code: totals, municipality rates and the anchor are computed here, never by a model
+- prompt wording is shared and identical across engines
 
 Usage:
-  python src/jev_sim.py breast                       ask every archetype (cached), validate against Sotkanet
-  python src/jev_sim.py breast --scenario own_language
-  python src/jev_sim.py breast --dry-run             print one request, no calls
-Cache (committed, so the demo needs no API key): data/jev/<programme>_<scenario>_<hash>.jsonl
-Key: TYPESAFE_API_KEY in .env. Price: $0.042 per million input tokens, output free.
+  python src/residents.py breast                       ask every archetype (cached), validate against Sotkanet
+  python src/residents.py breast --scenario own_language --engine gemini
+  python src/residents.py breast --dry-run             print one request, no calls
+Cache (committed, so the demo needs no API key): data/<jev|decisions>/<programme>_<scenario>_<hash>.jsonl
+Prices: jev $0.042, gemini $0.10 per million input tokens.
 """
-import argparse, asyncio, hashlib, json, os, sys
+import argparse, asyncio, hashlib, json, os, random, sys
 from pathlib import Path
 import numpy as np, pandas as pd
 
@@ -22,8 +29,11 @@ import population as pop
 import datastore as ds
 
 ROOT = Path(__file__).resolve().parent.parent
-CACHE = ROOT / "data/jev"
-PRICE_PER_MTOK = 0.042
+CACHE = {"jev": ROOT / "data/jev", "gemini": ROOT / "data/decisions"}
+PRICE_PER_MTOK = {"jev": 0.042, "gemini": 0.10}
+CONCURRENCY = {"jev": 40, "gemini": 20}
+MODEL = "gemini-decision-1"
+API_KEY = {"jev": "TYPESAFE_API_KEY", "gemini": "GEMINI_API_KEY"}
 KEY = ["sex", "age5", "settlement", "lang", "edu", "activity", "muni_type"]
 MIN_PEOPLE = 15          # archetypes standing for fewer people borrow the answer of a coarser archetype (see fallback)
 
@@ -73,6 +83,16 @@ def load_env():
                 k, v = line.split("=", 1); os.environ.setdefault(k.strip(), v.strip().strip("\"'"))
 
 
+load_env()                                   # .env must be read before ENGINE so it can set SIM_ENGINE
+ENGINE = os.environ.get("SIM_ENGINE", "jev")
+
+
+def engine_name(engine=None):
+    """Name recorded in data/sim: 'jev' or the Gemini model id."""
+    e = engine or ENGINE
+    return MODEL if e == "gemini" else "jev"
+
+
 def eligible(prog):
     P = PROGRAMMES[prog]; C = pop.cells()
     return C[C.sex.isin(P["sex"]) & C.age5.isin(P["ages"])]
@@ -90,13 +110,23 @@ def state(key, prog, scenario="baseline"):
     return {"person": person, "situation": situation}
 
 
-def questions(prog):
+def _questions_jev(prog):
     from typesafe_sdk import Choice, Noul
     P = PROGRAMMES[prog]
     return {"attend": Noul(instructions=f"This person {P['action']} this time.",
                            criteria={"true": "takes part this round", "false": "does not take part this round"}),
             "reason": Choice(instructions="Which single factor matters most for this person's decision about this screening?",
                              criteria=REASONS)}
+
+
+def _questions_gemini(prog):
+    """Decisions API question params (sent as plain dicts; the SDK validates them). Same wording as the Jev path."""
+    P = PROGRAMMES[prog]
+    return {"attend": {"type": "noul", "instructions": f"This person {P['action']} this time.",
+                       "criteria": {"true_description": "takes part this round",
+                                    "false_description": "does not take part this round"}},
+            "reason": {"type": "choice", "instructions": "Which single factor matters most for this person's decision about this screening?",
+                       "criteria": REASONS}}
 
 
 def archetypes(prog):
@@ -115,12 +145,16 @@ def fallback(key):
         yield tuple(k[c] for c in KEY)
 
 
-def cache_path(prog, scenario):
-    from typesafe_sdk import Noul  # noqa: F401  (import check)
-    qjson = json.dumps({k: v.model_dump(exclude_none=True) for k, v in questions(prog).items()}, sort_keys=True)
+def cache_path(prog, scenario, engine=None):
+    e = engine or ENGINE
     ref = json.dumps(state(tuple(archetypes(prog).iloc[0][KEY]), prog, scenario), sort_keys=True)
-    tag = hashlib.sha1((qjson + ref).encode()).hexdigest()[:8]
-    return CACHE / f"{prog}_{scenario}_{tag}.jsonl"
+    if e == "jev":   # hash identical to the original jev_sim.py: committed data/jev/*.jsonl hits with zero calls
+        qjson = json.dumps({k: v.model_dump(exclude_none=True) for k, v in _questions_jev(prog).items()}, sort_keys=True)
+        tag = hashlib.sha1((qjson + ref).encode()).hexdigest()[:8]
+    else:
+        qjson = json.dumps(_questions_gemini(prog), sort_keys=True, ensure_ascii=False)
+        tag = hashlib.sha1((MODEL + qjson + ref).encode()).hexdigest()[:8]
+    return CACHE[e] / f"{prog}_{scenario}_{tag}.jsonl"
 
 
 def read_cache(path):
@@ -132,9 +166,9 @@ def read_cache(path):
     return out
 
 
-async def ask(items, prog, path, conc=40):
+async def _ask_jev(items, prog, path, conc):
     from typesafe_sdk import AsyncTypeSafeClient, TypeSafeError
-    qs = questions(prog); sem = asyncio.Semaphore(conc); stats = {"done": 0, "tokens": 0, "errors": 0}
+    qs = _questions_jev(prog); sem = asyncio.Semaphore(conc); stats = {"done": 0, "tokens": 0, "errors": 0}
     path.parent.mkdir(parents=True, exist_ok=True)
     async with AsyncTypeSafeClient(timeout=40.0) as client:
         with path.open("a") as f:
@@ -152,34 +186,87 @@ async def ask(items, prog, path, conc=40):
                 stats["tokens"] += r.usage.input_tokens if r.usage else 0
                 if stats["done"] % 250 == 0: print(f"  {stats['done']}/{len(items)}", flush=True); f.flush()
             await asyncio.gather(*(one(k, s) for k, s in items))
-    print(f"  done {stats['done']}, errors {stats['errors']}, input tokens {stats['tokens']:,} ≈ ${stats['tokens'] * PRICE_PER_MTOK / 1e6:.3f}")
+    print(f"  done {stats['done']}, errors {stats['errors']}, input tokens {stats['tokens']:,} ≈ ${stats['tokens'] * PRICE_PER_MTOK['jev'] / 1e6:.3f}")
 
 
-def run(prog, scenario="baseline", dry=False, conc=40, only=None):
-    """Ask Jev for every archetype that has MIN_PEOPLE+ people (and, for scenarios, only those `only` selects)."""
+async def _ask_gemini(items, prog, path, conc):
+    from google import genai
+    from google.genai import errors as gerr
+    qs = _questions_gemini(prog); sem = asyncio.Semaphore(conc); stats = {"done": 0, "tokens": 0, "errors": 0}
+    path.parent.mkdir(parents=True, exist_ok=True)
+    client = genai.Client(http_options={"api_version": "v1beta"})
+    with path.open("a") as f:
+        async def one(key, st):
+            async with sem:
+                r = None
+                for attempt in range(6):          # retry 429/5xx with exponential backoff + jitter
+                    try:
+                        r = await client.aio.decisions.create(
+                            model=MODEL, input=[{"type": "text", "text": json.dumps(st, ensure_ascii=False)}],
+                            questions=qs)
+                        break
+                    except gerr.APIError as e:
+                        if getattr(e, "code", 0) in (429,) or getattr(e, "code", 0) >= 500:
+                            if attempt < 5:
+                                await asyncio.sleep(min(2 ** attempt, 30) + random.random())
+                                continue
+                        stats["errors"] += 1
+                        if stats["errors"] <= 3: print("  !", type(e).__name__, str(e)[:120])
+                        return
+                    except Exception as e:
+                        stats["errors"] += 1
+                        if stats["errors"] <= 3: print("  !", type(e).__name__, str(e)[:120])
+                        return
+            a = r.answers
+            row = {"key": list(key), "attend": a["attend"].noul, "reason": a["reason"].choice,
+                   "reasons": a["reason"].probabilities, "confidence": a["reason"].confidence}
+            f.write(json.dumps(row) + "\n"); stats["done"] += 1
+            stats["tokens"] += (r.usage.total_input_tokens or 0) if r.usage else 0
+            if stats["done"] % 250 == 0: print(f"  {stats['done']}/{len(items)}", flush=True); f.flush()
+        await asyncio.gather(*(one(k, s) for k, s in items))
+    print(f"  done {stats['done']}, errors {stats['errors']}, input tokens {stats['tokens']:,} ≈ ${stats['tokens'] * PRICE_PER_MTOK['gemini'] / 1e6:.3f}")
+
+
+async def ask(items, prog, path, conc=None, engine=None):
+    e = engine or ENGINE
+    if e == "jev":
+        return await _ask_jev(items, prog, path, conc or CONCURRENCY["jev"])
+    return await _ask_gemini(items, prog, path, conc or CONCURRENCY["gemini"])
+
+
+def run(prog, scenario="baseline", dry=False, conc=None, only=None, engine=None):
+    """Ask the engine for every archetype that has MIN_PEOPLE+ people (and, for scenarios, only those `only` selects)."""
+    e = engine or ENGINE
     A = archetypes(prog)
     asked = A[A.w >= MIN_PEOPLE]
     if only is not None:
         asked = asked[asked.apply(only, axis=1)]
-    path = cache_path(prog, scenario); have = read_cache(path)
+    path = cache_path(prog, scenario, e); have = read_cache(path)
     todo = [(tuple(r[KEY]), state(tuple(r[KEY]), prog, scenario)) for _, r in asked.iterrows() if tuple(r[KEY]) not in have]
-    print(f"{prog}/{scenario}: {len(A)} archetypes, {len(asked)} asked ({asked.w.sum() / A.w.sum():.1%} of people), "
+    print(f"{prog}/{scenario} [{e}]: {len(A)} archetypes, {len(asked)} asked ({asked.w.sum() / A.w.sum():.1%} of people), "
           f"{len(have)} cached, {len(todo)} to ask")
     if dry or not todo:
-        if dry and todo: print(json.dumps({"state": todo[0][1], "questions": {k: v.model_dump(exclude_none=True) for k, v in questions(prog).items()}}, indent=1))
+        if dry and todo:
+            if e == "jev":
+                print(json.dumps({"state": todo[0][1],
+                                  "questions": {k: v.model_dump(exclude_none=True) for k, v in _questions_jev(prog).items()}}, indent=1))
+            else:
+                print(json.dumps({"model": MODEL,
+                                  "input": [{"type": "text", "text": json.dumps(todo[0][1], ensure_ascii=False)}],
+                                  "questions": _questions_gemini(prog)}, indent=1, ensure_ascii=False))
         return path
-    load_env()
-    if not os.environ.get("TYPESAFE_API_KEY"):
-        sys.exit("TYPESAFE_API_KEY missing in .env")
-    asyncio.run(ask(todo, prog, path, conc))
+    if not os.environ.get(API_KEY[e]):
+        sys.exit(f"{API_KEY[e]} missing in .env")
+    asyncio.run(ask(todo, prog, path, conc, e))
     return path
 
 
-def answers(prog, scenario="baseline"):
-    """Every eligible cell with its Jev probability (own archetype or the nearest coarser one that was asked)."""
+def answers(prog, scenario="baseline", engine=None):
+    """Every eligible cell with its probability (own archetype or the nearest coarser one that was asked)."""
+    e = engine or ENGINE
     E = eligible(prog).copy()
-    base = read_cache(cache_path(prog, "baseline"))
-    got = {**base, **read_cache(cache_path(prog, scenario))} if scenario != "baseline" else base
+    base = read_cache(cache_path(prog, "baseline", e))
+    got = {**base, **read_cache(cache_path(prog, scenario, e))} if scenario != "baseline" else base
     memo = {}
     def look(key):
         if key in memo: return memo[key]
@@ -194,10 +281,11 @@ def answers(prog, scenario="baseline"):
     return E
 
 
-def anchor_shift(prog):
+def anchor_shift(prog, engine=None):
     """One logit shift c per programme so that the national attendance equals Sotkanet's national rate.
-    It fixes Jev's overall level and leaves the ranking of people and municipalities unchanged."""
-    E = answers(prog, "baseline"); E = E[E.p.notna()]
+    It fixes the model's overall level and leaves the ranking of people and municipalities unchanged."""
+    e = engine or ENGINE
+    E = answers(prog, "baseline", e); E = E[E.p.notna()]
     target = ds.values(PROGRAMMES[prog]["indicator"], "country")["values"][ds.COUNTRY]["value"] / 100
     lg = np.log(E.p.clip(1e-3, 1 - 1e-3) / (1 - E.p.clip(1e-3, 1 - 1e-3)))
     lo, hi = -10.0, 10.0
@@ -207,10 +295,11 @@ def anchor_shift(prog):
     return c, target, float(np.average(E.p, weights=E.w))
 
 
-def by_municipality(prog, scenario="baseline", anchored=True):
-    E = answers(prog, scenario); E = E[E.p.notna()]
+def by_municipality(prog, scenario="baseline", anchored=True, engine=None):
+    e = engine or ENGINE
+    E = answers(prog, scenario, e); E = E[E.p.notna()]
     if anchored:
-        c, _, _ = anchor_shift(prog)
+        c, _, _ = anchor_shift(prog, e)
         lg = np.log(E.p.clip(1e-3, 1 - 1e-3) / (1 - E.p.clip(1e-3, 1 - 1e-3))); E["p"] = 1 / (1 + np.exp(-(lg + c)))
     E["pw"] = E.p * E.w
     M = E.groupby("muni").agg(pw=("pw", "sum"), w=("w", "sum"))
@@ -218,9 +307,10 @@ def by_municipality(prog, scenario="baseline", anchored=True):
     return M
 
 
-def validate(prog):
+def validate(prog, engine=None):
     """Simulated vs real attendance (Sotkanet, latest year) by municipality and by county."""
-    ind = PROGRAMMES[prog]["indicator"]; M = by_municipality(prog)
+    e = engine or ENGINE
+    ind = PROGRAMMES[prog]["indicator"]; M = by_municipality(prog, engine=e)
     real = ds.values(ind, "municipality")
     R = pd.DataFrame([{"muni": c, "real": v["value"], "name": v["name"], "attended": v["abs_value"]} for c, v in real["values"].items()])
     J = M.join(R.set_index("muni"), how="inner")
@@ -231,8 +321,8 @@ def validate(prog):
     J["county"] = J.index.map(cmap)
     Cty = J.assign(pr=J.real * J.w, ps=J.sim * J.w).groupby("county").agg(pr=("pr", "sum"), ps=("ps", "sum"), w=("w", "sum"))
     Cty["real"], Cty["sim"] = Cty.pr / Cty.w, Cty.ps / Cty.w
-    c, target, raw = anchor_shift(prog)
-    out = {"programme": prog, "year": real["year"], "raw_national": round(100 * raw, 1), "real_national": round(100 * target, 1),
+    c, target, raw = anchor_shift(prog, e)
+    out = {"programme": prog, "engine": engine_name(e), "year": real["year"], "raw_national": round(100 * raw, 1), "real_national": round(100 * target, 1),
            "anchor_logit_shift": round(c, 2),
            "municipalities": {"n": len(J), "r": round(J.sim.corr(J.real), 2), "mae": round(float((J.sim - J.real).abs().mean()), 1)},
            "municipalities_300plus": {"n": len(big), "r": round(big.sim.corr(big.real), 2)},
@@ -245,18 +335,20 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("programme", choices=list(PROGRAMMES))
     ap.add_argument("--scenario", default="baseline", choices=list(SCENARIOS))
+    ap.add_argument("--engine", choices=["jev", "gemini"], default=None)
     ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--concurrency", type=int, default=40)
+    ap.add_argument("--concurrency", type=int, default=None)
     a = ap.parse_args()
-    run(a.programme, a.scenario, a.dry_run, a.concurrency)
+    engine = a.engine or ENGINE
+    run(a.programme, a.scenario, a.dry_run, a.concurrency, engine=engine)
     if a.dry_run:
         return
     if a.scenario == "baseline":
-        v, J = validate(a.programme)
+        v, J = validate(a.programme, engine)
         print(json.dumps(v, indent=1, ensure_ascii=False))
         print("\nlargest municipalities, real vs simulated:")
         print(J.sort_values("attended", ascending=False).head(12)[["name", "real", "sim"]].round(1).to_string())
-        E = answers(a.programme)
+        E = answers(a.programme, engine=engine)
         print("\nmain reason (share of people):\n" + (E.groupby("reason").w.sum() / E.w.sum()).round(3).sort_values(ascending=False).to_string())
 
 

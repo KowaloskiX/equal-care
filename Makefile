@@ -1,7 +1,7 @@
 PY ?= .venv/bin/python
 NODE_PATH_ADD = PATH=/opt/homebrew/bin:$$PATH
 
-.PHONY: setup data sotkanet geo strategy statfin population jev sim findings app web check
+.PHONY: setup data sotkanet geo strategy statfin population sim-residents sim findings app web check
 
 setup:            ## Python venv and web dependencies
 	test -d .venv || python3.12 -m venv .venv
@@ -25,8 +25,8 @@ statfin:          ## Statistics Finland population tables -> data/statfin/*.csv
 population:       ## synthetic residents as weighted cells -> out/cells.parquet
 	$(PY) src/population.py
 
-jev:              ## Jev answers for every archetype, 3 programmes (cached in data/jev/; needs TYPESAFE_API_KEY)
-	for p in breast cervix bowel; do $(PY) src/jev_sim.py $$p; done
+sim-residents:    ## resident answers for every archetype, 3 programmes (engine via SIM_ENGINE: jev|gemini; cached in data/)
+	for p in breast cervix bowel; do SIM_ENGINE=$${SIM_ENGINE:-jev} $(PY) src/residents.py $$p; done
 
 sim:              ## what-if scenarios + summaries -> data/sim/*.json
 	$(PY) src/simulate.py --scenarios

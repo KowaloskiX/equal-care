@@ -1,6 +1,6 @@
-"""Turn Jev answers into the numbers the app shows, and save them (data/sim/<programme>.json, committed).
+"""Turn Decisions answers into the numbers the app shows, and save them (data/sim/<programme>.json, committed).
 
-Usage: python src/simulate.py [breast cervix bowel] [--scenarios]   (--scenarios asks Jev for the what-if runs first)
+Usage: python src/simulate.py [breast cervix bowel] [--scenarios]   (--scenarios asks the Decisions API for the what-if runs first)
 
 For each programme, county and municipality:
 - real:      attendance from Sotkanet (data)
@@ -9,7 +9,7 @@ For each programme, county and municipality:
 - composition_gap = expected - national: how far the county should sit from Finland given its population alone
 - other_gap       = (real - national) - composition_gap: the part of the gap its population does NOT explain,
                     i.e. where local services, access or organisation are the likelier cause
-- reasons:   share of eligible people by Jev's main reason (among those the simulation expects to skip)
+- reasons:   share of eligible people by the model's main reason (among those the simulation expects to skip)
 - scenarios: change of the expected rate when one fact changes (own-language invitation, evening slots, SMS
              reminder, mobile unit) and the extra people per year that means, using the real number invited
 """
@@ -18,7 +18,7 @@ from pathlib import Path
 import numpy as np, pandas as pd
 
 sys.path.insert(0, str(Path(__file__).parent))
-import jev_sim as js
+import residents as js
 import datastore as ds
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -56,7 +56,7 @@ def summarise(prog, scenarios=True):
     c, target, raw = js.anchor_shift(prog)
     E = frame(prog, "baseline", c, county_of)
     nat_sim = 100 * float(np.average(E.pa, weights=E.w))
-    out = {"programme": prog, "indicator": ind, "label": ds.BY_KEY[ind].label, "anchor": {"logit_shift": round(c, 3),
+    out = {"programme": prog, "engine": js.engine_name(), "indicator": ind, "label": ds.BY_KEY[ind].label, "anchor": {"logit_shift": round(c, 3),
            "raw_national": round(100 * raw, 1), "real_national": round(100 * target, 1)},
            "validation": js.validate(prog)[0], "levels": {}}
     out["validation"].pop("source", None)

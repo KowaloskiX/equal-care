@@ -3,16 +3,18 @@
 // municipalities are drawn on top when the indicator exists at municipality level.
 import { useMemo, useState } from "react";
 import DeckGL from "@deck.gl/react";
-import { FlyToInterpolator, type PickingInfo } from "@deck.gl/core";
+import { FlyToInterpolator, Layer, type PickingInfo } from "@deck.gl/core";
 import { GeoJsonLayer } from "@deck.gl/layers";
 import { Map } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { setWorkerUrl } from "maplibre-gl";
+import type { FeatureCollection } from "geojson";
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");   // Turbopack does not bundle MapLibre's module worker (see postinstall)
 import { fmt, type FC, type Feature, type Values } from "@/lib/api";
 
 const STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json";
 const HOME = { longitude: 25.5, latitude: 64.6, zoom: 4.35, pitch: 0, bearing: 0 };
+type ViewState = typeof HOME & { transitionDuration?: number; transitionInterpolator?: FlyToInterpolator };
 type RGB = [number, number, number];
 const BAD: RGB = [232, 93, 74], MID: RGB = [70, 76, 92], GOOD: RGB = [72, 196, 160], NEUTRAL: RGB = [120, 150, 220];
 const mix = (a: RGB, b: RGB, t: number): RGB => a.map((x, i) => Math.round(x + (b[i] - x) * t)) as RGB;
@@ -29,12 +31,18 @@ export function colorFor(v: number | undefined, vals: Values | null): [number, n
   return [...(good >= 0 ? mix(MID, GOOD, good) : mix(MID, BAD, -good)), 225];
 }
 
+const coords = (f: Feature): number[][] => {
+  if (f.geometry.type === "Polygon") return f.geometry.coordinates.flat(1);
+  if (f.geometry.type === "MultiPolygon") return f.geometry.coordinates.flat(2);
+  return [];   // GeometryCollection or other types do not occur in the boundary files
+};
+
 export default function ChoroplethMap(props: {
   counties: FC | null; municipalities: FC | null; county: Values | null; muni: Values | null;
   selected: string | null; onSelect: (code: string | null) => void;
 }) {
   const { counties, municipalities, county, muni, selected, onSelect } = props;
-  const [view, setView] = useState<any>(HOME);
+  const [view, setView] = useState<ViewState>(HOME);
   const [hover, setHover] = useState<{ x: number; y: number; name: string; value: string } | null>(null);
 
   const muniFeatures = useMemo(() => {
@@ -44,7 +52,7 @@ export default function ChoroplethMap(props: {
 
   const fly = (f: Feature | null) => {
     if (!f) return setView({ ...HOME, transitionDuration: 700, transitionInterpolator: new FlyToInterpolator() });
-    const pts: number[][] = f.geometry.coordinates.flat(f.geometry.type === "MultiPolygon" ? 2 : 1);
+    const pts = coords(f);
     const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
     const lon = (Math.min(...xs) + Math.max(...xs)) / 2, lat = (Math.min(...ys) + Math.max(...ys)) / 2;
     const span = Math.max(Math.max(...xs) - Math.min(...xs), (Math.max(...ys) - Math.min(...ys)) * 2);
@@ -57,33 +65,36 @@ export default function ChoroplethMap(props: {
     setHover(f ? { x: info.x, y: info.y, name: f.properties.name, value: fmt(vals?.values[f.properties.code]?.value, vals?.unit) } : null);
   };
 
-  const layers = [
-    counties && new GeoJsonLayer({
-      id: "counties", data: counties as any, pickable: true, stroked: true, filled: true,
-      getFillColor: (f: any) => {
-        const c = colorFor(county?.values[f.properties.code]?.value, county);
-        return selected && f.properties.code !== selected ? [c[0], c[1], c[2], 90] : c;
+  const layers: Layer[] = [];
+  if (counties) {
+    layers.push(new GeoJsonLayer({
+      id: "counties", data: counties as unknown as FeatureCollection, pickable: true, stroked: true, filled: true,
+      getFillColor: (f: unknown) => {
+        const c = colorFor(county?.values[(f as Feature).properties.code]?.value, county);
+        return selected && (f as Feature).properties.code !== selected ? [c[0], c[1], c[2], 90] : c;
       },
-      getLineColor: (f: any) => (f.properties.code === selected ? [255, 255, 255, 255] : [12, 13, 18, 255]),
-      getLineWidth: (f: any) => (f.properties.code === selected ? 2.5 : 1), lineWidthUnits: "pixels",
+      getLineColor: (f: unknown) => ((f as Feature).properties.code === selected ? [255, 255, 255, 255] : [12, 13, 18, 255]),
+      getLineWidth: (f: unknown) => ((f as Feature).properties.code === selected ? 2.5 : 1), lineWidthUnits: "pixels",
       updateTriggers: { getFillColor: [county, selected], getLineColor: [selected], getLineWidth: [selected] },
       onHover: tip(county),
       onClick: (info: PickingInfo) => {
         const f = info.object as Feature; const code = f.properties.code === selected ? null : f.properties.code;
         onSelect(code); fly(code ? f : null);
       },
-    }),
-    muniFeatures && selected && new GeoJsonLayer({
-      id: "municipalities", data: muniFeatures as any, pickable: true, stroked: true, filled: true,
-      getFillColor: (f: any) => colorFor(muni?.values[f.properties.code]?.value, muni),
+    }));
+  }
+  if (muniFeatures && selected) {
+    layers.push(new GeoJsonLayer({
+      id: "municipalities", data: muniFeatures as unknown as FeatureCollection, pickable: true, stroked: true, filled: true,
+      getFillColor: (f: unknown) => colorFor(muni?.values[(f as Feature).properties.code]?.value, muni),
       getLineColor: [12, 13, 18, 200], getLineWidth: 0.6, lineWidthUnits: "pixels",
       updateTriggers: { getFillColor: [muni] }, onHover: tip(muni),
-    }),
-  ].filter(Boolean);
+    }));
+  }
 
   return (
     <div className="absolute inset-0">
-      <DeckGL viewState={view} onViewStateChange={(e: any) => setView(e.viewState)} controller layers={layers as any}
+      <DeckGL viewState={view} onViewStateChange={(e: { viewState: unknown }) => setView(e.viewState as ViewState)} controller layers={layers}
         getCursor={({ isHovering }) => (isHovering ? "pointer" : "grab")}>
         <Map mapStyle={STYLE} />
       </DeckGL>

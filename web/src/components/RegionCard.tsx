@@ -1,6 +1,10 @@
 "use client";
 // One county along the care pathway: every indicator against Finland, its rank among the counties, and the source.
-import { fmt, type Gap, type Pathway, type PathwayItem } from "@/lib/api";
+import { useEffect, useState } from "react";
+import { fmt, getRecommend, type Gap, type Pathway, type PathwayItem, type Recommend } from "@/lib/api";
+import RecommendBlock from "@/components/RecommendBlock";
+
+const PROG_LABEL: Record<string, string> = { breast: "Breast screening", bowel: "Colorectal screening" };
 
 const STAGE_LABEL: Record<string, string> = {
   context: "Who lives here", detection: "Detection · screening", referral: "Referral · access to specialised care",
@@ -39,12 +43,31 @@ export default function RegionCard({ p, gaps, active, onPick, onClose }: {
   p: Pathway; gaps: Gap[]; active: string; onPick: (k: string) => void; onClose: () => void;
 }) {
   const stages = ["detection", "referral", "treatment", "outcome", "context"];
+  const [recs, setRecs] = useState<Recommend[]>([]);
+  useEffect(() => {
+    let live = true;
+    Promise.all([getRecommend("breast", p.code), getRecommend("bowel", p.code)])
+      .then((r) => { if (live) setRecs(r); })
+      .catch(() => { if (live) setRecs([]); });
+    return () => { live = false; };
+  }, [p.code]);
   return (
     <div className="glass p-4 w-[380px] max-h-[calc(100vh-32px)] overflow-y-auto">
       <div className="flex items-start justify-between gap-3 mb-2">
         <h2 className="text-[17px] font-semibold leading-tight">{p.name}</h2>
         <button onClick={onClose} className="text-white/50 hover:text-white text-lg leading-none">×</button>
       </div>
+      {recs.length > 0 && (
+        <div className="mb-3 rounded-xl border border-sky-300/25 bg-sky-300/[0.05] p-3">
+          <div className="text-[11px] uppercase tracking-wide text-sky-300/80 mb-1.5">Why and what to do</div>
+          {recs.map((r) => (
+            <div key={r.programme}>
+              <div className="text-[11px] uppercase tracking-wide text-white/40 mt-1.5">{PROG_LABEL[r.programme] ?? r.programme}</div>
+              <RecommendBlock r={r} />
+            </div>
+          ))}
+        </div>
+      )}
       {gaps.length > 0 && (
         <div className="mb-3 rounded-xl border border-amber-300/25 bg-amber-300/[0.06] p-3">
           <div className="text-[11px] uppercase tracking-wide text-amber-300/80 mb-1.5">Missing to reach 80 % attendance, per year</div>

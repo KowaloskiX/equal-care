@@ -38,6 +38,8 @@ make data       # re-fetch every source
 | `src/indicators.py` | Indicator registry: care pathway stage, strategy goal, target, source |
 | `src/fetch_sotkanet.py`, `fetch_geo.py`, `strategy.py` | Fetchers; `strategy.py actions` lists the roadmap actions |
 | `src/datastore.py` | Values with sources, screening gap arithmetic, correlations |
+| `src/residents.py`, `simulate.py` | Synthetic residents answered by a switchable decision engine (`SIM_ENGINE`: Jev/TypeSafe or Gemini Decisions), anchored and aggregated into `data/sim/` |
+| `src/recommend.py` | Recommendations: gap split + scenarios mapped to cited roadmap actions (`/api/recommend`, `/api/brief`) |
 | `src/grounding.py` | Flags numbers in generated text that do not come from the data (from krakow-sim) |
 | `app/server.py` | FastAPI |
 | `web/` | Next.js, deck.gl and MapLibre map |

@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
-import datastore as ds, strategy
+import datastore as ds, strategy, recommend as rec
 from indicators import INDICATORS, GOALS, STAGES
 
 app = FastAPI(title="Equal Care Across Finland")
@@ -88,9 +88,17 @@ def strategy_search(q: str, doc: str | None = None):
     return {"hits": strategy.search(q, doc)}
 
 
-# ---------------- simulation (Jev residents; precomputed by src/simulate.py, never computed per request)
-SIM_NOTE = ("Simulation, not data: synthetic residents built from Statistics Finland tables answer through Jev "
-            "(TypeSafe). Anchored so Finland matches the real national rate. See validation for how well it tracks reality.")
+# ---------------- simulation (synthetic residents; precomputed by src/simulate.py, never computed per request)
+ENGINE_WHO = {"jev": "Jev (TypeSafe)", "gemini-decision-1": "the Gemini Decisions API (gemini-decision-1)"}
+
+
+def sim_note(engine):
+    who = ENGINE_WHO.get(engine, engine or "the decision model")
+    return ("Simulation, not data: synthetic residents built from Statistics Finland tables answer through "
+            f"{who}. Anchored so Finland matches the real national rate. See validation for how well it tracks reality.")
+
+
+SIM_NOTE = sim_note("jev")   # fallback when a sim file predates the engine field
 
 
 def _sim(prog):
@@ -102,16 +110,18 @@ def _sim(prog):
 
 @app.get("/api/sim")
 def sim_index():
-    import jev_sim
+    import residents
     out = []
-    for prog, P in jev_sim.PROGRAMMES.items():
+    engine = None
+    for prog, P in residents.PROGRAMMES.items():
         try:
             s = _sim(prog)
         except HTTPException:
             continue
+        engine = engine or s.get("engine")
         out.append({"programme": prog, "indicator": P["indicator"], "label": s["label"], "validation": s["validation"],
                     "scenarios": {k: v["label"] for k, v in s["scenarios"].items()}})
-    return {"note": SIM_NOTE, "programmes": out}
+    return {"note": sim_note(engine or "jev"), "programmes": out}
 
 
 @app.get("/api/sim/{prog}")
@@ -123,9 +133,9 @@ def sim_level(prog: str, level: str = "county", scenario: str | None = None):
         if not sc:
             raise HTTPException(404, f"no scenario {scenario!r}")
         rows = {c: {**r, **sc["levels"][level].get(c, {})} for c, r in rows.items()}
-    return {"programme": prog, "label": s["label"], "level": level, "year": L["year"], "national_real": L["national_real"],
+    return {"programme": prog, "engine": s.get("engine"), "label": s["label"], "level": level, "year": L["year"], "national_real": L["national_real"],
             "national_expected": L["national_expected"], "rows": rows, "validation": s["validation"], "anchor": s["anchor"],
-            "scenario": scenario, "note": SIM_NOTE, "source": L["source"]}
+            "scenario": scenario, "note": sim_note(s.get("engine")), "source": L["source"]}
 
 
 @app.get("/api/sim/{prog}/region/{code}")
@@ -134,6 +144,27 @@ def sim_region(prog: str, code: str, level: str = "county"):
     if r is None:
         raise HTTPException(404, f"no simulated row for {code!r}")
     sc = {k: {"label": v["label"], **v["levels"][level].get(code, {})} for k, v in s["scenarios"].items()}
-    return {"programme": prog, "code": code, "name": ds.short_names().get(code, code), **r, "scenarios": sc,
-            "national_real": s["levels"][level]["national_real"], "validation": s["validation"], "note": SIM_NOTE,
+    return {"programme": prog, "engine": s.get("engine"), "code": code, "name": ds.short_names().get(code, code), **r, "scenarios": sc,
+            "national_real": s["levels"][level]["national_real"], "validation": s["validation"], "note": sim_note(s.get("engine")),
             "source": s["levels"][level]["source"]}
+
+
+# ---------------- recommendations (cited roadmap actions; see src/recommend.py)
+
+
+@app.get("/api/recommend/{prog}/{code}")
+def recommend_endpoint(prog: str, code: str):
+    if prog not in rec.PROGRAMMES:
+        raise HTTPException(404, f"unknown programme {prog!r}")
+    if code not in ds.values(rec.PROGRAMMES[prog], "county")["values"]:
+        raise HTTPException(404, f"unknown county {code!r}")
+    return rec.recommend(prog, code)
+
+
+@app.get("/api/brief")
+def brief_endpoint(prog: str | None = None):
+    progs = (prog,) if prog else ("breast", "bowel")   # cervix is out of the story: much testing happens privately
+    for p in progs:
+        if p not in rec.PROGRAMMES:
+            raise HTTPException(404, f"unknown programme {p!r}")
+    return rec.brief(progs)

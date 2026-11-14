@@ -37,5 +37,21 @@ check("simulation summaries for 3 programmes, each with validation", len(s["prog
 h = c.get("/api/sim/breast/region/90").json()
 check("Helsinki breast gap splits into composition + other",
       abs(h["composition_gap"] + h["other_gap"] - (h["real"] - h["national_real"])) < 0.05 and len(h["scenarios"]) == 4)
+import recommend as rec
+action_ids = {x["id"] for x in c.get("/api/actions").json()["actions"]}
+need = {aid for m in rec.SCENARIO_ACTIONS.values() for aid in m["actions"]} | {rec.MONITORING_ACTION} | set(rec.GOAL3_ACTIONS)
+check("all cited roadmap action ids resolve", need <= action_ids)
+r = c.get("/api/recommend/breast/90").json()
+check("Helsinki breast driver is services", r["split"]["driver"] == "services")
+r2 = c.get("/api/recommend/bowel/05").json()
+check("Southwest Finland bowel driver is national", r2["split"]["driver"] == "national" and
+      r2["split"]["assumption"] and any(a["id"] == rec.NATIONAL_ACTION for a in r2["pathway_actions"]))
+check("every scenario cites an action with a page",
+      all(s["actions"] and all(a["page"] > 0 for a in s["actions"]) for s in r["scenarios"]))
+b = c.get("/api/brief").json()
+check("brief: 3 counties per programme, missing desc",
+      len(b["programmes"]) == 2 and all(len(p["counties"]) == 3 for p in b["programmes"]) and
+      all([x["screening"]["missing_per_year"] for x in p["counties"]] ==
+          sorted((x["screening"]["missing_per_year"] for x in p["counties"]), reverse=True) for p in b["programmes"]))
 print(f"\n{len(fails)} failed" if fails else "\nall passed")
 sys.exit(1 if fails else 0)
