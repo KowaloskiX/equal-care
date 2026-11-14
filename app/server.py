@@ -168,8 +168,12 @@ def sim_level(prog: str, level: str = "county", scenario: str | None = None):
         if not sc:
             raise HTTPException(404, f"no scenario {scenario!r}")
         rows = {c: {**r, **sc["levels"][level].get(c, {})} for c, r in rows.items()}
+    import simulate
+    eng_id = "gemini" if s.get("engine") == "gemini-decision-1" else "jev"   # match the engine the sim file was built with
     return {"programme": prog, "engine": s.get("engine"), "label": s["label"], "level": level, "year": L["year"], "national_real": L["national_real"],
             "national_expected": L["national_expected"], "rows": rows, "validation": s["validation"], "anchor": s["anchor"],
+            "group_validation": simulate.group_validation(prog, eng_id),
+            "group_validation_source": simulate.group_validation_source(prog),
             "scenario": scenario, "note": sim_note(s.get("engine")), "source": L["source"]}
 
 
@@ -257,3 +261,10 @@ def ask_endpoint(body: dict):
         return analyst.ask(body.get("question", ""), body.get("prog"), body.get("code"))
     except Exception as e:                       # Anthropic APIError, network, bad model id — surface it, no fake text
         raise HTTPException(502, str(e))
+
+
+# ---------------- generated briefing (src/report.py)
+
+from app.report_api import router as report_router
+
+app.include_router(report_router)

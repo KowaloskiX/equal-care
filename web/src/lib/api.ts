@@ -47,7 +47,11 @@ export type SimRow = {
 export type SimLevel = {
   programme: string; engine?: string; label: string; level: string; year: number; national_real: number;
   national_expected: number; rows: Record<string, SimRow>; validation: Validation; note: string; source: Source;
+  group_validation?: GroupValRow[]; group_validation_source?: RegistrySource;
 };
+// Cancer Registry 2024 population-group rates vs the same groups' simulated national rates (data/registry_groups.json)
+export type GroupValRow = { dim: string; key: string; group: string; registry: number; simulated: number };
+export type RegistrySource = { title: string; org: string; url: string; table: string; period: string; method: string };
 export type ActionRef = { id: string; title: string; title_en?: string | null; page: number; url: string;
   responsible: string | null; metric: string | null;
   score?: number | null; confidence?: number | null; matched_by?: string | null; partial_match?: boolean | null };
@@ -107,7 +111,8 @@ export type Replay = {
   files: { path: string; answers: number }[];
   asked_live: number; people_total: number; per_dot?: number; rows: ResidentRow[];
   final: { rate: number | null; real: number | null; national_real: number | null;
-           target: number | null; baseline_rate?: number | null; groups?: SkipGroup[] };
+           target: number | null; baseline_rate?: number | null; groups?: SkipGroup[];
+           group_validation?: GroupValRow[]; group_validation_source?: RegistrySource };
   anchor: { logit_shift: number; real_national: number | null };
   validation: Validation | null; note: string; source: Source | null;
   reason_labels: Record<string, string>; reason_shorts: Record<string, string>;

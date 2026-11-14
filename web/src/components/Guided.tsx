@@ -29,7 +29,7 @@ function Chip({ step, eng, src }: { step: number; eng: string | null; src?: Para
 
 export default function Guided({ prog, code, step, seen, briefProg, activeInd,
                                  onStep, onCode, onProg, onExplore, onInd, onLive,
-                                 munis, crowd, onCrowd, preRun, onTl }: {
+                                 munis, crowd, onCrowd, preRun, onTl, reportHref, onRanCombo }: {
   prog: Prog; code: string; step: number; seen: number[]; briefProg?: Brief["programmes"][number];
   activeInd: string | null;
   onStep: (n: number) => void; onCode: (c: string) => void; onProg: (p: Prog) => void;
@@ -40,6 +40,8 @@ export default function Guided({ prog, code, step, seen, briefProg, activeInd,
   crowd?: Crowd | null;
   onCrowd?: (c: Crowd | null | ((p: Crowd | null) => Crowd | null)) => void;
   preRun?: { scenarios: string[]; key: number } | null;   // analyst drawer: preselect + auto-run
+  reportHref?: string | null;                           // /report?items=… for this county + session combos
+  onRanCombo?: (item: string) => void;                  // step 3 records each combo it runs
 }) {
   const who = people(prog);
   const counties = useMemo(() => briefProg?.counties ?? [], [briefProg]);
@@ -112,8 +114,8 @@ export default function Guided({ prog, code, step, seen, briefProg, activeInd,
           ))}
         </div>
       </div>
-      <div className="flex items-center justify-between gap-2 mt-1.5">
-        <div className="t-caption truncate">{PROGS.find((p) => p.id === prog)?.label} · <span className="text-white/75">{name}</span></div>
+      <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 mt-1.5">
+        <div className="t-caption min-w-0 leading-tight">{PROGS.find((p) => p.id === prog)?.label} · <span className="text-white/75">{name}</span></div>
         <div className="flex gap-1 shrink-0" data-tour="chips"><Chip step={step} eng={eng} src={counties[0]?.screening?.source} /></div>
       </div>
 
@@ -172,7 +174,7 @@ export default function Guided({ prog, code, step, seen, briefProg, activeInd,
             {!recF ? <Skel className="h-24 mt-2" />
                    : <ScenarioStep key={`${prog}:${code}:${preRun?.key ?? 0}`} prog={prog} code={code} rec={recF} who={who}
                                    onLive={onLive} munis={munis} crowd={crowd} onCrowd={onCrowd}
-                                   preselect={preRun?.scenarios} autoRun={!!preRun} />}
+                                   preselect={preRun?.scenarios} autoRun={!!preRun} onRanCombo={onRanCombo} />}
           </>
         )}
 
@@ -196,6 +198,11 @@ export default function Guided({ prog, code, step, seen, briefProg, activeInd,
             <button onClick={onExplore} className="t-caption text-white/60 hover:text-white underline decoration-dotted underline-offset-2">
               Explore all indicators
             </button>
+            {reportHref && (
+              <a href={reportHref} className="t-caption text-white/60 hover:text-white underline decoration-dotted underline-offset-2">
+                Generate report
+              </a>
+            )}
             <button onClick={() => onStep(1)}
                     className="rounded-lg bg-sky-400/20 border border-sky-300/40 text-sky-200 text-[12px] px-3.5 py-1.5 hover:bg-sky-400/30">
               Try another county

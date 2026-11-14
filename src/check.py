@@ -38,6 +38,17 @@ check("simulation summaries for breast+bowel (cervix out of the story), each wit
 h = c.get("/api/sim/breast/region/90").json()
 check("Helsinki breast gap splits into composition + other",
       abs(h["composition_gap"] + h["other_gap"] - (h["real"] - h["national_real"])) < 0.05 and len(h["scenarios"]) == 4)
+RG = json.loads((ROOT / "data/registry_groups.json").read_text())
+for prog in ("breast", "bowel"):
+    sL = c.get(f"/api/sim/{prog}").json()
+    gv = sL.get("group_validation") or []
+    check(f"group validation {prog}: 5 rows, numeric, registry source linked",
+          len(gv) == 5 and all(isinstance(r["registry"], (int, float)) and isinstance(r["simulated"], (int, float))
+                               for r in gv) and sL["group_validation_source"]["url"].startswith("https://"))
+    exp = {k: round(100 * g["attended"] / g["invited"], 1)
+           for dim in RG[prog]["groups"].values() for k, g in dim.items()}
+    check(f"group validation {prog}: registry figures reproduce invited/attended",
+          all(abs(r["registry"] - exp[r["key"]]) < 0.05 for r in gv))
 d90 = c.get("/api/decompose/breast/90").json()
 check("decompose Helsinki breast: composition ≈ -4.7, unexplained ≈ -2.6",
       abs(d90["composition_gap"] + 4.7) <= 0.05 and abs(d90["unexplained_gap"] + 2.6) <= 0.05)
@@ -164,6 +175,8 @@ check("scenario replay uses the baseline's per_dot and carries p_cal_before",
 check("cervix replay is out of the story (404)", c.get("/api/residents/cervix/90").status_code == 404)
 big = c.get("/api/residents/bowel/90")
 check("largest replay payload stays under ~1.5 MB", len(big.content) < 1_500_000)
+check("replay final carries group validation rows",
+      len(rb["final"].get("group_validation") or []) == 5)
 
 # analyst: tool functions return real, source-carrying data; the tool-use loop works on a fake client (no network)
 import analyst

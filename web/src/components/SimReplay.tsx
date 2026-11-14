@@ -232,6 +232,39 @@ function ReplayDetails({ replay, who }: { replay: Replay; who: string }) {
           {replay.files.map((f) => f.path).join(" · ")} · {replay.asked_live ? `${replay.asked_live} new calls` : "0 new calls"}
           <br />Tiles show the raw answer; rates are calibrated so Finland = {fmt(replay.anchor.real_national, "%")} real.
         </div>
+        {replay.final.group_validation?.length ? (
+          <div className="mt-3">
+            <div className="t-micro mb-1">Registry 2024 vs simulated — national participation by group</div>
+            <table className="w-full text-[10.5px] text-white/65">
+              <thead>
+                <tr className="text-white/40">
+                  <th className="text-left font-normal pb-0.5">group</th>
+                  <th className="text-right font-normal pb-0.5 pr-2">registry</th>
+                  <th className="text-right font-normal pb-0.5">simulated</th>
+                </tr>
+              </thead>
+              <tbody>
+                {replay.final.group_validation.map((r) => (
+                  <tr key={r.key} className="border-t border-white/5">
+                    <td className="py-0.5 pr-2">{r.group}</td>
+                    <td className="text-right tabular-nums pr-2">{fmt(r.registry, "%")}</td>
+                    <td className="text-right tabular-nums text-sky-300/80">{fmt(r.simulated, "%")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="t-micro mt-1 leading-snug text-white/40">
+              Registry column: {replay.final.group_validation_source?.method ?? "attendees / invitees"} ·{" "}
+              {replay.final.group_validation_source?.url ? (
+                <a href={replay.final.group_validation_source.url} target="_blank" rel="noreferrer"
+                   className="underline decoration-dotted hover:text-white/70">
+                  {replay.final.group_validation_source.org} {replay.final.group_validation_source.period}
+                </a>
+              ) : "Finnish Cancer Registry 2024"}
+              {" "}· simulated column: {engineName(replay.engine) ?? "the engine"}, national
+            </div>
+          </div>
+        ) : null}
       </div>
       {ans && (
         <div className="absolute inset-x-0 top-6 z-20">
@@ -295,10 +328,17 @@ function DataBlock({ split, target }: { split: Recommend["split"] | null; target
               <div className="bg-rose-400/70 h-full flex-1" />
             </div>
             {ci && compNeg > 0 && (
-              <div className="absolute border-b border-x border-sky-300/80 rounded-b-sm" title="90 % interval"
-                   style={{ left: `${(100 * Math.min(ci[0], tot)) / tot}%`,
-                            width: `${(100 * (Math.min(ci[1], tot) - Math.min(ci[0], tot))) / tot}%`,
-                            top: "100%", height: 5 }} />
+              <>
+                <div className="absolute pointer-events-none border-t-2 border-x-2 border-sky-300 rounded-t-[3px]"
+                     title={`90 % interval: ${fmt(ci[0])}–${fmt(ci[1])} pts`}
+                     style={{ left: `${(100 * Math.min(ci[0], tot)) / tot}%`,
+                              width: `${(100 * (Math.min(ci[1], tot) - Math.min(ci[0], tot))) / tot}%`,
+                              top: 2, height: 9 }} />
+                <span className="absolute text-[9px] text-white/85 whitespace-nowrap -translate-y-1/2" title="90 % interval"
+                      style={{ left: `min(calc(100% - 64px), calc(${(100 * Math.min(ci[1], tot)) / tot}% + 5px))`, top: "50%" }}>
+                  {fmt(ci[0])}–{fmt(ci[1])} pts
+                </span>
+              </>
             )}
           </div>
           <div className="flex flex-col gap-0.5 text-[11.5px] text-white/60 mt-2.5">
@@ -432,7 +472,7 @@ export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
 }
 
 // Step 3 — "What would help?": pick interventions, run the residents again, compare attempts.
-export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, preselect, autoRun }: {
+export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, preselect, autoRun, onRanCombo }: {
   prog: string; code: string; rec: Recommend | null; who: string;
   onLive?: (v: { code: string; value: number } | null) => void;
   munis?: FC | null;
@@ -440,6 +480,7 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, pre
   onCrowd?: (c: Crowd | null | ((p: Crowd | null) => Crowd | null)) => void;
   preselect?: string[];                                  // analyst "Play it on the map"
   autoRun?: boolean;
+  onRanCombo?: (item: string) => void;                   // "prog:code:scen+scen" for the report entry point
 }) {
   const [sel, setSel] = useState<Set<string>>(new Set(preselect ?? []));
   const [busy, setBusy] = useState(false);
@@ -471,7 +512,8 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, pre
                revealed: b.rows.length, scenarios: [...sel] };
     })).catch(() => null);
     getResidents(prog, code, [...sel])
-      .then((r) => { setReplay(r); setRunId((x) => x + 1); })
+      .then((r) => { setReplay(r); setRunId((x) => x + 1);
+                     onRanCombo?.(`${prog}:${code}:${[...sel].sort().join("+")}`); })
       .catch((e) => setErr(String(e instanceof Error ? e.message : e)))
       .finally(() => setBusy(false));
   };
@@ -518,23 +560,48 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, pre
       {err && <div className="t-body text-rose-300 mt-1.5">{err}</div>}
       {replay && !busy && !done && (
         <ReplayPlayer key={runId} replay={replay} who={who} onLive={onLive} onProgress={onProgress} onDone={onDone} />)}
-      {w && replay && (
+      {w && replay && (() => {
+        const oe = w.other_engine;
+        const both = oe?.extra_people_per_year != null && w.extra_people_per_year != null;
+        const ex = w.extra_people_per_year;
+        const low = both ? Math.min(oe!.extra_people_per_year!, ex!) : ex;
+        const high = both ? Math.max(oe!.extra_people_per_year!, ex!) : ex;
+        const pcts = [w.gap_closed_pct, oe?.gap_closed_pct].filter((x): x is number => x != null);
+        const loPct = pcts.length ? Math.min(...pcts) : null;
+        const hiPct = pcts.length ? Math.max(...pcts) : null;
+        const missing = w.missing_per_year;
+        const gapLine = missing != null && low != null && high != null
+          ? low >= missing
+            ? `would close the whole gap of ${fmt(missing)}`
+            : high >= missing
+              ? `up to the whole gap of ${fmt(missing)}`
+              : loPct != null && hiPct != null
+                ? `${loPct === hiPct ? loPct : `${loPct}–${hiPct}`} % of the gap of ${fmt(missing)}`
+                : null
+          : null;
+        return (
         <div ref={resRef} className="mt-2.5 slide">
           <div className="t-panel text-emerald-300">
-            {w.other_engine?.extra_people_per_year != null && w.extra_people_per_year != null ? (
-              <>≈ {sgn(Math.min(w.extra_people_per_year, w.other_engine.extra_people_per_year))} to{" "}
-                {sgn(Math.max(w.extra_people_per_year, w.other_engine.extra_people_per_year))} {who} a year
-                <span className="text-white/55"> (two models · {engineName(w.engine)} {sgn(w.extra_people_per_year)})</span></>
-            ) : (
-              <>{sgn(w.extra_people_per_year)} {who} a year
-                <span className="text-white/55"> ({engineName(w.engine) ?? "the engine"} only)</span></>
-            )}
-            {w.gap_closed_pct != null && <span className="text-white/55"> · {w.gap_closed_pct > 100
-              ? "more than the whole gap (simulated upper bound)" : `${w.gap_closed_pct} % of the gap`}</span>}
+            {both ? `+${fmt(low)} to +${fmt(high)} ${who} a year` : `${sgn(ex)} ${who} a year`}
           </div>
+          <div className="t-caption mt-0.5 text-white/60">
+            {both
+              ? <>{engineName(w.engine) ?? w.engine} {sgn(ex)} · {engineName(oe!.engine) ?? oe!.engine} {sgn(oe!.extra_people_per_year)} · simulated upper bound, not a forecast</>
+              : <>simulated upper bound, not a forecast</>}
+          </div>
+          {gapLine && <div className="text-[12px] text-white/75 mt-1">{gapLine}</div>}
           <div className="flex items-center gap-2 mt-1.5">
-            <div className="flex-1 h-3.5 rounded bg-white/5 overflow-hidden">
-              <div className="h-full bg-emerald-400/70" style={{ width: `${Math.min(100, w.gap_closed_pct ?? 0)}%` }} />
+            <div className="relative flex-1 h-3.5 rounded bg-white/5 overflow-hidden" title="share of the gap closed, per model">
+              {loPct != null && hiPct != null && (
+                <div className="absolute inset-y-0 bg-emerald-400/35"
+                     style={{ left: `${Math.max(0, Math.min(100, loPct))}%`,
+                              width: `${Math.min(100, Math.max(0, hiPct)) - Math.max(0, Math.min(100, loPct))}%` }} />
+              )}
+              {w.gap_closed_pct != null && (
+                <div className="absolute inset-y-[-1px] w-[3px] bg-emerald-300 rounded-full"
+                     title={`${engineName(w.engine) ?? w.engine}: ${w.gap_closed_pct} %`}
+                     style={{ left: `calc(${Math.max(0, Math.min(100, w.gap_closed_pct))}% - 1.5px)` }} />
+              )}
             </div>
           </div>
           <div className="t-micro mt-1 flex items-center gap-2">
@@ -577,7 +644,8 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, onCrowd, pre
           )}
           <div className="mt-4"><ReplayDetails replay={replay} who={who} /></div>
         </div>
-      )}
+        );
+      })()}
     </>
   );
 }

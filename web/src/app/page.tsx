@@ -6,7 +6,7 @@ import Guided from "@/components/Guided";
 import Analyst from "@/components/Analyst";
 import Tour, { type TourStep } from "@/components/Tour";
 import { Skel, StepNo, Tag } from "@/components/ui";
-import { fmt, getBrief, getGap, getGeo, getMeta, getPathway, getValues,
+import { engineName, fmt, getBrief, getGap, getGeo, getMeta, getPathway, getValues,
          type Brief, type FC, type Gap, type Meta, type Pathway, type Values } from "@/lib/api";
 import type { Crowd } from "@/lib/dots";
 
@@ -66,6 +66,7 @@ export default function Home() {
   const [tl, setTl] = useState<Values | null>(null);                                // step-4 queue time-lapse month
   const [ask, setAsk] = useState(false);                                            // analyst drawer
   const [preRun, setPreRun] = useState<{ scenarios: string[]; key: number } | null>(null);
+  const [reportRuns, setReportRuns] = useState<string[]>([]);                        // "prog:code:scen+scen" combos run in step 3 this session
 
   useEffect(() => {
     getMeta().then(setMeta).catch((e) => setErr(String(e)));
@@ -126,6 +127,11 @@ export default function Home() {
 
   const activeStage = ind?.stage;
   const liveName = live ? county?.values[live.code]?.name ?? live.code : null;
+  const addReportRun = (item: string) => setReportRuns((r) => (r.includes(item) ? r : [...r, item]));
+  // /report entry point: the current guided county first, then every step-3 combo run this session (deduped)
+  const reportHref = mode === "guided" && code
+    ? `/report?items=${[`${prog}:${code}`, ...reportRuns.filter((x) => x !== `${prog}:${code}`)].slice(0, 6).join(",")}`
+    : null;
 
   return (
     <main className="relative h-screen w-screen overflow-hidden">
@@ -144,6 +150,7 @@ export default function Home() {
           <span className="t-caption truncate hidden md:block">Where cancer care falls behind, and what each county can do</span>
         </div>
         <div className="flex items-center gap-2 shrink-0">
+          {reportHref && <a href={reportHref} className="tag tag-data">Generate report</a>}
           <button onClick={() => setAsk((a) => !a)} className="tag tag-sim">Ask the analyst</button>
           <button onClick={restartTour} title="Show me around"
                   className="tag tag-data w-6 h-6 justify-center !px-0">?</button>
@@ -161,7 +168,8 @@ export default function Home() {
                   activeInd={step === 4 ? pathKey : null}
                   onStep={goStep} onCode={pickCode} onProg={pickProg} onExplore={explore}
                   onInd={setPathKey} onLive={setLive} onTl={setTl}
-                  munis={geo.municipality} crowd={crowd} onCrowd={setCrowd} preRun={preRun} />
+                  munis={geo.municipality} crowd={crowd} onCrowd={setCrowd} preRun={preRun}
+                  reportHref={reportHref} onRanCombo={addReportRun} />
         ) : mode === "guided" ? (
           briefErr
             ? <div className="t-body text-rose-300 mt-4">Can&apos;t reach the data API — start it with <code className="text-rose-200">make app</code>.</div>
@@ -250,8 +258,9 @@ export default function Home() {
       {/* map legend — centred in the free area right of the column */}
       {shown && (
         <div className="absolute bottom-4 left-[calc(50%+236px)] -translate-x-1/2 glass px-4 py-2 flex items-center gap-3 pointer-events-none">
-          <span className="t-caption font-semibold text-white/85 whitespace-nowrap max-w-[260px] truncate">
-            {live ? `Simulated attendance · ${liveName}` : (ind?.short ?? shown.label)}</span>
+          <span className="t-caption font-semibold text-white/85 whitespace-nowrap max-w-[330px] truncate">
+            {live ? `Simulated attendance · ${liveName}` : (ind?.short ?? shown.label)}
+            {crowd ? ` · Simulation · ${engineName(crowd.engine) ?? crowd.engine}` : ""}</span>
           <span className="t-micro whitespace-nowrap">worse</span>
           <div className="w-24 h-2 rounded-full shrink-0"
                style={{ background: "linear-gradient(90deg, rgb(232,93,74) 0%, rgb(70,76,92) 50%, rgb(72,196,160) 100%)" }} />
@@ -263,7 +272,7 @@ export default function Home() {
             <span className="t-micro whitespace-nowrap flex items-center gap-1.5 border-l border-white/15 pl-3">
               <i className="inline-block w-2 h-2 rounded-full" style={{ background: "#4ade80" }} />takes part
               <i className="inline-block w-2 h-2 rounded-full ml-1.5" style={{ background: "#f87171" }} />skips
-              <span className="ml-1">1 dot ≈ {crowd.perDot} {crowd.who} · Simulation · {crowd.engine}</span>
+              <span className="ml-1">1 dot ≈ {crowd.perDot}</span>
             </span>
           )}
         </div>

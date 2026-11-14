@@ -188,7 +188,9 @@ def replay(prog, code, scenarios=None, engine=None):
                      "files": _files(bpath), "asked_live": 0,
                      "final": {"rate": rows[-1]["cum_rate"] if rows else None, "real": real,
                                "national_real": v["national"], "target": v["target"],
-                               "groups": _skip_groups(G0)},
+                               "groups": _skip_groups(G0),
+                               "group_validation": simulate.group_validation(prog, e),
+                               "group_validation_source": simulate.group_validation_source(prog)},
                      "reason_labels": js.REASONS, "reason_shorts": REASON_SHORT})
         return base
 
@@ -216,7 +218,9 @@ def replay(prog, code, scenarios=None, engine=None):
                  "files": _files(spath, bpath), "asked_live": wres["asked_live"],
                  "final": {"rate": wres["new_rate"], "real": real,
                            "national_real": v["national"], "target": v["target"],
-                           "baseline_rate": wres["baseline_rate"]},
+                           "baseline_rate": wres["baseline_rate"],
+                           "group_validation": simulate.group_validation(prog, e),
+                           "group_validation_source": simulate.group_validation_source(prog)},
                  "reason_labels": js.REASONS, "reason_shorts": REASON_SHORT,
                  "whatif": wres})
     return base

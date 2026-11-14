@@ -14,6 +14,7 @@ For each programme, county and municipality:
              reminder, mobile unit) and the extra people per year that means, using the real number invited
 """
 import json, sys
+from functools import lru_cache
 from pathlib import Path
 import numpy as np, pandas as pd
 
@@ -106,6 +107,61 @@ def summarise(prog, scenarios=True):
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / f"{prog}.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
     return out
+
+
+GROUP_LABELS = {
+    "domestic": "native language Finnish or Swedish",
+    "other_or_missing": "another or missing native language",
+    "basic_or_unknown": "basic education or unknown",
+    "primary_or_unknown": "primary education or unknown",
+    "secondary": "secondary education",
+    "intermediate_secondary": "intermediate or secondary education",
+    "tertiary": "tertiary or higher education",
+    "tertiary_higher": "tertiary or higher education",
+}
+# ASSUMPTION: registry group -> archetype mapping.
+#   language: "domestic" = lang in {fi, sv}; "other/missing" = every other native language.
+#   education: StatFin edu codes map to the registry bands as 9_X -> basic/primary-or-unknown,
+#   3_4 -> secondary, and 5_6 + 7_8 -> tertiary (bachelor's and master's merge into the registry's
+#   single higher-education band).
+EDU_GROUP = {"basic_or_unknown": ("9_X",), "primary_or_unknown": ("9_X",),
+             "secondary": ("3_4",), "intermediate_secondary": ("3_4",),
+             "tertiary": ("5_6", "7_8"), "tertiary_higher": ("5_6", "7_8")}
+
+
+def registry_groups():
+    return json.loads((ROOT / "data/registry_groups.json").read_text())
+
+
+@lru_cache(maxsize=None)
+def group_validation(prog, engine=None):
+    """Simulated national attendance per population group vs the Cancer Registry's 2024 crude rates
+    (data/registry_groups.json). Display only — the registry figures are never used for calibration."""
+    R = registry_groups()[prog]
+    c, _, _ = js.anchor_shift(prog, engine)
+    E = js.answers(prog, engine=engine)
+    E = E[E.p.notna()].copy()
+    E["pa"] = anchored(E, c)
+
+    def sim_rate(mask):
+        d = E[mask]
+        return round(100 * float((d.pa * d.w).sum() / d.w.sum()), 1)
+
+    rows = []
+    for dim, groups in R["groups"].items():
+        for gname, rec in groups.items():
+            if dim == "language":
+                mask = E.lang.isin(("fi", "sv")) if gname == "domestic" else ~E.lang.isin(("fi", "sv"))
+            else:
+                mask = E.edu.isin(EDU_GROUP[gname])
+            rows.append({"dim": dim, "key": gname, "group": GROUP_LABELS[gname],
+                         "registry": round(100 * rec["attended"] / rec["invited"], 1),
+                         "simulated": sim_rate(mask)})
+    return rows
+
+
+def group_validation_source(prog):
+    return registry_groups()[prog]["source"]
 
 
 def main():
