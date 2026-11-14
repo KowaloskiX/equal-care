@@ -1,7 +1,8 @@
 // Client for the FastAPI backend (app/server.py, `make app`, port 8010). Every number arrives with its source.
 import type { Geometry } from "geojson";
 
-export const API = process.env.NEXT_PUBLIC_API ?? "http://localhost:8010";
+// same-origin by default: next.config.ts proxies /api/* to the FastAPI server, so the app also works behind a proxy
+export const API = process.env.NEXT_PUBLIC_API ?? "";
 
 export type Source = { indicator: number | null; title: string; url: string; year: number | null; org: string;
   updated: string | null; cube_url?: string; period?: string };
