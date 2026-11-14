@@ -33,7 +33,10 @@ Klucze nie są potrzebne do demo: dane i odpowiedzi silnika są w repo (`data/`)
 - **Dane** (`src/fetch_*.py`, `src/strategy.py`): 14 wskaźników THL Sotkanet dla kraju, regionów i gmin; granice z Tilastokeskus; tabele ludności z Tilastokeskus; strategia i plan wdrożenia strona po stronie, 73 działania z planu sparsowane (odpowiedzialny, budżet, miernik, strona).
 - **API** (`app/server.py`): `/api/values`, `/api/region/{code}`, `/api/gap`, `/api/actions`, `/api/sim/...`. Każda liczba ma `source`.
 - **Symulacja z krakow-sim** (`src/population.py`, `src/residents.py`, `src/simulate.py`): mieszkańcy 30–74 jako ważone komórki (gmina × płeć × wiek × język × typ zabudowy × wykształcenie × aktywność), silnik decyzyjny (`SIM_ENGINE`: Jev/TypeSafe albo Gemini Decisions `gemini-decision-1`) odpowiada raz na archetyp „czy pójdzie na badanie i co jest główną barierą”, scenariusze „co jeśli”. Obecnie skomitowane dane pochodzą z Jev.
-- **Frontend** (`web/`): mapa regionów z przełącznikiem wskaźnika i karta regionu ze ścieżką leczenia. Nie było jeszcze testowane w przeglądarce, zacznij od sprawdzenia, czy się renderuje.
+- **Kolejki do onkologii z THL** (`src/fetch_thl_queue.py` → `data/thl_queue.csv`, `make thl-queue`): co miesiąc od 01.2024, specjalność Syöpätaudit, per region: `onc_ref_21` (skierowania rozpatrzone po >21 dniach, etap referral) i `onc_wait_90` (czekający >90 dni na leczenie, etap treatment), oba Goal 3. THL raportuje per placówka: 4 regiony Uusimaa i Helsinki dostają wartość HUS (`shared_producer`), Kainuu i Åland brak. Małe liczby: przy każdej wartości `n`, flaga przy n < 30.
+- **Rekomendacje** (`src/recommend.py`, `/api/recommend/{prog}/{code}`, `/api/brief`): rozbicie luki (driver: services / population / national / on_target), scenariusze → działania z planu (1.3.1, 2.4.1 + 1.1.1), działania ścieżki (2.4.5, 2.5.2, 3.1.2, 3.1.4, 3.2.1, 3.2.2) z `why` i `assumption`; tytuły po angielsku (`TITLE_EN`).
+- **What-if na żywo** (`src/whatif.py`, `/api/whatif?prog=&code=&s=a,b`): łączenie interwencji dla jednego regionu, brakujące odpowiedzi idą na żywo do silnika (Jev), wynik w osobach rocznie i % zamkniętej luki. Kombinacje dla regionów z briefu są w cache (klik 1–3 s); nowa kombinacja 4–14 s; bez klucza HTTP 503.
+- **Frontend** (`web/`): mapa z przełącznikiem Data / Simulation, „2-minute brief” (3 regiony z największą luką per program), karta regionu ze ścieżką (sparkline, n, small numbers), „Why and what to do”, „What if this county…”.
 
 ## Co wiemy z danych (do pitchu)
 
@@ -52,16 +55,20 @@ Klucze nie są potrzebne do demo: dane i odpowiedzi silnika są w repo (`data/`)
   | Mobilny punkt blisko domu | +1 431 | +3 096 | +1 128 |
 
   Liczby per region są w `/api/sim/{prog}?scenario=...`. To szacunki, pokazujemy je zawsze z walidacją.
+- Połączenie czterech interwencji w Helsinkach (what-if, symulacja): mammografia +1 992 osób rocznie (90,5 % luki), jelito grube +4 014 (91,9 %). To górna granica modelu, a nie prognoza: interwencje są zakładane jako w pełni wdrożone i działające niezależnie.
+- Kolejki do onkologii, 30.09.2026 (THL): w kraju 486 czekających, 3,5 % ponad 90 dni. Najwięcej: Satakunta 37,5 % (n = 8), Pohjois-Savo 33,3 % (n = 6), Kanta-Häme 27,3 % (n = 11), Etelä-Pohjanmaa 23,1 % (n = 13), Pohjois-Karjala 13,9 % (n = 36). Skierowania >21 dni: wszędzie poniżej 1 %, czyli etap skierowania nie jest wąskim gardłem w tych danych.
+- Stadium przy rozpoznaniu: raport Syöpärekisteri 2024 (rozdz. 5) podaje, że stadium jest znane w 41,9 % przypadków w kraju, Pirkanmaa 71,9 %, cel ≥ 70 %. Wartości per region są tylko na wykresach (KUVA 5.1/5.2), więc nie ma ich w aplikacji jako wskaźnika. Wniosek do pitchu: luki w przeżywalności nie da się umiejscowić na ścieżce, bo brakuje danych o stadium; to rekomendacja 3.2.1 / 4.1.1.
 
 ## Zadania do wzięcia
 
 Pracuj na własnej gałęzi, PR do `main`. Zadania są tak podzielone, żeby nie dotykać tych samych plików.
 
-1. **Frontend: warstwa symulacji i rekomendacji** (`web/src/`). Przełącznik „dane / symulacja” na mapie; w karcie regionu: rozbicie luki (`composition_gap` vs `other_gap` z `/api/sim/{prog}/region/{code}`), scenariusze z liczbą dodatkowych osób rocznie, rekomendacja z działaniem z planu (`/api/actions?q=...`). Wszystko symulowane z etykietą „Simulation” i walidacją.
-2. **Analityk na Gemini** (`src/analyst.py` + `/api/ask`). Gemini dostaje narzędzia nad `datastore`, `/api/sim` i `strategy.actions()`, odpowiada na pytanie decydenta, każda liczba przechodzi przez `src/grounding.py`. Potrzebny `GEMINI_API_KEY` (Google AI Studio). Zgłaszamy też do „Best Use of Gemini API” (4000 €).
-3. **Więcej danych do Goal 3**. Stadium w chwili rozpoznania i czas do leczenia według regionu: Syöpärekisteri (syoparekisteri.fi, aplikacja statystyczna), NORDCAN. Dodać jako wskaźnik w `src/indicators.py` ze źródłem.
-4. **Rozmowa z mentorką** (Kaisa Kaitila, Medical Affairs, AstraZeneca, na miejscu w sobotę). Pytania: czy niskie uczestnictwo w mammografii w stolicy to efekt prywatnych badań; jak dużo cytologii dzieje się poza programem; która rekomendacja jest wykonalna dla regionu. Odpowiedzi zapisać jako źródło („mentor interview”).
-5. **Pitch**: 2-minutowa historia dla decydenta, slajdy, nagranie demo, zgłoszenie na platformie Junction (zgłoszenie do AstraZeneca i Gemini).
+1. ~~Frontend: warstwa symulacji i rekomendacji~~ zrobione (gałąź `feat/gemini-decisions`).
+2. **Przełączenie symulacji na Gemini Decisions**, gdy będzie `GEMINI_API_KEY`: `SIM_ENGINE=gemini` w `.env`, `make sim-residents && make sim`, potem nowe r walidacji do README/CLAUDE/HANDOFF.
+3. **Analityk na Gemini** (`src/analyst.py` + `/api/ask`). Gemini dostaje narzędzia nad `datastore`, `/api/sim` i `strategy.actions()`, odpowiada na pytanie decydenta, każda liczba przechodzi przez `src/grounding.py`. Potrzebny `GEMINI_API_KEY` (Google AI Studio). Zgłaszamy też do „Best Use of Gemini API” (4000 €).
+4. **Więcej danych do Goal 3**: kolejki THL zrobione. Stadium per region istnieje tylko jako wykres w raporcie Syöpärekisteri; można zapytać mentorkę albo app@cancer.fi o tabelę.
+5. **Rozmowa z mentorką** (Kaisa Kaitila, Medical Affairs, AstraZeneca, na miejscu w sobotę). Pytania: czy niskie uczestnictwo w mammografii w stolicy to efekt prywatnych badań; jak dużo cytologii dzieje się poza programem; która rekomendacja jest wykonalna dla regionu; czy kolejki THL do onkologii (leczenie niepilne) to sensowny wskaźnik przepustowości; czy jest tabela pokrycia stadium per region. Odpowiedzi zapisać jako źródło („mentor interview”).
+6. **Pitch** (szkic w `PITCH.md`): 2-minutowa historia dla decydenta, slajdy, nagranie demo, zgłoszenie na platformie Junction (zgłoszenie do AstraZeneca i Gemini).
 
 ## Zasady (pełne w `CLAUDE.md`)
 
