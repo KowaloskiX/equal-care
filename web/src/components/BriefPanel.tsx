@@ -107,17 +107,14 @@ export default function BriefPanel({ briefProg, prog, onProg, focus, onFocus, on
                 const x = rate != null ? pos(rate) : 0;
                 return (
                   <button key={c.code} onClick={() => onFocus(c.code)}
-                          className={`grid w-full grid-cols-[128px_1fr_84px] gap-x-2 items-center rounded px-1.5 py-1 text-left
+                          className={`grid w-full grid-cols-[128px_1fr_44px_84px] gap-x-2 items-center rounded px-1.5 py-1 text-left
                             ${focus === c.code ? "rowsel" : "hover:bg-white/5"}`}>
                     <span className={`text-[11.5px] truncate ${focus === c.code ? "text-white font-medium" : "text-white/70"}`} title={c.name}>{c.name}</span>
                     <span className="relative h-2.5 rounded-full bg-white/5">
                       <span className={`absolute inset-y-0 left-0 rounded-full ${focus === c.code ? "bg-white/70" : "bg-rose-400/55"}`}
                             style={{ width: `${x}%` }} />
-                      {rate != null && (
-                        <span className={`absolute top-1/2 -translate-y-1/2 text-[9.5px] tabular-nums ${x > 72 ? "right-1 text-black/70 font-semibold" : "text-white/55"}`}
-                              style={x > 72 ? undefined : { left: `calc(${x}% + 4px)` }}>{fmt(rate, "%")}</span>
-                      )}
                     </span>
+                    <span className="text-right text-[10px] tabular-nums text-white/60">{rate != null ? fmt(rate, "%") : "–"}</span>
                     <span className="text-right text-[10px] tabular-nums text-white/60">
                       {c.screening ? <>{fmt(c.screening.missing_per_year)} <span className="text-white/35">/ yr</span></> : "–"}
                     </span>
@@ -125,7 +122,7 @@ export default function BriefPanel({ briefProg, prog, onProg, focus, onFocus, on
                 );
               })}
             </div>
-            <div className="absolute inset-y-0 pointer-events-none" style={{ left: "calc(128px + 8px)", right: "calc(84px + 8px)" }}>
+            <div className="absolute inset-y-0 pointer-events-none" style={{ left: "calc(128px + 8px)", right: "calc(84px + 8px + 44px + 8px)" }}>
               {target != null && <div className="absolute inset-y-0 border-l border-dashed border-amber-300/70" style={{ left: `${pos(target)}%` }} />}
               {national != null && <div className="absolute inset-y-0 border-l border-white/40" style={{ left: `${pos(national)}%` }} />}
             </div>

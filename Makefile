@@ -1,7 +1,7 @@
 PY ?= .venv/bin/python
 NODE_PATH_ADD = PATH=/opt/homebrew/bin:$$PATH
 
-.PHONY: setup data sotkanet geo strategy statfin population sim-residents sim findings app web check
+.PHONY: setup data sotkanet geo strategy statfin population sim-residents sim findings app web demo stop check
 
 setup:            ## Python venv and web dependencies
 	test -d .venv || python3.12 -m venv .venv
@@ -42,6 +42,19 @@ app:              ## API on http://localhost:8010
 
 web:              ## frontend on http://localhost:3010
 	cd web && $(NODE_PATH_ADD) npm run dev -- --port 3010
+
+demo:             ## API + web together; Ctrl-C stops both. http://localhost:3010
+	@trap 'kill 0 2>/dev/null; sleep 1; kill -9 0 2>/dev/null' INT TERM EXIT; \
+	$(PY) -m uvicorn app.server:app --reload --port 8010 & \
+	sleep 2; \
+	echo "API:  http://localhost:8010"; \
+	echo "App:  http://localhost:3010"; \
+	cd web && $(NODE_PATH_ADD) npm run dev -- --port 3010
+
+stop:             ## free ports 8010 and 3010
+	@-lsof -ti:8010 | xargs kill 2>/dev/null; lsof -ti:3010 | xargs kill 2>/dev/null; \
+	sleep 1; \
+	lsof -ti:8010 | xargs kill -9 2>/dev/null; lsof -ti:3010 | xargs kill -9 2>/dev/null; true
 
 check:            ## API smoke test
 	$(PY) src/check.py

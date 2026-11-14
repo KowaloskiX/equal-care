@@ -16,6 +16,14 @@ Mapa 23 fińskich regionów (hyvinvointialue), która pokazuje, gdzie ścieżka 
 
 Wymóg obowiązkowy: co najmniej jeden wskaźnik Goal 3 strategii (przeżywalność, umieralność, czas do leczenia). Mamy przeżywalność 5-letnią z Sotkanet.
 
+## Stan na 15.11 rano
+
+- Demo gotowe: `make demo` (API :8010 + web :3010, Ctrl-C zatrzymuje oba; `make stop` zwalnia porty). Testy: `make check` (40), `cd web && npx tsc --noEmit && npm run lint`.
+- Ekran: górny pasek (Data / Simulation, Story) · lewy panel = 5 kroków ścieżki (Diagnosis pokazuje brak danych o stadium jako wniosek) · prawy panel „Screening brief” w 3 krokach (Where / Why / What would help + Combine) · karta regionu z zakładkami Why & what to do / Pathway / What if · `/story` = 7 slajdów z danymi z API.
+- Kombinacje „Combine the top two” dla wszystkich regionów z briefu są w cache (0 zapytań na żywo).
+- Zapasowe nagranie demo i zrzuty: `media/` (poza gitem): `demo-backup.mp4` (66 s), `final-*.png` (1440×900 i 1280×720).
+- Zostało: wywiad z mentorką, push + PR (decyzja Piotra), nagranie z głosem / zgłoszenie na platformie, Gemini po dostaniu klucza.
+
 ## Uruchomienie (ok. 5 minut)
 
 ```bash

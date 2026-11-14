@@ -35,6 +35,8 @@ Processed data and simulated-resident answers are committed under `data/`. The a
 
 ```bash
 make setup          # Python venv + web dependencies (Python 3.12, Node 20+)
+make demo           # API + app together: http://localhost:3010 (Ctrl-C stops both)
+make stop           # free ports 8010 and 3010
 make check          # API smoke test
 make app            # API on http://localhost:8010
 make web            # app on http://localhost:3010

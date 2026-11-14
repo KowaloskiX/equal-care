@@ -10,3 +10,4 @@ web/public/maplibre/
 web/tsconfig.tsbuildinfo
 .DS_Store
 .worktrees/
+media/
