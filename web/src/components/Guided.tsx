@@ -2,11 +2,12 @@
 // Guided story: one county, one programme, one question per step (Back/Next). Steps 2–3 replay
 // the recorded engine answers — no simulated numbers before the user clicks Run (see SimReplay).
 import { useEffect, useMemo, useState } from "react";
-import { engineName, fmt, getGap, getPathway, getRecommend, getValues,
-         type Brief, type FC, type Gap, type Pathway, type PathwayItem, type Recommend, type Values } from "@/lib/api";
+import { engineName, fmt, getFocus, getGap, getPathway, getRecommend, getValues,
+         type Brief, type FC, type Focus, type Gap, type Pathway, type PathwayItem, type Recommend, type Values } from "@/lib/api";
 import type { Crowd } from "@/lib/dots";
 import { axisPos, BaselineStep, ScenarioStep } from "@/components/SimReplay";
 import QueueLapse from "@/components/QueueLapse";
+import FlowDots from "@/components/PathwayFlow";
 import { Assumption, Cite, DataChip, people, RoadmapChip, SimChip } from "@/components/RecommendBlock";
 import { Row, Src, STAGE_LABEL, STAGE_QUESTION } from "@/components/RegionCard";
 import { Seg, Skel, Tag } from "@/components/ui";
@@ -267,6 +268,21 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
     return "close";
   };
   const statuses = NODES.map((n) => status(n.keys));
+  // share "on track" per 100 people at this stage — display transform of the sourced % indicator;
+  // different cohorts per stage, so never multiplied into one number
+  const onTrack = (keys: string[]): number | null => {
+    const its = keys.map(find).filter((i): i is PathwayItem => !!i && i.value != null && i.unit === "%");
+    if (!its.length) return null;
+    const v = its[0].value!;
+    return its[0].higher_is_better === false ? 100 - v : v;
+  };
+  // the engine's stage pick — a labelled prioritisation aid, cached server-side
+  const [focus, setFocus] = useState<Focus | null>(null);
+  useEffect(() => {
+    let on = true;
+    getFocus(prog, code).then((f) => { if (on) setFocus(f); }).catch(() => null);
+    return () => { on = false; };
+  }, [prog, code]);
   const [sel, setSel] = useState<string | null>(null);
   useEffect(() => {                                                  // new county → default node again (async per lint)
     const t = setTimeout(() => setSel(null), 0);
@@ -320,6 +336,9 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
         <div className="relative flex justify-between">
           {NODES.map((n, i) => {
             const st = statuses[i], s = NODE_STYLE[st], on = node === n.id;
+            const track = onTrack(n.keys);
+            const pick = focus?.answer.choice === n.id;
+            const prob = focus?.answer.probabilities[n.id];
             return (
               <button key={n.id} onClick={() => setSel(n.id)} title={STAGE_QUESTION[n.id]}
                       className={`flex flex-col items-center gap-1 px-1 py-1 rounded-lg border w-[78px] transition
@@ -331,10 +350,28 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
                 <span className={`text-[9px] uppercase tracking-wide leading-none ${s.text}`}>
                   {STATUS_WORD[st]}
                 </span>
+                <FlowDots key={`${prog}:${code}`} track={track} status={st} />
+                {pick && <span className="text-[8.5px] uppercase tracking-wide text-sky-300 leading-none"
+                               title={`${engineName(focus?.engine)} picks this stage first · simulated`}>
+                           ◂ {Math.round((prob ?? 0) * 100)}%</span>}
               </button>
             );
           })}
         </div>
+      </div>
+
+      <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
+        {focus && (
+          <>
+            <SimChip eng={engineName(focus.engine)} />
+            <span className="t-micro text-white/55">
+              {engineName(focus.engine)} would focus on{" "}
+              <span className="text-sky-300 font-medium">{(STAGE_LABEL[focus.answer.choice] ?? focus.answer.choice).toLowerCase()}</span>
+              {" "}first — ranked from this county&apos;s real numbers; a prioritisation aid, not a diagnosis.
+            </span>
+          </>
+        )}
+        <span className="t-micro text-white/30 ml-auto">1 dot = 1 of 100 people at that stage · each stage its own cohort</span>
       </div>
 
       {/* one hero card for the selected node — giant number, one-line caption, Finland + status + n */}
@@ -435,7 +472,7 @@ function Step4({ prog, code, path, rec, activeInd, onInd, onCode, onTl }: {
           </div>
         </details>
       )}
-      <div className="text-[10px] text-white/35 px-1 mt-1.5">ASSUMPTION badges mark judgement calls. Public data — no simulation on this step.</div>
+      <div className="text-[10px] text-white/35 px-1 mt-1.5">ASSUMPTION badges mark judgement calls. Public data, except the stage pick labelled SIMULATION.</div>
     </div>
   );
 }

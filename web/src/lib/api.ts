@@ -22,6 +22,7 @@ export type Correlation = {
 };
 export type PathwayItem = {
   key: string; label: string; stage: string; goal: number | null; unit: string; value: number; national: number | null;
+  higher_is_better?: boolean | null;
   delta: number | null; worse_than_national: boolean | null; rank: number | null; of: number; target: number | null;
   year: number; source: Source;
   abs_value?: number | null; abs_is_denominator?: boolean; shared_producer?: string | null;
@@ -155,6 +156,12 @@ export const getGeo = (level: "county" | "municipality") => get<FC>(`/api/geo/${
 export const getValues = (key: string, level = "county", county?: string) =>
   get<Values>(`/api/values?key=${key}&level=${level}${county ? `&county=${county}` : ""}`);
 export const getPathway = (code: string) => get<Pathway>(`/api/region/${code}`);
+
+// Step 4: the engine's typed pick of which pathway stage to fix first — ranked from the county's
+// real stats, cached server-side; SIMULATION, never shown as data.
+export type Focus = { programme: string; code: string; engine: string; asked_live: number;
+                      answer: { choice: string; probabilities: Record<string, number>; confidence?: number } };
+export const getFocus = (prog: string, code: string) => get<Focus>(`/api/focus/${prog}/${code}`);
 export const getGap = (key: string, code: string) => get<Gap>(`/api/gap?key=${key}&code=${code}`).catch(() => null);
 export const getSim = (prog: string) => get<SimLevel>(`/api/sim/${prog}`);
 export const getRecommend = (prog: string, code: string) => get<Recommend>(`/api/recommend/${prog}/${code}`);

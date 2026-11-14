@@ -240,6 +240,17 @@ def residents_replay(prog: str, code: str, s: str | None = None):
         raise HTTPException(404, str(e))
 
 
+@app.get("/api/focus/{prog}/{code}")
+def focus_endpoint(prog: str, code: str):
+    """Step-4 stage pick: the engine ranks which pathway stage the county should address first —
+    a choice over five fixed stages grounded in the county's real stats. Cached; SIMULATION, not data."""
+    import focus
+    try:
+        return focus.focus(prog, code)
+    except KeyError as e:
+        raise HTTPException(404, str(e))
+
+
 @app.get("/api/recommend/{prog}/{code}")
 def recommend_endpoint(prog: str, code: str):
     if prog not in rec.PROGRAMMES:

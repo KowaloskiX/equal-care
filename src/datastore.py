@@ -133,6 +133,7 @@ def pathway(code, year=None):
         worse = None if delta is None or ind.higher_is_better is None else (delta < 0) == ind.higher_is_better and delta != 0
         trend, rising = _trend(ind, code)
         out.append({"key": ind.key, "label": ind.label, "stage": ind.stage, "goal": ind.goal, "unit": ind.unit,
+                    "higher_is_better": ind.higher_is_better,
                     "value": r["value"], "national": nat, "delta": delta, "worse_than_national": worse,
                     "rank": rank, "of": len(vals), "target": ind.target, "year": v["year"], "source": v["source"],
                     "abs_value": r["abs_value"], "abs_is_denominator": ind.abs_is_denominator,
