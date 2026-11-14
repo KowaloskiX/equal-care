@@ -81,7 +81,8 @@ export default function Home() {
         <div className="glass p-4 pointer-events-auto">
           <div className="flex items-start justify-between gap-2">
             <div className="text-[11px] uppercase tracking-wide text-amber-300/80">Equal Care Across Finland</div>
-            <div className="flex gap-1">
+            <div className="flex gap-1 items-center">
+              <a href="/story" className="pill text-white/50 hover:text-amber-300 hover:border-amber-300/60">Story</a>
               {(["data", "sim"] as const).map((m) => (
                 <button key={m} onClick={() => setMode(m)}
                         className={`pill ${mode === m ? "text-amber-300 border-amber-300/60" : "text-white/50"}`}>

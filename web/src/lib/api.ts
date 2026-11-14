@@ -14,7 +14,10 @@ export type Meta = { stages: string[]; goals: Record<string, string>; indicators
 export type Values = {
   key: string; label: string; unit: string; level: string; year: number; higher_is_better: boolean | null;
   target: number | null; target_note: string | null; national: number | null;
-  values: Record<string, { name: string; value: number; abs_value: number | null }>; source: Source;
+  values: Record<string, { name: string; value: number; abs_value: number | null; shared_producer?: string | null }>; source: Source;
+};
+export type Correlation = {
+  a: string; b: string; level: string; year: number; n: number; r: number; sources: Source[];
 };
 export type PathwayItem = {
   key: string; label: string; stage: string; goal: number | null; unit: string; value: number; national: number | null;
@@ -90,6 +93,8 @@ export const getRecommend = (prog: string, code: string) => get<Recommend>(`/api
 export const getBrief = () => get<Brief>("/api/brief");
 export const getWhatif = (prog: string, code: string, s: string[]) =>
   get<WhatIf>(`/api/whatif?prog=${prog}&code=${code}&s=${s.join(",")}`);
+export const getCorrelation = (a: string, b: string, level = "county") =>
+  get<Correlation>(`/api/correlation?a=${a}&b=${b}&level=${level}`);
 
 export const engineName = (e?: string | null) =>
   e === "jev" ? "Jev" : e === "gemini-decision-1" ? "Gemini Decisions" : null;
