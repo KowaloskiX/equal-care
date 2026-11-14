@@ -78,21 +78,26 @@ export function SplitBar({ split }: { split: Recommend["split"] }) {
 
 // Step 2 chart, shared by the brief and the county card: the county's gap to Finland in points,
 // split into what the population explains and what it does not.
-export function GapSplitBar({ split }: { split: Recommend["split"] }) {
+export function GapSplitBar({ split, big }: { split: Recommend["split"]; big?: boolean }) {
   const comp = Math.abs(split.composition_gap ?? 0), other = Math.abs(split.other_gap ?? 0);
   const tot = comp + other;
+  const label = big ? "text-[11px]" : "text-[9.5px]";
   return (
     <div className="mt-1.5">
-      <div className="flex h-3.5 overflow-hidden rounded-md bg-white/5 border border-white/10">
+      <div className={`flex ${big ? "h-4" : "h-3.5"} overflow-hidden rounded-md bg-white/5 border border-white/10`}>
         <div className="bg-sky-400/60 h-full flex items-center justify-end pr-1 overflow-hidden whitespace-nowrap"
              style={{ width: `${tot ? (100 * comp) / tot : 0}%` }}>
-          {tot && comp / tot > 0.14 ? <span className="text-[9.5px] text-sky-950 font-semibold">{split.comp_pts} pts</span> : null}
+          {tot && comp / tot > 0.28 && big
+            ? <span className={`${label} text-sky-950 font-semibold`}>who lives here · {split.comp_pts} pts</span>
+            : tot && comp / tot > 0.14 ? <span className={`${label} text-sky-950 font-semibold`}>{split.comp_pts} pts</span> : null}
         </div>
         <div className="bg-rose-400/70 h-full flex items-center pl-1.5 overflow-hidden whitespace-nowrap flex-1">
-          <span className="text-[9.5px] text-rose-950 font-semibold">{split.other_pts} pts</span>
+          {big && tot && other / tot > 0.4
+            ? <span className={`${label} text-rose-950 font-semibold`}>the service · {split.other_pts} pts</span>
+            : <span className={`${label} text-rose-950 font-semibold`}>{split.other_pts} pts</span>}
         </div>
       </div>
-      <div className="flex gap-3 text-[10.5px] text-white/55 mt-1">
+      <div className={`flex gap-3 ${big ? "text-[11.5px]" : "text-[10.5px]"} text-white/55 mt-1`}>
         <span><span className="inline-block w-2 h-2 rounded-sm bg-sky-400/70 mr-1 align-middle" />who lives here · {split.comp_pts} pts</span>
         <span><span className="inline-block w-2 h-2 rounded-sm bg-rose-400/70 mr-1 align-middle" />the service · {split.other_pts} pts</span>
       </div>

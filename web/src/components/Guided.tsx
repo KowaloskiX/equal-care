@@ -3,10 +3,10 @@
 // the recorded engine answers — no simulated numbers before the user clicks Run (see SimReplay).
 import { useEffect, useMemo, useState } from "react";
 import { engineName, fmt, getGap, getPathway, getRecommend,
-         type Brief, type Gap, type Pathway, type Recommend } from "@/lib/api";
+         type Brief, type Gap, type Pathway, type PathwayItem, type Recommend } from "@/lib/api";
 import { axisPos, BaselineStep, ScenarioStep } from "@/components/SimReplay";
 import { Assumption, Cite, DataChip, people, RoadmapChip, SimChip } from "@/components/RecommendBlock";
-import { Row, STAGE_LABEL, STAGE_QUESTION } from "@/components/RegionCard";
+import { Row, Src, STAGE_LABEL, STAGE_QUESTION } from "@/components/RegionCard";
 import { Seg, Skel, Tag } from "@/components/ui";
 
 const PROGS = [
@@ -17,10 +17,10 @@ type Prog = (typeof PROGS)[number]["id"];
 const PROG_KEY: Record<Prog, string> = { breast: "screen_breast", bowel: "screen_bowel" };
 const TITLES = ["Where is the gap?", "Why?", "What would help?", "Rest of the pathway"];
 const NEXT_T = ["Why?", "What would help?", "Rest of the pathway"];
-const PATH_STAGES = ["referral", "diagnosis", "treatment", "outcome"];
 
 function Chip({ step, eng, src }: { step: number; eng: string | null; src?: Parameters<typeof DataChip>[0]["s"] }) {
-  if (step === 1 || step === 4) return <DataChip s={src} />;
+  if (step === 4) return <><DataChip s={src} /><span title="equal and effective care"><Tag v="goal3"><i>GOAL 3</i></Tag></span></>;
+  if (step === 1) return <DataChip s={src} />;
   if (step === 2) return <SimChip eng={eng} />;
   return <><SimChip eng={eng} /><RoadmapChip /></>;
 }
@@ -166,31 +166,87 @@ export default function Guided({ prog, code, step, seen, briefProg, activeInd,
 
         {step === 4 && (
           <div className="mt-2">
-            <p className="t-body text-white/75 leading-snug">After screening: does care in {name} keep pace with Finland?</p>
-            {!pathF ? <div className="mt-2 space-y-2"><Skel className="h-10" /><Skel className="h-10" /></div> : (
-              PATH_STAGES.map((st) => {
-                const items = pathF.indicators.filter((i) => i.stage === st);
-                return (
-                  <div key={st} className="mb-2">
-                    <div className="px-2.5 mt-2 mb-0.5">
-                      <span className="t-caption uppercase tracking-wide text-white/45">{STAGE_LABEL[st]}</span>
-                      <span className="t-micro italic ml-1.5">{STAGE_QUESTION[st]}</span>
-                    </div>
-                    {st === "diagnosis" ? (
-                      <p className="t-caption leading-snug mx-2.5 px-2 py-1.5 rounded-lg bg-white/[0.03] border border-white/10">
-                        No public county data — stage known for 42 % of cancers nationally
-                        (<a href="https://syoparekisteri.fi/assets/themes/ssy3/factsheets/syopa_2024_tilastoraportti.html"
-                            target="_blank" rel="noreferrer" className="underline decoration-dotted hover:text-white/80">
-                          Cancer Registry 2024</a>, from report text).
-                      </p>
-                    ) : items.map((it) => <Row key={it.key} it={it} onPick={onInd} active={it.key === activeInd} />)}
-                  </div>
-                );
-              })
-            )}
+            {(() => {
+              // scorecard: one row per pathway stage — status pill vs Finland, not a wall of numbers
+              const OUTCOME = prog === "bowel" ? "surv_bowel" : "surv_breast";
+              const SCORE: [string, string[]][] = [
+                ["referral", ["wait_6m", "onc_ref_21"]],
+                ["diagnosis", []],
+                ["treatment", ["onc_wait_90"]],
+                ["outcome", [OUTCOME]],
+              ];
+              const primary = new Set(SCORE.flatMap(([, k]) => k));
+              const find = (k: string) => pathF?.indicators.find((i) => i.key === k);
+              const behind = pathF
+                ? SCORE.filter(([, keys]) => keys.some((k) => isBehind(find(k))))
+                    .map(([st]) => st)
+                : [];
+              const rest = pathF?.indicators.filter((i) => !primary.has(i.key)) ?? [];
+              const restStages = [...new Set(rest.map((i) => i.stage))];
+              return (
+                <>
+                  <p className="t-body text-white/75 leading-snug">
+                    {!pathF ? <>After screening: does care in {name} keep pace with Finland?</>
+                      : behind.length
+                        ? <>After screening, {name} falls behind on: <span className="text-rose-300">{behind.join(", ")}</span></>
+                        : <>After screening, {name} keeps pace with Finland on the published indicators.</>}
+                  </p>
+                  <p className="t-caption mt-1 text-white/50 leading-snug">
+                    Screening is only the first step. Here is how {name} compares with Finland on the later steps — public data, no simulation.
+                  </p>
+                  {!pathF ? <div className="mt-2 space-y-2"><Skel className="h-10" /><Skel className="h-10" /></div> : (
+                    <>
+                      <div className="mt-2.5 space-y-3">
+                        {SCORE.map(([st, keys]) => (
+                          <div key={st}>
+                            <div className="px-1 mb-0.5">
+                              <span className="t-caption uppercase tracking-wide text-white/45">{STAGE_LABEL[st]}</span>
+                              <span className="t-micro italic ml-1.5">{STAGE_QUESTION[st]}</span>
+                            </div>
+                            {st === "diagnosis" ? (
+                              <div className="flex items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 bg-white/[0.03] border border-white/10">
+                                <span className="t-caption leading-snug">
+                                  No public county data — stage known for 42 % of cancers nationally
+                                  (<a href="https://syoparekisteri.fi/assets/themes/ssy3/factsheets/syopa_2024_tilastoraportti.html"
+                                      target="_blank" rel="noreferrer" className="underline decoration-dotted hover:text-white/80">
+                                    Cancer Registry 2024</a>, from report text).
+                                </span>
+                                <Tag v="note">Data gap</Tag>
+                              </div>
+                            ) : keys.map((k) => {
+                              const it = find(k);
+                              return it ? <ScoreRow key={k} it={it} active={it.key === activeInd}
+                                                    onPick={() => onInd(it.key)} /> : null;
+                            })}
+                          </div>
+                        ))}
+                      </div>
+                      {rest.length > 0 && (
+                        <details className="mt-3">
+                          <summary className="t-caption select-none hover:text-white/80">
+                            All pathway indicators ({rest.length})
+                          </summary>
+                          <div className="mt-1.5">
+                            {restStages.map((st) => (
+                              <div key={st} className="mb-2">
+                                <div className="px-1 mt-1.5 mb-0.5">
+                                  <span className="t-micro uppercase tracking-wide text-white/40">{STAGE_LABEL[st] ?? st}</span>
+                                </div>
+                                {rest.filter((i) => i.stage === st).map((it) => (
+                                  <Row key={it.key} it={it} onPick={onInd} active={it.key === activeInd} />))}
+                              </div>
+                            ))}
+                          </div>
+                        </details>
+                      )}
+                    </>
+                  )}
+                </>
+              );
+            })()}
             {recF && recF.pathway_actions.length > 0 && (
               <div className="mt-2.5 pt-2 border-t border-white/10">
-                <div className="t-caption mb-1 flex items-center gap-2"><RoadmapChip /> Roadmap actions for later steps</div>
+                <div className="t-caption mb-1 flex items-center gap-2"><RoadmapChip /> What the roadmap says for later steps</div>
                 {recF.pathway_actions.map((a) => (
                   <div key={a.id} className="px-1 py-1">
                     {a.why && <div className="text-[11.5px] text-white/60 leading-snug">{a.why}</div>}
@@ -229,5 +285,42 @@ export default function Guided({ prog, code, step, seen, briefProg, activeInd,
         )}
       </div>
     </>
+  );
+}
+
+// ASSUMPTION: for % indicators a difference under 1 point counts as "close to Finland" — the same
+// 1-point threshold recommend.py uses before it attaches a roadmap action.
+const close = (it: PathwayItem) => it.unit === "%" && it.delta != null && Math.abs(it.delta) < 1;
+const isBehind = (it?: PathwayItem) => it?.worse_than_national === true && !close(it);
+
+// Step-4 scorecard row: key indicator, value vs Finland, status pill — clutter in the tooltip.
+function ScoreRow({ it, active, onPick }: { it: PathwayItem; active: boolean; onPick: () => void }) {
+  const pill = it.value == null ? <Tag v="data">No data</Tag>
+    : isBehind(it) ? <Tag v="warn">Worse than Finland</Tag>
+    : it.delta === 0 || close(it) ? <Tag v="data">Close to Finland</Tag>
+    : <span className="tag" style={{ color: "#6ee7b7", borderColor: "rgba(110,231,183,0.4)", background: "rgba(110,231,183,0.08)" }}>Better</span>;
+  const tip = [it.rank != null && `rank ${it.rank} of ${it.of}`,
+               it.target != null && `target ${fmt(it.target, it.unit)}`].filter(Boolean).join(" · ");
+  return (
+    <button onClick={onPick} title={tip || it.label}
+            className={`w-full text-left rounded-lg px-2.5 py-1.5 transition ${active ? "rowsel" : "hover:bg-white/5"}`}>
+      <div className="flex items-center justify-between gap-2">
+        <span className="t-body text-white/80 leading-tight">
+          {it.label}
+          {active && <span className="t-micro text-sky-300"> · shown on map</span>}
+        </span>
+        <span className="flex items-center gap-2 shrink-0 whitespace-nowrap">
+          <span className="t-section tabular-nums">{fmt(it.value, it.unit)}</span>
+          <span className="t-caption text-white/50">Finland {fmt(it.national, it.unit)}</span>
+          {pill}
+        </span>
+      </div>
+      <div className="t-micro mt-0.5 flex gap-2">
+        {it.abs_is_denominator && it.abs_value != null &&
+          <span>n = {fmt(it.abs_value)}{it.abs_value < 30 ? " · small numbers" : ""}</span>}
+        {it.shared_producer && <span>shared producer {it.shared_producer}</span>}
+        <Src s={it.source} />
+      </div>
+    </button>
   );
 }

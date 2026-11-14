@@ -66,19 +66,19 @@ function Gauge({ value, start, real, national, target }: {
 }
 
 // Share of the non-attenders by Jev's main factor, building up as rows are revealed.
-function Reasons({ cum, shorts }: { cum?: Record<string, number>; shorts: Record<string, string> }) {
+function Reasons({ cum, shorts, labels, big }: { cum?: Record<string, number>; shorts: Record<string, string>; labels?: Record<string, string>; big?: boolean }) {
   if (!cum) return null;
   return (
     <div className="mt-2">
-      <div className="t-micro mb-1">why they say they skip — so far</div>
-      <div className="space-y-0.5">
+      {!big && <div className="t-micro mb-1">why they say they skip — so far</div>}
+      <div className={big ? "space-y-1.5" : "space-y-0.5"}>
         {Object.entries(cum).slice(0, 5).map(([r, v]) => (
-          <div key={r} className="flex items-center gap-2">
-            <span className="w-24 shrink-0 text-[10px] text-white/55 truncate">{shorts[r] ?? r}</span>
-            <div className="flex-1 h-2 rounded bg-white/5 overflow-hidden">
+          <div key={r} className="flex items-center gap-2" title={labels?.[r] ?? r}>
+            <span className={`${big ? "w-28 text-[12px] text-white/75" : "w-24 text-[10px] text-white/55"} shrink-0 truncate`}>{shorts[r] ?? r}</span>
+            <div className={`flex-1 ${big ? "h-2.5" : "h-2"} rounded bg-white/5 overflow-hidden`}>
               <div className="h-full rounded bg-sky-400/50 transition-[width] duration-150" style={{ width: `${v * 100}%` }} />
             </div>
-            <span className="w-9 text-right text-[10px] tabular-nums text-white/55">{Math.round(v * 100)} %</span>
+            <span className={`${big ? "w-10 text-[11px]" : "w-9 text-[10px]"} text-right tabular-nums text-white/55`}>{Math.round(v * 100)} %</span>
           </div>
         ))}
       </div>
@@ -130,11 +130,13 @@ export function ReplayPlayer({ replay, who, onLive, onDone, duration = 7000 }: {
       const x = Math.min(1, (t - t0) / duration);
       const n = Math.round(Math.pow(x, 1.5) * rows.length);   // ease — faster at the tail
       iRef.current = n; setI(n);
+      const r = n ? rows[n - 1] : null;                     // live map rate emitted from the tick —
+      liveRef.current?.(r ? { code: replay.code, value: r.cum_rate } : null);   // not an effect, so no nested updates
       if (x < 1) raf = requestAnimationFrame(tick); else setDone(true);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [rows.length, duration, instant]);
+  }, [rows, rows.length, duration, instant, replay.code]);
 
   useEffect(() => {   // counter/gauge/map follow `i` per frame; a new tile enters ~1.4×/s so each stays readable
     if (instant) return;
@@ -148,14 +150,15 @@ export function ReplayPlayer({ replay, who, onLive, onDone, duration = 7000 }: {
   }, [instant, rows]);
 
   const cur = i ? rows[i - 1] : null;
-  useEffect(() => { liveRef.current?.(cur ? { code: replay.code, value: cur.cum_rate } : null); },
-             [cur, replay.code]);
+  useEffect(() => {   // reduced-motion path skips the tick — emit the final rate once
+    if (instant && i) liveRef.current?.({ code: replay.code, value: rows[i - 1].cum_rate });
+  }, [instant, i, rows, replay.code]);
   useEffect(() => { if (done) doneRef.current?.(); }, [done]);
 
   const scenario = replay.mode === "scenario";
   const start = scenario ? replay.final.baseline_rate ?? null : null;
-  // while running: the sampled stream; when done: the three biggest resident types in the county
-  const shown = done ? rows.slice(0, 3) : stream;
+
+  if (done) return null;   // the parent composes the result view
 
   return (
     <div className="relative mt-2">
@@ -163,24 +166,26 @@ export function ReplayPlayer({ replay, who, onLive, onDone, duration = 7000 }: {
         <div className="text-[11px] text-white/70 tabular-nums">
           Asked {i} / {rows.length} resident types · {fmt(cur?.cum_people ?? 0)} of {fmt(replay.people_total)} {who}
         </div>
-        {!done && <button onClick={() => { setI(rows.length); setDone(true); }}
-                          className="t-micro underline decoration-dotted hover:text-white/80 shrink-0">Skip</button>}
+        <button onClick={() => { const last = rows[rows.length - 1];
+                               iRef.current = rows.length; setI(rows.length);
+                               if (last) liveRef.current?.({ code: replay.code, value: last.cum_rate });
+                               setDone(true); }}
+                className="t-micro underline decoration-dotted hover:text-white/80 shrink-0">Skip</button>
       </div>
       <div className="h-1.5 rounded-full bg-white/5 mt-1 overflow-hidden">
         <div className="h-full bg-sky-400/70" style={{ width: `${(100 * i) / Math.max(1, rows.length)}%` }} />
       </div>
       <Gauge value={cur?.cum_rate ?? start ?? replay.final.rate ?? 0} start={start}
              real={replay.final.real} national={replay.final.national_real} target={replay.final.target} />
-      {done && <div className="t-micro mt-2">Largest groups in {replay.name}</div>}
       <div className="space-y-1 mt-1">
-        {shown.map((r) => (
+        {stream.map((r) => (
           <Tile key={rowKey(r)} r={r} scenario={scenario}
                 onAsk={() => getResidentAnswer(replay.programme, r.answer_key,
                           replay.scenarios_selected.length ? replay.scenarios_selected : undefined)
                         .then(setAns).catch(() => null)} />
         ))}
       </div>
-      {!scenario && <Reasons cum={cur?.cum_reasons} shorts={replay.reason_shorts} />}
+      {!scenario && <Reasons cum={cur?.cum_reasons} shorts={replay.reason_shorts} labels={replay.reason_labels} />}
       {ans && (
         <div className="absolute inset-x-0 top-0 z-20">
           <Asked ans={ans} onClose={() => setAns(null)} />
@@ -192,6 +197,75 @@ export function ReplayPlayer({ replay, who, onLive, onDone, duration = 7000 }: {
         <br />Tiles show the raw answer; the gauge is calibrated so Finland = {fmt(replay.anchor.real_national, "%")} real.
       </div>
     </div>
+  );
+}
+
+// After a run: the three numbers that answer the step, on the shared axis.
+function NumBars({ final }: { final: Replay["final"] }) {
+  const rows = [
+    { label: "Expected from who lives here", v: final.rate, bar: "bg-sky-400/70", tag: <Tag v="sim"><i>SIM</i></Tag> },
+    { label: "Actually attends", v: final.real, bar: "bg-rose-400/70", tag: <Tag v="data"><i>DATA</i></Tag> },
+    { label: "Finland", v: final.national_real, bar: "bg-white/45", tag: <Tag v="data"><i>DATA</i></Tag> },
+  ];
+  return (
+    <div className="relative mt-1.5">
+      <div className="space-y-1.5">
+        {rows.map((r) => (
+          <div key={r.label} className="grid grid-cols-[168px_1fr_52px] items-center gap-2">
+            <span className="text-[13px] text-white/80 leading-tight flex items-center gap-1.5 flex-wrap">{r.label}{r.tag}</span>
+            <span className="relative h-3 rounded-full bg-white/5 overflow-hidden">
+              <span className={`absolute inset-y-0 left-0 rounded-full ${r.bar}`} style={{ width: `${axisPos(r.v ?? 0)}%` }} />
+            </span>
+            <span className="text-right text-[12.5px] text-white/80 tabular-nums">{r.v != null ? fmt(r.v, "%") : "–"}</span>
+          </div>
+        ))}
+      </div>
+      <div className="absolute inset-y-0 pointer-events-none" style={{ left: 176, right: 60 }}>
+        {final.target != null && (
+          <div className="absolute top-0 bottom-0 border-l border-dashed border-amber-300/60" style={{ left: `${axisPos(final.target)}%` }}>
+            <span className="absolute top-0 left-1 text-[9px] text-amber-200/80 whitespace-nowrap">target {fmt(final.target, "%")}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Collapsed "how this was computed": the counter, the biggest resident types in the county
+// (still clickable for the exact Jev prompt/answer popover) and the provenance line.
+function ReplayDetails({ replay, who }: { replay: Replay; who: string }) {
+  const [ans, setAns] = useState<ResidentAnswer | null>(null);
+  const scenario = replay.mode === "scenario";
+  return (
+    <details className="relative">
+      <summary className="t-caption select-none hover:text-white/80">
+        How this was computed ({replay.rows.length.toLocaleString("fi-FI")} resident types asked)
+      </summary>
+      <div className="mt-2">
+        <div className="text-[11px] text-white/70 tabular-nums">
+          Asked {replay.rows.length} / {replay.rows.length} resident types · {fmt(replay.people_total)} {who}
+        </div>
+        <div className="t-micro mt-2">Largest groups in {replay.name}</div>
+        <div className="space-y-1 mt-1">
+          {replay.rows.slice(0, 3).map((r) => (
+            <Tile key={rowKey(r)} r={r} scenario={scenario}
+                  onAsk={() => getResidentAnswer(replay.programme, r.answer_key,
+                            replay.scenarios_selected.length ? replay.scenarios_selected : undefined)
+                          .then(setAns).catch(() => null)} />
+          ))}
+        </div>
+        <div className="t-micro mt-2 leading-snug">
+          Replaying {engineName(replay.engine) ?? "the engine"}&apos;s recorded answers ·{" "}
+          {replay.files.map((f) => f.path).join(" · ")} · {replay.asked_live ? `${replay.asked_live} new calls` : "0 new calls"}
+          <br />Tiles show the raw answer; rates are calibrated so Finland = {fmt(replay.anchor.real_national, "%")} real.
+        </div>
+      </div>
+      {ans && (
+        <div className="absolute inset-x-0 top-6 z-20">
+          <Asked ans={ans} onClose={() => setAns(null)} />
+        </div>
+      )}
+    </details>
   );
 }
 
@@ -235,31 +309,44 @@ export function BaselineStep({ prog, code, rec, who, onLive }: {
           )}
         </>
       )}
-      {ran && replay && <ReplayPlayer replay={replay} who={who} onLive={onLive} onDone={() => setDone(true)} />}
-      {split && (
-        <div ref={resRef} className="mt-2.5 pt-2 border-t border-white/10 slide">
-          {replay && (
-            <p className="t-body text-white/70 leading-snug">
+      {ran && replay && !done && (
+        <ReplayPlayer replay={replay} who={who} onLive={onLive} onDone={() => setDone(true)} />)}
+      {done && !split && <Skel className="h-24 mt-3" />}
+      {split && replay && (
+        <div ref={resRef} className="mt-2.5 pt-2.5 border-t border-white/10 slide">
+          <div className="t-panel">{DRIVER_HEADLINE[split.driver] ?? ""}</div>
+          <div className="mt-4">
+            <div className="t-caption uppercase tracking-wide">The gap in three numbers</div>
+            <NumBars final={replay.final} />
+            <p className="t-micro mt-1.5 leading-snug">
               From who lives here, {replay.name} would be at {fmt(replay.final.rate, "%")}. It really is at{" "}
               {fmt(replay.final.real, "%")} (Finland {fmt(replay.final.national_real, "%")}).
             </p>
-          )}
-          <div className="t-panel mt-1">{DRIVER_HEADLINE[split.driver] ?? ""}</div>
-          {split.driver === "national" ? (
-            <p className="t-body text-white/55 mt-1">
-              The county is at Finland&apos;s level; the gap to {fmt(rec?.screening?.target ?? 80, "%")} is national.
-            </p>
-          ) : (
-            <>
-              <GapSplitBar split={split} />
-              <p className="t-micro mt-1">
-                Population explains {split.comp_pts ?? "–"} of {split.total_pts ?? "–"} points
-                {split.validation?.counties_weighted?.r != null &&
-                  <> · r = {split.validation.counties_weighted.r} vs real 2024 county rates</>}
+          </div>
+          <div className="mt-4">
+            <div className="t-caption uppercase tracking-wide">Where the gap comes from</div>
+            {split.driver === "national" ? (
+              <p className="t-body text-white/55 mt-1.5">
+                The county is at Finland&apos;s level; the gap to {fmt(rec?.screening?.target ?? 80, "%")} is national.
               </p>
-            </>
-          )}
-          {split.assumption && <Assumption text={split.assumption} />}
+            ) : (
+              <>
+                <GapSplitBar split={split} big />
+                <p className="t-micro mt-1">
+                  Population explains {split.comp_pts ?? "–"} of {split.total_pts ?? "–"} points
+                  {split.validation?.counties_weighted?.r != null &&
+                    <> · r = {split.validation.counties_weighted.r} vs real 2024 county rates</>}
+                </p>
+              </>
+            )}
+            {split.assumption && <Assumption text={split.assumption} />}
+          </div>
+          <div className="mt-4">
+            <div className="t-caption uppercase tracking-wide">Main reasons residents give for skipping</div>
+            <Reasons cum={replay.rows[replay.rows.length - 1]?.cum_reasons}
+                     shorts={replay.reason_shorts} labels={replay.reason_labels} big />
+          </div>
+          <div className="mt-4"><ReplayDetails replay={replay} who={who} /></div>
         </div>
       )}
     </>
@@ -323,50 +410,54 @@ export function ScenarioStep({ prog, code, rec, who, onLive }: {
         {busy ? "asking simulated residents…" : "Run simulation"}
       </button>
       {err && <div className="t-body text-rose-300 mt-1.5">{err}</div>}
-      {replay && !busy && (
+      {replay && !busy && !done && (
         <ReplayPlayer key={runId} replay={replay} who={who} onLive={onLive} onDone={onDone} />)}
-      {w && (
-        <div ref={resRef} className="mt-2 slide">
-          <div className="flex items-center gap-2">
-            <span className="w-20 shrink-0 text-[11px] text-emerald-300/90 truncate">gap closed</span>
+      {w && replay && (
+        <div ref={resRef} className="mt-2.5 slide">
+          <div className="t-panel text-emerald-300">
+            +{fmt(w.extra_people_per_year)} {who} a year
+            {w.gap_closed_pct != null && <span className="text-white/55"> · {w.gap_closed_pct} % of the gap</span>}
+          </div>
+          <div className="flex items-center gap-2 mt-1.5">
             <div className="flex-1 h-3.5 rounded bg-white/5 overflow-hidden">
               <div className="h-full bg-emerald-400/70" style={{ width: `${Math.min(100, w.gap_closed_pct ?? 0)}%` }} />
             </div>
-            <span className="text-right text-[10.5px] tabular-nums text-emerald-300 font-semibold whitespace-nowrap">
-              +{fmt(w.extra_people_per_year)} / yr{w.gap_closed_pct != null && <> · {w.gap_closed_pct} %</>}
-            </span>
           </div>
           <div className="t-micro mt-1 flex items-center gap-2">
             <SimChip eng={engineName(w.engine)} />
             <span>{w.asked_live ? `${w.asked_live} new Jev calls` : "replayed from cache"} · cached {w.from_cache} · an upper bound, not a forecast</span>
           </div>
-          <div className="mt-1 space-y-0.5">
-            {w.scenarios.map((s) => (
-              <div key={s.scenario} className="flex flex-wrap items-baseline gap-x-2 px-0.5">
-                <span className="text-[11px] text-white/55">{s.label}</span>
-                {s.actions.map((a) => <Cite key={a.id} a={a} />)}
-                {s.assumption && <Assumption text={s.assumption} />}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-      {tried.length > 0 && (
-        <div className="mt-2.5 pt-2 border-t border-white/10">
-          <div className="t-caption mb-1">Tried</div>
-          <div className="space-y-0.5">
-            {tried.map((t, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <span className="w-24 shrink-0 text-[10.5px] text-white/55 truncate" title={t.label}>{t.label}</span>
-                <div className="flex-1 h-2 rounded bg-white/5 overflow-hidden">
-                  <div className="h-full rounded bg-emerald-400/50" style={{ width: `${Math.min(100, t.pct ?? 0)}%` }} />
+          <div className="mt-4">
+            <div className="t-caption uppercase tracking-wide mb-1">What the roadmap says</div>
+            <div className="space-y-0.5">
+              {w.scenarios.map((s) => (
+                <div key={s.scenario} className="flex flex-wrap items-baseline gap-x-2 px-0.5">
+                  <span className="text-[11px] text-white/55">{s.label}</span>
+                  {s.actions.map((a) => <Cite key={a.id} a={a} />)}
+                  {s.assumption && <Assumption text={s.assumption} />}
                 </div>
-                <span className="w-28 text-right text-[10px] tabular-nums text-emerald-300 shrink-0">
-                  +{fmt(t.extra)} /yr{t.pct != null && <> · {t.pct} %</>}
-                </span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
+          {tried.length > 0 && (
+            <div className="mt-4 pt-2 border-t border-white/10">
+              <div className="t-caption uppercase tracking-wide mb-1">Tried</div>
+              <div className="space-y-0.5">
+                {tried.map((t, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <span className="w-24 shrink-0 text-[10.5px] text-white/55 truncate" title={t.label}>{t.label}</span>
+                    <div className="flex-1 h-2 rounded bg-white/5 overflow-hidden">
+                      <div className="h-full rounded bg-emerald-400/50" style={{ width: `${Math.min(100, t.pct ?? 0)}%` }} />
+                    </div>
+                    <span className="w-28 text-right text-[10px] tabular-nums text-emerald-300 shrink-0">
+                      +{fmt(t.extra)} /yr{t.pct != null && <> · {t.pct} %</>}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="mt-4"><ReplayDetails replay={replay} who={who} /></div>
         </div>
       )}
     </>
