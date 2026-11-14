@@ -143,6 +143,24 @@ def pathway(code, year=None):
     return {"code": code, "name": short_names()[code], "name_fi": name_fi, "indicators": out}
 
 
+def timeline(key, level="county"):
+    """All periods of one indicator for every county + Finland, for the queue time-lapse.
+    THL care-queue periods are YYYYMM ints; missing stays missing."""
+    ind = BY_KEY[key]
+    X = _rows(key, level); N = _rows(key, "country")
+    periods = sorted(int(y) for y in X.year.unique())
+    values = {}
+    for _, r in X.iterrows():
+        p = int(r.year)
+        values.setdefault(p, {})[r.code] = {"value": float(r.value),
+                                            "abs_value": None if pd.isna(r.abs_value) else float(r.abs_value),
+                                            "shared": None if pd.isna(r.shared) or r.shared == "" else r.shared}
+    return {"key": key, "label": ind.label, "unit": ind.unit, "level": level, "periods": periods,
+            "higher_is_better": ind.higher_is_better,
+            "national": {int(r.year): float(r.value) for _, r in N.iterrows()},
+            "values": values, "source": source(key)}
+
+
 def municipalities(county, key, year=None):
     v = values(key, "municipality", year, county=county)
     rows = sorted(({"code": c, **r} for c, r in v["values"].items()), key=lambda r: r["value"])

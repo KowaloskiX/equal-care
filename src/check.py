@@ -87,6 +87,13 @@ r = c.get(f"/api/recommend/bowel/{worst_r}").json()
 worse_r = qr["values"][worst_r]["value"] - qr["national"] >= 1.0
 check("over-21-day referrals add 2.5.2 only when >= 1 pt worse than Finland",
       ("2.5.2" in {a["id"] for a in r["pathway_actions"]}) == worse_r)
+tl = c.get("/api/timeline?key=onc_wait_90").json()
+check("timeline: 202609 national onc_wait_90 is 3.5",
+      tl["national"].get("202609") == 3.5 and tl["periods"] == sorted(tl["periods"]))
+check("timeline: every county value carries abs_value",
+      all("abs_value" in v for p in tl["values"].values() for v in p.values()))
+check("timeline: only queue indicators (others 404)",
+      c.get("/api/timeline?key=screen_breast").status_code == 404)
 # live what-if: a single scenario must reproduce the committed sim row; the all-four combo must not underperform it
 w = c.get("/api/whatif?prog=breast&code=90&s=own_language").json()
 sim_row = json.load(open(ROOT / "data/sim/breast.json"))["scenarios"]["own_language"]["levels"]["county"]["90"]

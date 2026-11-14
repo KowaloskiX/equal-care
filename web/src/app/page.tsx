@@ -62,6 +62,7 @@ export default function Home() {
   const [key, setKey] = useState("screen_breast");               // explore: which indicator colours the map
   const [live, setLive] = useState<{ code: string; value: number } | null>(null);   // replay's running sim rate
   const [crowd, setCrowd] = useState<Crowd | null>(null);                           // simulated residents as map dots
+  const [tl, setTl] = useState<Values | null>(null);                                // step-4 queue time-lapse month
 
   useEffect(() => {
     getMeta().then(setMeta).catch((e) => setErr(String(e)));
@@ -88,7 +89,7 @@ export default function Home() {
   }, [shownKey, sel, mode]);
 
   const ind = meta?.indicators.find((i) => i.key === shownKey);
-  const shown = county;
+  const shown = tl ?? county;                                  // time-lapse months override the yearly choropleth
   const ranked = useMemo(() => {
     if (!shown) return [];
     const xs = Object.entries(shown.values).map(([c, v]) => ({ code: c, ...v }));
@@ -97,13 +98,14 @@ export default function Home() {
   }, [shown]);
 
   // every change of context (county, programme, step) clears the live simulation overlay
-  const goStep = (n: number) => { setStep(n); setLive(null); setSeen((s) => (s.includes(n) ? s : [...s, n]));
+  const goStep = (n: number) => { setStep(n); setLive(null); setTl(null); setSeen((s) => (s.includes(n) ? s : [...s, n]));
                                   if (n === 1) setCrowd(null); };
-  const pickProg = (p: Prog) => { setProg(p); setPicked(null); setPathKey(null); setLive(null); setCrowd(null); setStep(1); setSeen([1]); };
-  const pickCode = (c: string) => { setPicked(c); setLive(null); setPathKey(null); setCrowd(null); };
-  const explore = () => { setMode("explore"); setLive(null); };
-  const guided = () => { setMode("guided"); setSel(null); setLive(null); };
-  const explain = (c: string) => { setPicked(c); setSel(null); setMode("guided"); setLive(null); setStep(2); setSeen([1, 2]); };
+  const pickProg = (p: Prog) => { setProg(p); setPicked(null); setPathKey(null); setLive(null); setCrowd(null);
+                                  setTl(null); setStep(1); setSeen([1]); };
+  const pickCode = (c: string) => { setPicked(c); setLive(null); setPathKey(null); setCrowd(null); setTl(null); };
+  const explore = () => { setMode("explore"); setLive(null); setTl(null); };
+  const guided = () => { setMode("guided"); setSel(null); setLive(null); setTl(null); };
+  const explain = (c: string) => { setPicked(c); setSel(null); setMode("guided"); setLive(null); setTl(null); setStep(2); setSeen([1, 2]); };
   const restartTour = () => { guided(); setStep(1); setSeen([1]); setTour(true); };
   const tourDone = () => { setTour(false); localStorage.setItem("ec_tour_done", "1"); };
 
@@ -142,7 +144,7 @@ export default function Home() {
           <Guided prog={prog} code={code} step={step} seen={seen} briefProg={briefProg}
                   activeInd={step === 4 ? pathKey : null}
                   onStep={goStep} onCode={pickCode} onProg={pickProg} onExplore={explore}
-                  onInd={setPathKey} onLive={setLive}
+                  onInd={setPathKey} onLive={setLive} onTl={setTl}
                   munis={geo.municipality} crowd={crowd} onCrowd={setCrowd} />
         ) : mode === "guided" ? (
           briefErr

@@ -46,6 +46,14 @@ def series(key: str, code: str):
     return ds.series(key, code)
 
 
+@app.get("/api/timeline")
+def timeline(key: str):
+    """Every published period of a care-queue indicator, all counties + Finland (YYYYMM periods)."""
+    if key not in ("onc_wait_90", "onc_ref_21"):
+        raise HTTPException(404, f"no timeline for {key!r}")
+    return ds.timeline(key)
+
+
 @app.get("/api/region/{code}")
 def region(code: str, year: int | None = None):
     try:

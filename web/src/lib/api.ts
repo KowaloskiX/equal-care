@@ -53,7 +53,8 @@ export type ScenarioRow = {
   scenario: string; label: string; short?: string; delta_points: number | null; extra_people_per_year: number | null;
   share_of_missing?: number | null; actions: ActionRef[]; assumption: string | null; note: string;
 };
-export type PathwayAction = ActionRef & { why?: string; assumption?: string | null };
+export type PathwayAction = ActionRef & { why?: string; assumption?: string | null;
+  stage?: string | null; small_numbers?: string | null };
 export type Recommend = {
   programme: string; code: string; name: string;
   screening: { rate: number; target: number; missing_per_year: number; invited: number; source: Source } | null;
@@ -104,6 +105,14 @@ export type Replay = {
 export type ResidentAnswer = {
   state: unknown; questions: unknown; answer: Record<string, unknown>; file: string; line: number;
 };
+// monthly queue series for the step-4 time-lapse (periods are YYYYMM ints; missing stays missing)
+export type Timeline = {
+  key: string; label: string; unit: string; level: string; periods: number[];
+  higher_is_better: boolean | null;
+  national: Record<string, number>;
+  values: Record<string, Record<string, { value: number; abs_value: number | null; shared: string | null }>>;
+  source: Source;
+};
 
 const get = async <T,>(path: string): Promise<T> => {
   const r = await fetch(`${API}${path}`);
@@ -139,6 +148,7 @@ export const getResidentAnswer = (prog: string, key: string[], s?: string[]) =>
   get<ResidentAnswer>(`/api/residents/${prog}/answer?key=${encodeURIComponent(JSON.stringify(key))}${s?.length ? `&s=${s.join(",")}` : ""}`);
 export const getCorrelation = (a: string, b: string, level = "county") =>
   get<Correlation>(`/api/correlation?a=${a}&b=${b}&level=${level}`);
+export const getTimeline = (key: string) => get<Timeline>(`/api/timeline?key=${encodeURIComponent(key)}`);
 
 export const engineName = (e?: string | null) =>
   e === "jev" ? "Jev" : e === "gemini-decision-1" ? "Gemini Decisions" : null;

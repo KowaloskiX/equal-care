@@ -47,10 +47,10 @@ WAIT_PROXY = ("Waiting lists cover non-urgent oncology care; urgent cancer treat
 QUEUE_MIN_POINTS = 1.0
 SMALL_N = 30
 QUEUE_ACTIONS = {
-    "onc_ref_21": {"ids": ["2.5.2"], "assumption": None,          # direct match: standardised referral criteria
+    "onc_ref_21": {"ids": ["2.5.2"], "assumption": None, "stage": "referral",   # standardised referral criteria
                    "why": "Oncology referrals are processed in over 21 days more often than nationally; standardised "
                           "referral criteria are the lever for a smooth transition to specialist care."},
-    "onc_wait_90": {"ids": ["3.1.2", "3.1.4"], "assumption": WAIT_PROXY,
+    "onc_wait_90": {"ids": ["3.1.2", "3.1.4"], "assumption": WAIT_PROXY, "stage": "treatment",
                     "why": "A larger share of oncology patients than nationally waits over 90 days for treatment; "
                            "regional care pathways and national quality targets are the lever."},
 }
@@ -135,11 +135,12 @@ def recommend(prog, code):
 
     pathway_actions = []
     if driver == "national":
-        pathway_actions.append(cite(NATIONAL_ACTION, by_id, {"why": NATIONAL_WHY}))
+        pathway_actions.append(cite(NATIONAL_ACTION, by_id, {"why": NATIONAL_WHY, "stage": "detection"}))
     if other is not None and comp is not None and other < 0 and abs(other) > abs(comp):
         pathway_actions.append(cite(MONITORING_ACTION, by_id,
                                     {"why": "The unexplained part of the gap is larger than the population part; "
-                                            "monthly county-level screening data is the early-warning action."}))
+                                            "monthly county-level screening data is the early-warning action.",
+                                     "stage": "detection"}))
 
     surv = None
     skey = SURVIVAL.get(prog)
@@ -151,14 +152,15 @@ def recommend(prog, code):
                     "delta": round(r["value"] - v["national"], 1), "below_national": r["value"] < v["national"],
                     "year": v["year"], "source": v["source"]}
             if r["value"] < v["national"]:
-                pathway_actions += [cite(aid, by_id, {"why": GOAL3_LIMITATION}) for aid in GOAL3_ACTIONS]
+                pathway_actions += [cite(aid, by_id, {"why": GOAL3_LIMITATION, "stage": "outcome"})
+                                    for aid in GOAL3_ACTIONS]
 
     for qkey, q in QUEUE_ACTIONS.items():
         v = ds.values(qkey, "county")
         r = v["values"].get(code)
         if r and v["national"] is not None and r["value"] - v["national"] >= QUEUE_MIN_POINTS:
             small = r["abs_value"] is not None and r["abs_value"] < SMALL_N
-            pathway_actions += [cite(aid, by_id, {"why": q["why"], "assumption": q["assumption"],
+            pathway_actions += [cite(aid, by_id, {"why": q["why"], "assumption": q["assumption"], "stage": q["stage"],
                                                   "small_numbers": f"n = {int(r['abs_value'])}" if small else None})
                                 for aid in q["ids"]]
 
