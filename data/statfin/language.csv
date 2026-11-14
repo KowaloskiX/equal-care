@@ -1,0 +1,4073 @@
+muni,lang,language,people
+020,fi,Finnish,15842.0
+020,sv,Swedish,27.0
+020,ar,Arabic,16.0
+020,bg,Bulgarian,15.0
+020,en,English,42.0
+020,es,Spanish; Castilian,10.0
+020,pl,Polish,27.0
+020,de,German,12.0
+020,tl,Tagalog,12.0
+020,th,Thai,33.0
+020,tr,Turkish,44.0
+020,uk,Ukrainian,44.0
+020,hu,Hungarian,10.0
+020,ru,Russian,83.0
+020,et,Estonian,90.0
+005,fi,Finnish,8614.0
+005,sv,Swedish,12.0
+005,th,Thai,18.0
+005,tr,Turkish,20.0
+005,uk,Ukrainian,80.0
+005,ru,Russian,217.0
+005,et,Estonian,56.0
+009,fi,Finnish,2357.0
+009,uk,Ukrainian,25.0
+010,fi,Finnish,10474.0
+010,sv,Swedish,10.0
+010,en,English,11.0
+010,tl,Tagalog,21.0
+010,th,Thai,11.0
+010,tr,Turkish,11.0
+010,uk,Ukrainian,80.0
+010,hu,Hungarian,11.0
+010,ru,Russian,47.0
+010,et,Estonian,33.0
+016,fi,Finnish,7596.0
+016,sv,Swedish,13.0
+016,tl,Tagalog,17.0
+016,th,Thai,14.0
+016,uk,Ukrainian,79.0
+016,ru,Russian,40.0
+016,et,Estonian,48.0
+018,fi,Finnish,4305.0
+018,sv,Swedish,172.0
+018,en,English,12.0
+018,ru,Russian,47.0
+018,vi,Vietnamese,14.0
+018,et,Estonian,60.0
+019,fi,Finnish,3833.0
+019,sv,Swedish,20.0
+019,th,Thai,11.0
+019,uk,Ukrainian,14.0
+019,ru,Russian,12.0
+019,et,Estonian,35.0
+035,fi,Finnish,86.0
+035,sv,Swedish,304.0
+043,fi,Finnish,45.0
+043,sv,Swedish,827.0
+043,lv,Latvian,17.0
+043,ro,Romanian,19.0
+046,fi,Finnish,1241.0
+046,ru,Russian,31.0
+047,fi,Finnish,1493.0
+047,sv,Swedish,20.0
+047,se,Sami,183.0
+047,en,English,12.0
+049,fi,Finnish,220506.0
+049,sv,Swedish,20246.0
+049,se,Sami,13.0
+049,af,Afrikaans,27.0
+049,ak,Akan,132.0
+049,sq,Albanian,3834.0
+049,am,Amharic,508.0
+049,ar,Arabic,6246.0
+049,hy,Armenian,47.0
+049,as,Assamese,12.0
+049,az,Azerbaijani,149.0
+049,bn,"Bengali, (Bangla)",1577.0
+049,bs,Bosnian,118.0
+049,bg,Bulgarian,504.0
+049,my,Burmese,55.0
+049,en,English,5731.0
+049,es,Spanish; Castilian,1604.0
+049,ee,Ewe,21.0
+049,ff,"Fula, Fulah, Pulaar, Pular",24.0
+049,lg,Ganda,65.0
+049,ka,Georgian,46.0
+049,gu,Gujarati,277.0
+049,ha,Hausa,54.0
+049,he,Hebrew,66.0
+049,hi,Hindi,1640.0
+049,nl,Dutch,294.0
+049,io,Ido,10.0
+049,ig,Igbo,202.0
+049,id,Indonesian,169.0
+049,is,Icelandic,16.0
+049,it,Italian,474.0
+049,ja,Japanese,284.0
+049,yo,Yoruba,275.0
+049,kn,Kannada,217.0
+049,ks,Kashmiri,17.0
+049,ca,Catalan; Valencian,12.0
+049,kk,Kazakh,80.0
+049,km,Central Khmer,105.0
+049,zh,Chinese,4548.0
+049,ki,Kikuyu; Gikuyu,100.0
+049,ky,Kirghiz; Kyrgyz,52.0
+049,kg,Kongo,10.0
+049,ko,Korean,259.0
+049,el,Greek (modern),266.0
+049,hr,Croatian,56.0
+049,ku,Kurdish,2350.0
+049,lv,Latvian,343.0
+049,lt,Lithuanian,192.0
+049,ln,Lingala,96.0
+049,mk,Macedonian,112.0
+049,ms,Malay,38.0
+049,ml,Malayalam,363.0
+049,mr,Marathi,329.0
+049,mo,Moldavian,33.0
+049,mn,Mongolian,26.0
+049,ne,Nepali,1061.0
+049,no,Norwegian,83.0
+049,or,Oriya,53.0
+049,om,Oromo,39.0
+049,pa,Panjabi; Punjabi,222.0
+049,ps,Pushto; Pashto,293.0
+049,fa,"Persian, Farsi",3897.0
+049,pt,Portuguese,578.0
+049,pl,Polish,486.0
+049,fr,French,743.0
+049,ro,Romanian,854.0
+049,rw,Kinyarwanda,206.0
+049,rn,Rundi,20.0
+049,de,German,908.0
+049,sr,Serbian,89.0
+049,sh,Serbo-Croatian,83.0
+049,sd,Sindhi,63.0
+049,si,Sinhala; Sinhalese,474.0
+049,sk,Slovak,107.0
+049,sl,Slovene,32.0
+049,so,Somali,3410.0
+049,sn,Shona,24.0
+049,sw,Swahili,472.0
+049,tg,Tajik,26.0
+049,tl,Tagalog,2426.0
+049,ta,Tamil,901.0
+049,da,Danish,82.0
+049,tt,Tatar,42.0
+049,te,Telugu,720.0
+049,th,Thai,613.0
+049,ti,Tigrinya,218.0
+049,cs,Czech,114.0
+049,ce,Chechen,85.0
+049,tr,Turkish,1554.0
+049,tk,Turkmen,91.0
+049,tw,Twi,147.0
+049,ug,Uighur; Uyghur,53.0
+049,uk,Ukrainian,1856.0
+049,hu,Hungarian,538.0
+049,ur,Urdu,2004.0
+049,uz,Uzbek,126.0
+049,be,Belarusian,64.0
+049,ru,Russian,11144.0
+049,vi,Vietnamese,2079.0
+049,et,Estonian,5640.0
+049,wo,Wolof,27.0
+049,98,Other language,1092.0
+049,X,Unknown,180.0
+050,fi,Finnish,10552.0
+050,sv,Swedish,17.0
+050,ar,Arabic,14.0
+050,en,English,15.0
+050,es,Spanish; Castilian,24.0
+050,lv,Latvian,23.0
+050,pl,Polish,46.0
+050,tl,Tagalog,19.0
+050,th,Thai,18.0
+050,tr,Turkish,32.0
+050,uk,Ukrainian,96.0
+050,ru,Russian,48.0
+050,et,Estonian,94.0
+051,fi,Finnish,8693.0
+051,sv,Swedish,30.0
+051,en,English,23.0
+051,el,Greek (modern),68.0
+051,lv,Latvian,17.0
+051,pl,Polish,20.0
+051,de,German,15.0
+051,th,Thai,15.0
+051,tr,Turkish,11.0
+051,uk,Ukrainian,26.0
+051,ru,Russian,29.0
+051,et,Estonian,58.0
+052,fi,Finnish,2115.0
+052,sv,Swedish,48.0
+052,th,Thai,13.0
+052,uk,Ukrainian,25.0
+052,ru,Russian,35.0
+052,et,Estonian,22.0
+060,fi,Finnish,70.0
+060,sv,Swedish,2342.0
+060,lv,Latvian,61.0
+060,ro,Romanian,36.0
+060,th,Thai,17.0
+060,uk,Ukrainian,16.0
+060,et,Estonian,18.0
+061,fi,Finnish,14875.0
+061,sv,Swedish,44.0
+061,ar,Arabic,167.0
+061,bn,"Bengali, (Bangla)",24.0
+061,bg,Bulgarian,23.0
+061,en,English,54.0
+061,es,Spanish; Castilian,10.0
+061,zh,Chinese,27.0
+061,ku,Kurdish,42.0
+061,lv,Latvian,31.0
+061,ne,Nepali,29.0
+061,fa,"Persian, Farsi",63.0
+061,pl,Polish,67.0
+061,ro,Romanian,10.0
+061,rw,Kinyarwanda,14.0
+061,si,Sinhala; Sinhalese,66.0
+061,tl,Tagalog,26.0
+061,th,Thai,32.0
+061,tr,Turkish,40.0
+061,uk,Ukrainian,298.0
+061,hu,Hungarian,26.0
+061,ru,Russian,187.0
+061,vi,Vietnamese,19.0
+061,et,Estonian,172.0
+061,98,Other language,10.0
+062,fi,Finnish,19.0
+062,sv,Swedish,410.0
+062,lv,Latvian,16.0
+062,ro,Romanian,17.0
+062,uk,Ukrainian,11.0
+062,et,Estonian,22.0
+065,fi,Finnish,22.0
+065,sv,Swedish,422.0
+065,lv,Latvian,18.0
+069,fi,Finnish,6354.0
+069,tr,Turkish,13.0
+069,uk,Ukrainian,16.0
+069,ru,Russian,51.0
+071,fi,Finnish,6129.0
+071,tl,Tagalog,13.0
+071,uk,Ukrainian,39.0
+071,ru,Russian,100.0
+071,et,Estonian,36.0
+072,fi,Finnish,913.0
+074,fi,Finnish,935.0
+074,uk,Ukrainian,11.0
+074,et,Estonian,23.0
+075,fi,Finnish,17613.0
+075,sv,Swedish,56.0
+075,en,English,90.0
+075,lv,Latvian,18.0
+075,lt,Lithuanian,58.0
+075,de,German,16.0
+075,tl,Tagalog,23.0
+075,th,Thai,32.0
+075,tr,Turkish,28.0
+075,uk,Ukrainian,236.0
+075,ru,Russian,892.0
+075,et,Estonian,122.0
+075,98,Other language,10.0
+076,fi,Finnish,54.0
+076,sv,Swedish,1471.0
+076,lv,Latvian,23.0
+076,ro,Romanian,57.0
+077,fi,Finnish,4382.0
+077,sv,Swedish,12.0
+077,en,English,10.0
+077,th,Thai,10.0
+077,uk,Ukrainian,21.0
+077,ru,Russian,18.0
+078,fi,Finnish,4028.0
+078,sv,Swedish,3189.0
+078,ar,Arabic,17.0
+078,bn,"Bengali, (Bangla)",12.0
+078,en,English,31.0
+078,es,Spanish; Castilian,11.0
+078,ku,Kurdish,24.0
+078,pl,Polish,17.0
+078,de,German,13.0
+078,tl,Tagalog,26.0
+078,th,Thai,39.0
+078,uk,Ukrainian,35.0
+078,ru,Russian,89.0
+078,et,Estonian,66.0
+078,98,Other language,55.0
+079,fi,Finnish,6273.0
+079,sv,Swedish,13.0
+079,en,English,13.0
+079,pl,Polish,41.0
+079,tl,Tagalog,11.0
+079,th,Thai,12.0
+079,tr,Turkish,17.0
+079,uk,Ukrainian,57.0
+079,ru,Russian,59.0
+079,et,Estonian,85.0
+081,fi,Finnish,2389.0
+081,tl,Tagalog,11.0
+081,ru,Russian,17.0
+081,et,Estonian,16.0
+082,fi,Finnish,9076.0
+082,sv,Swedish,36.0
+082,ar,Arabic,11.0
+082,en,English,21.0
+082,ne,Nepali,15.0
+082,pl,Polish,19.0
+082,de,German,11.0
+082,th,Thai,14.0
+082,tr,Turkish,11.0
+082,ru,Russian,33.0
+082,et,Estonian,45.0
+086,fi,Finnish,7574.0
+086,sv,Swedish,32.0
+086,pl,Polish,12.0
+086,de,German,15.0
+086,th,Thai,16.0
+086,uk,Ukrainian,18.0
+086,ru,Russian,50.0
+086,vi,Vietnamese,10.0
+086,et,Estonian,97.0
+111,fi,Finnish,16800.0
+111,sv,Swedish,40.0
+111,ar,Arabic,41.0
+111,en,English,50.0
+111,es,Spanish; Castilian,16.0
+111,zh,Chinese,16.0
+111,ku,Kurdish,27.0
+111,lv,Latvian,15.0
+111,ml,Malayalam,24.0
+111,fa,"Persian, Farsi",23.0
+111,pl,Polish,24.0
+111,ro,Romanian,13.0
+111,de,German,14.0
+111,tl,Tagalog,28.0
+111,th,Thai,51.0
+111,tr,Turkish,35.0
+111,uk,Ukrainian,58.0
+111,hu,Hungarian,13.0
+111,ru,Russian,262.0
+111,et,Estonian,194.0
+090,fi,Finnish,2791.0
+090,sv,Swedish,10.0
+090,ar,Arabic,47.0
+090,my,Burmese,13.0
+090,ru,Russian,25.0
+090,et,Estonian,14.0
+091,fi,Finnish,507172.0
+091,sv,Swedish,36945.0
+091,se,Sami,69.0
+091,af,Afrikaans,29.0
+091,ak,Akan,153.0
+091,sq,Albanian,2471.0
+091,am,Amharic,783.0
+091,ar,Arabic,10998.0
+091,hy,Armenian,91.0
+091,av,Avaric;  Avar;  Avarish,10.0
+091,az,Azerbaijani,180.0
+091,bm,Bambara,12.0
+091,eu,Basque,11.0
+091,bn,"Bengali, (Bangla)",3572.0
+091,bs,Bosnian,334.0
+091,bg,Bulgarian,626.0
+091,my,Burmese,107.0
+091,en,English,10522.0
+091,es,Spanish; Castilian,3871.0
+091,ee,Ewe,32.0
+091,ff,"Fula, Fulah, Pulaar, Pular",110.0
+091,lg,Ganda,17.0
+091,ka,Georgian,139.0
+091,gu,Gujarati,172.0
+091,ha,Hausa,108.0
+091,he,Hebrew,210.0
+091,hi,Hindi,1174.0
+091,nl,Dutch,555.0
+091,ig,Igbo,472.0
+091,id,Indonesian,290.0
+091,is,Icelandic,75.0
+091,it,Italian,1477.0
+091,ja,Japanese,794.0
+091,yo,Yoruba,348.0
+091,kn,Kannada,75.0
+091,ks,Kashmiri,13.0
+091,ca,Catalan; Valencian,79.0
+091,lu,Luba-Katanga,10.0
+091,kk,Kazakh,67.0
+091,km,Central Khmer,71.0
+091,zh,Chinese,5004.0
+091,ki,Kikuyu; Gikuyu,70.0
+091,ky,Kirghiz; Kyrgyz,336.0
+091,kg,Kongo,85.0
+091,ko,Korean,382.0
+091,el,Greek (modern),585.0
+091,hr,Croatian,111.0
+091,ku,Kurdish,4265.0
+091,lo,Lao,10.0
+091,lv,Latvian,453.0
+091,lt,Lithuanian,338.0
+091,ln,Lingala,545.0
+091,mk,Macedonian,89.0
+091,ms,Malay,49.0
+091,ml,Malayalam,264.0
+091,mt,Maltese,13.0
+091,mr,Marathi,230.0
+091,mo,Moldavian,17.0
+091,mn,Mongolian,29.0
+091,ng,Ndonga,10.0
+091,ne,Nepali,3547.0
+091,ny,"Chichewa, Chewa, Nyanja",11.0
+091,no,Norwegian,176.0
+091,or,Oriya,33.0
+091,om,Oromo,107.0
+091,pa,Panjabi; Punjabi,422.0
+091,ps,Pushto; Pashto,672.0
+091,fa,"Persian, Farsi",4615.0
+091,pt,Portuguese,1339.0
+091,pl,Polish,832.0
+091,fr,French,2308.0
+091,ro,Romanian,980.0
+091,rw,Kinyarwanda,158.0
+091,rn,Rundi,12.0
+091,de,German,2175.0
+091,sr,Serbian,187.0
+091,sh,Serbo-Croatian,206.0
+091,sd,Sindhi,27.0
+091,si,Sinhala; Sinhalese,1234.0
+091,sk,Slovak,138.0
+091,sl,Slovene,83.0
+091,so,Somali,14910.0
+091,sn,Shona,29.0
+091,sw,Swahili,486.0
+091,tg,Tajik,86.0
+091,tl,Tagalog,2695.0
+091,ta,Tamil,792.0
+091,da,Danish,222.0
+091,tt,Tatar,100.0
+091,te,Telugu,214.0
+091,th,Thai,1544.0
+091,ti,Tigrinya,344.0
+091,cs,Czech,261.0
+091,ce,Chechen,371.0
+091,tr,Turkish,2526.0
+091,tk,Turkmen,246.0
+091,tw,Twi,171.0
+091,ug,Uighur; Uyghur,223.0
+091,uk,Ukrainian,2654.0
+091,hu,Hungarian,590.0
+091,ur,Urdu,1585.0
+091,uz,Uzbek,463.0
+091,be,Belarusian,70.0
+091,ru,Russian,21423.0
+091,vi,Vietnamese,3343.0
+091,et,Estonian,9382.0
+091,wo,Wolof,187.0
+091,98,Other language,2321.0
+091,X,Unknown,296.0
+097,fi,Finnish,1990.0
+097,fa,"Persian, Farsi",13.0
+097,uk,Ukrainian,10.0
+098,fi,Finnish,21964.0
+098,sv,Swedish,80.0
+098,ar,Arabic,37.0
+098,en,English,55.0
+098,es,Spanish; Castilian,22.0
+098,fa,"Persian, Farsi",16.0
+098,pl,Polish,19.0
+098,de,German,22.0
+098,tl,Tagalog,38.0
+098,th,Thai,43.0
+098,tr,Turkish,18.0
+098,uk,Ukrainian,23.0
+098,ru,Russian,251.0
+098,et,Estonian,158.0
+098,98,Other language,11.0
+102,fi,Finnish,8983.0
+102,sv,Swedish,20.0
+102,ar,Arabic,14.0
+102,en,English,22.0
+102,fa,"Persian, Farsi",13.0
+102,pl,Polish,31.0
+102,sw,Swahili,12.0
+102,tl,Tagalog,11.0
+102,th,Thai,24.0
+102,tr,Turkish,28.0
+102,uk,Ukrainian,149.0
+102,ru,Russian,92.0
+102,et,Estonian,80.0
+103,fi,Finnish,2028.0
+103,ru,Russian,14.0
+103,et,Estonian,18.0
+105,fi,Finnish,1957.0
+105,th,Thai,10.0
+105,ru,Russian,14.0
+106,fi,Finnish,42515.0
+106,sv,Swedish,435.0
+106,sq,Albanian,280.0
+106,am,Amharic,14.0
+106,ar,Arabic,257.0
+106,bn,"Bengali, (Bangla)",11.0
+106,bg,Bulgarian,17.0
+106,my,Burmese,11.0
+106,en,English,194.0
+106,es,Spanish; Castilian,61.0
+106,gu,Gujarati,21.0
+106,hi,Hindi,24.0
+106,nl,Dutch,22.0
+106,it,Italian,15.0
+106,km,Central Khmer,39.0
+106,zh,Chinese,135.0
+106,el,Greek (modern),12.0
+106,ku,Kurdish,91.0
+106,lv,Latvian,30.0
+106,lt,Lithuanian,15.0
+106,mr,Marathi,26.0
+106,ne,Nepali,34.0
+106,ps,Pushto; Pashto,18.0
+106,fa,"Persian, Farsi",162.0
+106,pt,Portuguese,28.0
+106,pl,Polish,27.0
+106,fr,French,24.0
+106,ro,Romanian,22.0
+106,de,German,44.0
+106,sh,Serbo-Croatian,10.0
+106,so,Somali,11.0
+106,sw,Swahili,36.0
+106,tl,Tagalog,123.0
+106,ta,Tamil,48.0
+106,te,Telugu,11.0
+106,th,Thai,144.0
+106,ti,Tigrinya,85.0
+106,cs,Czech,10.0
+106,tr,Turkish,116.0
+106,uk,Ukrainian,343.0
+106,hu,Hungarian,13.0
+106,ur,Urdu,12.0
+106,ru,Russian,572.0
+106,vi,Vietnamese,126.0
+106,et,Estonian,583.0
+106,98,Other language,62.0
+106,X,Unknown,11.0
+108,fi,Finnish,10105.0
+108,sv,Swedish,17.0
+108,en,English,25.0
+108,zh,Chinese,11.0
+108,tl,Tagalog,10.0
+108,th,Thai,15.0
+108,tr,Turkish,21.0
+108,uk,Ukrainian,30.0
+108,ru,Russian,26.0
+108,et,Estonian,37.0
+109,fi,Finnish,62880.0
+109,sv,Swedish,272.0
+109,sq,Albanian,49.0
+109,am,Amharic,20.0
+109,ar,Arabic,461.0
+109,bn,"Bengali, (Bangla)",28.0
+109,bs,Bosnian,16.0
+109,en,English,263.0
+109,es,Spanish; Castilian,64.0
+109,hi,Hindi,21.0
+109,nl,Dutch,16.0
+109,it,Italian,23.0
+109,yo,Yoruba,19.0
+109,zh,Chinese,129.0
+109,el,Greek (modern),28.0
+109,hr,Croatian,13.0
+109,ku,Kurdish,110.0
+109,lv,Latvian,31.0
+109,lt,Lithuanian,13.0
+109,ln,Lingala,14.0
+109,ne,Nepali,137.0
+109,fa,"Persian, Farsi",377.0
+109,pt,Portuguese,32.0
+109,pl,Polish,225.0
+109,fr,French,34.0
+109,ro,Romanian,37.0
+109,rw,Kinyarwanda,36.0
+109,de,German,62.0
+109,si,Sinhala; Sinhalese,286.0
+109,sk,Slovak,23.0
+109,so,Somali,209.0
+109,sw,Swahili,52.0
+109,tl,Tagalog,110.0
+109,ta,Tamil,21.0
+109,th,Thai,150.0
+109,ti,Tigrinya,32.0
+109,ce,Chechen,13.0
+109,tr,Turkish,233.0
+109,tk,Turkmen,13.0
+109,uk,Ukrainian,477.0
+109,hu,Hungarian,60.0
+109,ur,Urdu,18.0
+109,ru,Russian,513.0
+109,vi,Vietnamese,67.0
+109,et,Estonian,490.0
+109,98,Other language,98.0
+109,X,Unknown,29.0
+139,fi,Finnish,9690.0
+139,sv,Swedish,17.0
+139,de,German,11.0
+139,ru,Russian,31.0
+140,fi,Finnish,19522.0
+140,sq,Albanian,14.0
+140,ar,Arabic,94.0
+140,bn,"Bengali, (Bangla)",11.0
+140,my,Burmese,11.0
+140,en,English,32.0
+140,es,Spanish; Castilian,13.0
+140,ku,Kurdish,21.0
+140,fa,"Persian, Farsi",67.0
+140,pl,Polish,15.0
+140,ro,Romanian,10.0
+140,de,German,12.0
+140,th,Thai,40.0
+140,ti,Tigrinya,13.0
+140,tr,Turkish,20.0
+140,uk,Ukrainian,103.0
+140,ru,Russian,278.0
+140,et,Estonian,58.0
+140,98,Other language,10.0
+142,fi,Finnish,6228.0
+142,sv,Swedish,15.0
+142,en,English,10.0
+142,ru,Russian,30.0
+142,et,Estonian,52.0
+143,fi,Finnish,6427.0
+143,en,English,21.0
+143,de,German,10.0
+143,tl,Tagalog,23.0
+143,uk,Ukrainian,110.0
+143,ru,Russian,40.0
+143,et,Estonian,39.0
+145,fi,Finnish,12144.0
+145,sv,Swedish,27.0
+145,en,English,13.0
+145,ro,Romanian,14.0
+145,tl,Tagalog,10.0
+145,tr,Turkish,53.0
+145,uk,Ukrainian,33.0
+145,ru,Russian,30.0
+145,et,Estonian,29.0
+146,fi,Finnish,4146.0
+146,sv,Swedish,11.0
+146,sq,Albanian,13.0
+146,th,Thai,20.0
+146,uk,Ukrainian,18.0
+146,ru,Russian,97.0
+153,fi,Finnish,22347.0
+153,sv,Swedish,27.0
+153,ar,Arabic,30.0
+153,my,Burmese,15.0
+153,en,English,49.0
+153,es,Spanish; Castilian,26.0
+153,zh,Chinese,34.0
+153,ku,Kurdish,62.0
+153,lt,Lithuanian,14.0
+153,fa,"Persian, Farsi",16.0
+153,pl,Polish,11.0
+153,ro,Romanian,20.0
+153,de,German,22.0
+153,tl,Tagalog,20.0
+153,th,Thai,40.0
+153,tr,Turkish,34.0
+153,uk,Ukrainian,201.0
+153,ru,Russian,1588.0
+153,et,Estonian,66.0
+148,fi,Finnish,6270.0
+148,sv,Swedish,29.0
+148,se,Sami,509.0
+148,en,English,31.0
+148,es,Spanish; Castilian,15.0
+148,nl,Dutch,17.0
+148,mo,Moldavian,12.0
+148,fr,French,28.0
+148,ro,Romanian,13.0
+148,de,German,40.0
+148,tl,Tagalog,40.0
+148,th,Thai,25.0
+148,uk,Ukrainian,14.0
+148,uz,Uzbek,13.0
+148,ru,Russian,73.0
+148,et,Estonian,12.0
+149,fi,Finnish,2365.0
+149,sv,Swedish,2755.0
+149,en,English,41.0
+149,nl,Dutch,10.0
+149,de,German,17.0
+149,tl,Tagalog,21.0
+149,th,Thai,11.0
+149,uk,Ukrainian,10.0
+149,ru,Russian,36.0
+149,et,Estonian,63.0
+151,fi,Finnish,1694.0
+151,sv,Swedish,15.0
+151,lv,Latvian,15.0
+151,uk,Ukrainian,28.0
+151,et,Estonian,26.0
+152,fi,Finnish,4202.0
+152,sv,Swedish,31.0
+152,uk,Ukrainian,21.0
+152,ru,Russian,14.0
+152,vi,Vietnamese,10.0
+152,et,Estonian,17.0
+165,fi,Finnish,15277.0
+165,sv,Swedish,64.0
+165,ar,Arabic,37.0
+165,my,Burmese,11.0
+165,en,English,29.0
+165,it,Italian,11.0
+165,zh,Chinese,13.0
+165,lv,Latvian,10.0
+165,pl,Polish,37.0
+165,rw,Kinyarwanda,20.0
+165,de,German,10.0
+165,sw,Swahili,57.0
+165,th,Thai,49.0
+165,ti,Tigrinya,22.0
+165,tr,Turkish,29.0
+165,uk,Ukrainian,49.0
+165,ru,Russian,63.0
+165,vi,Vietnamese,17.0
+165,et,Estonian,121.0
+165,98,Other language,10.0
+167,fi,Finnish,71940.0
+167,sv,Swedish,80.0
+167,ak,Akan,19.0
+167,sq,Albanian,44.0
+167,am,Amharic,22.0
+167,ar,Arabic,293.0
+167,bn,"Bengali, (Bangla)",242.0
+167,my,Burmese,138.0
+167,en,English,320.0
+167,es,Spanish; Castilian,102.0
+167,hi,Hindi,81.0
+167,nl,Dutch,22.0
+167,ig,Igbo,27.0
+167,id,Indonesian,11.0
+167,it,Italian,54.0
+167,ja,Japanese,34.0
+167,yo,Yoruba,54.0
+167,zh,Chinese,194.0
+167,el,Greek (modern),25.0
+167,ku,Kurdish,97.0
+167,ml,Malayalam,17.0
+167,ng,Ndonga,13.0
+167,ne,Nepali,77.0
+167,pa,Panjabi; Punjabi,52.0
+167,ps,Pushto; Pashto,14.0
+167,fa,"Persian, Farsi",104.0
+167,pt,Portuguese,32.0
+167,pl,Polish,41.0
+167,fr,French,42.0
+167,ro,Romanian,23.0
+167,de,German,108.0
+167,sr,Serbian,21.0
+167,si,Sinhala; Sinhalese,133.0
+167,so,Somali,42.0
+167,sw,Swahili,16.0
+167,tl,Tagalog,81.0
+167,ta,Tamil,10.0
+167,th,Thai,102.0
+167,ti,Tigrinya,17.0
+167,cs,Czech,11.0
+167,tr,Turkish,91.0
+167,tw,Twi,19.0
+167,uk,Ukrainian,500.0
+167,hu,Hungarian,24.0
+167,ur,Urdu,143.0
+167,ru,Russian,2692.0
+167,vi,Vietnamese,177.0
+167,et,Estonian,86.0
+167,98,Other language,90.0
+167,X,Unknown,16.0
+169,fi,Finnish,4659.0
+169,sv,Swedish,20.0
+169,en,English,15.0
+169,ru,Russian,33.0
+169,et,Estonian,28.0
+170,fi,Finnish,261.0
+170,sv,Swedish,5056.0
+170,ar,Arabic,19.0
+170,en,English,24.0
+170,es,Spanish; Castilian,12.0
+170,ku,Kurdish,14.0
+170,lv,Latvian,46.0
+170,pl,Polish,20.0
+170,ro,Romanian,106.0
+170,de,German,29.0
+170,tl,Tagalog,11.0
+170,th,Thai,29.0
+170,uk,Ukrainian,11.0
+170,ru,Russian,25.0
+170,vi,Vietnamese,10.0
+170,et,Estonian,45.0
+171,fi,Finnish,4233.0
+171,sv,Swedish,16.0
+171,si,Sinhala; Sinhalese,27.0
+171,th,Thai,27.0
+171,uk,Ukrainian,91.0
+171,ur,Urdu,12.0
+171,ru,Russian,38.0
+171,vi,Vietnamese,18.0
+171,et,Estonian,29.0
+172,fi,Finnish,3871.0
+172,sv,Swedish,10.0
+172,en,English,14.0
+172,th,Thai,13.0
+172,uk,Ukrainian,92.0
+172,ru,Russian,29.0
+172,et,Estonian,30.0
+176,fi,Finnish,4008.0
+176,uk,Ukrainian,22.0
+176,ru,Russian,57.0
+176,et,Estonian,17.0
+177,fi,Finnish,1631.0
+178,fi,Finnish,5400.0
+178,sv,Swedish,15.0
+178,de,German,12.0
+178,tl,Tagalog,15.0
+178,th,Thai,13.0
+178,uk,Ukrainian,84.0
+178,ru,Russian,65.0
+178,et,Estonian,30.0
+179,fi,Finnish,137585.0
+179,sv,Swedish,290.0
+179,se,Sami,16.0
+179,af,Afrikaans,11.0
+179,sq,Albanian,184.0
+179,am,Amharic,27.0
+179,ar,Arabic,584.0
+179,hy,Armenian,14.0
+179,bn,"Bengali, (Bangla)",324.0
+179,bs,Bosnian,27.0
+179,bg,Bulgarian,35.0
+179,my,Burmese,63.0
+179,en,English,794.0
+179,es,Spanish; Castilian,223.0
+179,he,Hebrew,11.0
+179,hi,Hindi,122.0
+179,nl,Dutch,75.0
+179,ig,Igbo,48.0
+179,id,Indonesian,35.0
+179,it,Italian,65.0
+179,ja,Japanese,73.0
+179,yo,Yoruba,34.0
+179,kk,Kazakh,11.0
+179,zh,Chinese,445.0
+179,ko,Korean,26.0
+179,el,Greek (modern),41.0
+179,ku,Kurdish,437.0
+179,lv,Latvian,21.0
+179,lt,Lithuanian,21.0
+179,ml,Malayalam,14.0
+179,mr,Marathi,10.0
+179,ne,Nepali,173.0
+179,pa,Panjabi; Punjabi,95.0
+179,ps,Pushto; Pashto,14.0
+179,fa,"Persian, Farsi",794.0
+179,pt,Portuguese,78.0
+179,pl,Polish,70.0
+179,fr,French,112.0
+179,ro,Romanian,41.0
+179,rw,Kinyarwanda,198.0
+179,de,German,178.0
+179,sr,Serbian,10.0
+179,sd,Sindhi,34.0
+179,si,Sinhala; Sinhalese,341.0
+179,so,Somali,60.0
+179,sw,Swahili,214.0
+179,tl,Tagalog,96.0
+179,ta,Tamil,44.0
+179,da,Danish,17.0
+179,te,Telugu,25.0
+179,th,Thai,230.0
+179,ti,Tigrinya,48.0
+179,cs,Czech,34.0
+179,tr,Turkish,300.0
+179,tk,Turkmen,16.0
+179,tw,Twi,14.0
+179,uk,Ukrainian,1072.0
+179,hu,Hungarian,81.0
+179,ur,Urdu,171.0
+179,uz,Uzbek,42.0
+179,be,Belarusian,10.0
+179,ru,Russian,1900.0
+179,vi,Vietnamese,151.0
+179,et,Estonian,305.0
+179,wo,Wolof,11.0
+179,98,Other language,332.0
+179,X,Unknown,46.0
+181,fi,Finnish,1604.0
+181,uk,Ukrainian,20.0
+181,et,Estonian,13.0
+182,fi,Finnish,18297.0
+182,sv,Swedish,25.0
+182,ar,Arabic,41.0
+182,en,English,38.0
+182,fa,"Persian, Farsi",28.0
+182,fr,French,12.0
+182,de,German,16.0
+182,tl,Tagalog,21.0
+182,th,Thai,28.0
+182,tr,Turkish,19.0
+182,uk,Ukrainian,264.0
+182,ru,Russian,167.0
+182,et,Estonian,67.0
+182,98,Other language,10.0
+186,fi,Finnish,41908.0
+186,sv,Swedish,485.0
+186,sq,Albanian,45.0
+186,am,Amharic,17.0
+186,ar,Arabic,233.0
+186,bg,Bulgarian,12.0
+186,my,Burmese,105.0
+186,en,English,200.0
+186,es,Spanish; Castilian,105.0
+186,nl,Dutch,14.0
+186,ig,Igbo,17.0
+186,id,Indonesian,13.0
+186,it,Italian,21.0
+186,ja,Japanese,20.0
+186,yo,Yoruba,11.0
+186,kn,Kannada,10.0
+186,zh,Chinese,60.0
+186,ki,Kikuyu; Gikuyu,10.0
+186,ku,Kurdish,51.0
+186,lv,Latvian,26.0
+186,ne,Nepali,32.0
+186,pa,Panjabi; Punjabi,12.0
+186,fa,"Persian, Farsi",211.0
+186,pt,Portuguese,77.0
+186,pl,Polish,81.0
+186,fr,French,41.0
+186,ro,Romanian,106.0
+186,rw,Kinyarwanda,25.0
+186,de,German,55.0
+186,so,Somali,114.0
+186,sw,Swahili,24.0
+186,tl,Tagalog,63.0
+186,tt,Tatar,22.0
+186,te,Telugu,13.0
+186,th,Thai,105.0
+186,ti,Tigrinya,53.0
+186,tr,Turkish,96.0
+186,tw,Twi,15.0
+186,uk,Ukrainian,604.0
+186,hu,Hungarian,33.0
+186,ur,Urdu,25.0
+186,ru,Russian,692.0
+186,vi,Vietnamese,147.0
+186,et,Estonian,632.0
+186,98,Other language,54.0
+186,X,Unknown,20.0
+202,fi,Finnish,32272.0
+202,sv,Swedish,1846.0
+202,sq,Albanian,192.0
+202,ar,Arabic,252.0
+202,az,Azerbaijani,12.0
+202,bs,Bosnian,58.0
+202,bg,Bulgarian,16.0
+202,en,English,125.0
+202,es,Spanish; Castilian,55.0
+202,nl,Dutch,12.0
+202,it,Italian,21.0
+202,zh,Chinese,78.0
+202,el,Greek (modern),16.0
+202,ku,Kurdish,104.0
+202,lv,Latvian,11.0
+202,lt,Lithuanian,16.0
+202,fa,"Persian, Farsi",94.0
+202,pt,Portuguese,13.0
+202,pl,Polish,30.0
+202,fr,French,31.0
+202,ro,Romanian,61.0
+202,de,German,32.0
+202,sr,Serbian,10.0
+202,sh,Serbo-Croatian,25.0
+202,so,Somali,50.0
+202,tl,Tagalog,23.0
+202,th,Thai,65.0
+202,tr,Turkish,26.0
+202,uk,Ukrainian,135.0
+202,ru,Russian,347.0
+202,vi,Vietnamese,154.0
+202,et,Estonian,210.0
+202,98,Other language,21.0
+204,fi,Finnish,2521.0
+204,ru,Russian,13.0
+205,fi,Finnish,33556.0
+205,sv,Swedish,39.0
+205,am,Amharic,29.0
+205,ar,Arabic,161.0
+205,bn,"Bengali, (Bangla)",39.0
+205,en,English,90.0
+205,es,Spanish; Castilian,31.0
+205,yo,Yoruba,11.0
+205,kk,Kazakh,25.0
+205,zh,Chinese,68.0
+205,ku,Kurdish,62.0
+205,ne,Nepali,60.0
+205,ps,Pushto; Pashto,10.0
+205,fa,"Persian, Farsi",66.0
+205,pt,Portuguese,20.0
+205,pl,Polish,30.0
+205,fr,French,13.0
+205,rw,Kinyarwanda,33.0
+205,de,German,14.0
+205,si,Sinhala; Sinhalese,159.0
+205,so,Somali,64.0
+205,sw,Swahili,23.0
+205,tl,Tagalog,110.0
+205,th,Thai,63.0
+205,ti,Tigrinya,41.0
+205,tr,Turkish,28.0
+205,uk,Ukrainian,317.0
+205,ur,Urdu,37.0
+205,uz,Uzbek,21.0
+205,ru,Russian,883.0
+205,vi,Vietnamese,34.0
+205,et,Estonian,37.0
+205,98,Other language,76.0
+205,X,Unknown,43.0
+208,fi,Finnish,11722.0
+208,sv,Swedish,52.0
+208,bg,Bulgarian,25.0
+208,en,English,18.0
+208,zh,Chinese,16.0
+208,fa,"Persian, Farsi",11.0
+208,th,Thai,35.0
+208,uk,Ukrainian,84.0
+208,hu,Hungarian,73.0
+208,ru,Russian,125.0
+208,et,Estonian,24.0
+211,fi,Finnish,32639.0
+211,sv,Swedish,88.0
+211,ar,Arabic,84.0
+211,bg,Bulgarian,12.0
+211,en,English,90.0
+211,es,Spanish; Castilian,31.0
+211,hi,Hindi,10.0
+211,it,Italian,21.0
+211,zh,Chinese,38.0
+211,ku,Kurdish,40.0
+211,lv,Latvian,28.0
+211,ps,Pushto; Pashto,11.0
+211,fa,"Persian, Farsi",53.0
+211,pl,Polish,33.0
+211,fr,French,17.0
+211,ro,Romanian,12.0
+211,de,German,38.0
+211,sw,Swahili,11.0
+211,tl,Tagalog,70.0
+211,th,Thai,47.0
+211,tr,Turkish,24.0
+211,uk,Ukrainian,68.0
+211,hu,Hungarian,25.0
+211,ru,Russian,190.0
+211,vi,Vietnamese,18.0
+211,et,Estonian,114.0
+211,98,Other language,28.0
+213,fi,Finnish,4871.0
+213,sv,Swedish,10.0
+213,tl,Tagalog,11.0
+213,uk,Ukrainian,47.0
+213,ru,Russian,64.0
+214,fi,Finnish,11595.0
+214,sv,Swedish,12.0
+214,ar,Arabic,14.0
+214,bg,Bulgarian,28.0
+214,es,Spanish; Castilian,11.0
+214,ku,Kurdish,10.0
+214,lv,Latvian,11.0
+214,mo,Moldavian,18.0
+214,pl,Polish,77.0
+214,ro,Romanian,79.0
+214,si,Sinhala; Sinhalese,11.0
+214,tl,Tagalog,25.0
+214,th,Thai,12.0
+214,tr,Turkish,24.0
+214,uk,Ukrainian,303.0
+214,ru,Russian,80.0
+214,et,Estonian,91.0
+216,fi,Finnish,1165.0
+217,fi,Finnish,5079.0
+217,sv,Swedish,21.0
+217,th,Thai,16.0
+217,uk,Ukrainian,40.0
+217,ru,Russian,19.0
+217,vi,Vietnamese,24.0
+217,et,Estonian,19.0
+218,fi,Finnish,1107.0
+218,sv,Swedish,22.0
+218,uk,Ukrainian,13.0
+224,fi,Finnish,7619.0
+224,sv,Swedish,58.0
+224,ar,Arabic,44.0
+224,bg,Bulgarian,15.0
+224,en,English,35.0
+224,zh,Chinese,36.0
+224,ku,Kurdish,26.0
+224,fa,"Persian, Farsi",32.0
+224,pl,Polish,17.0
+224,ro,Romanian,16.0
+224,de,German,11.0
+224,sr,Serbian,20.0
+224,tl,Tagalog,13.0
+224,th,Thai,15.0
+224,tr,Turkish,24.0
+224,uk,Ukrainian,66.0
+224,ru,Russian,147.0
+224,et,Estonian,186.0
+226,fi,Finnish,3491.0
+226,tr,Turkish,11.0
+226,uk,Ukrainian,32.0
+226,ru,Russian,16.0
+230,fi,Finnish,2053.0
+230,uk,Ukrainian,43.0
+230,ru,Russian,14.0
+230,et,Estonian,41.0
+231,fi,Finnish,686.0
+231,sv,Swedish,343.0
+231,bs,Bosnian,12.0
+231,uk,Ukrainian,42.0
+231,ru,Russian,14.0
+231,vi,Vietnamese,73.0
+231,et,Estonian,11.0
+232,fi,Finnish,11983.0
+232,sv,Swedish,46.0
+232,en,English,17.0
+232,th,Thai,30.0
+232,tr,Turkish,17.0
+232,uk,Ukrainian,100.0
+232,hu,Hungarian,104.0
+232,ru,Russian,55.0
+232,vi,Vietnamese,38.0
+232,et,Estonian,48.0
+233,fi,Finnish,14016.0
+233,sv,Swedish,103.0
+233,ar,Arabic,15.0
+233,en,English,33.0
+233,pl,Polish,45.0
+233,ro,Romanian,71.0
+233,tl,Tagalog,20.0
+233,th,Thai,10.0
+233,uk,Ukrainian,361.0
+233,hu,Hungarian,10.0
+233,ru,Russian,139.0
+233,vi,Vietnamese,22.0
+233,et,Estonian,91.0
+233,98,Other language,15.0
+235,fi,Finnish,5981.0
+235,sv,Swedish,3134.0
+235,sq,Albanian,20.0
+235,ar,Arabic,87.0
+235,en,English,124.0
+235,es,Spanish; Castilian,25.0
+235,nl,Dutch,14.0
+235,it,Italian,13.0
+235,zh,Chinese,88.0
+235,ku,Kurdish,62.0
+235,ne,Nepali,10.0
+235,fa,"Persian, Farsi",83.0
+235,fr,French,14.0
+235,de,German,29.0
+235,so,Somali,18.0
+235,sw,Swahili,32.0
+235,tl,Tagalog,28.0
+235,th,Thai,15.0
+235,tr,Turkish,11.0
+235,uk,Ukrainian,59.0
+235,ur,Urdu,17.0
+235,ru,Russian,110.0
+235,et,Estonian,85.0
+235,98,Other language,36.0
+236,fi,Finnish,3902.0
+236,sv,Swedish,81.0
+236,bg,Bulgarian,10.0
+236,th,Thai,11.0
+236,uk,Ukrainian,52.0
+236,ru,Russian,15.0
+236,et,Estonian,24.0
+239,fi,Finnish,1911.0
+239,lv,Latvian,10.0
+239,uk,Ukrainian,20.0
+239,ru,Russian,18.0
+240,fi,Finnish,17998.0
+240,sv,Swedish,36.0
+240,sq,Albanian,18.0
+240,ar,Arabic,107.0
+240,bg,Bulgarian,11.0
+240,my,Burmese,88.0
+240,en,English,36.0
+240,es,Spanish; Castilian,16.0
+240,zh,Chinese,16.0
+240,ku,Kurdish,16.0
+240,lv,Latvian,13.0
+240,ne,Nepali,25.0
+240,fa,"Persian, Farsi",42.0
+240,pl,Polish,10.0
+240,rw,Kinyarwanda,10.0
+240,so,Somali,59.0
+240,sw,Swahili,75.0
+240,tl,Tagalog,22.0
+240,th,Thai,43.0
+240,tr,Turkish,22.0
+240,uk,Ukrainian,184.0
+240,ru,Russian,174.0
+240,vi,Vietnamese,26.0
+240,et,Estonian,29.0
+240,98,Other language,215.0
+320,fi,Finnish,6578.0
+320,sv,Swedish,10.0
+320,ar,Arabic,10.0
+320,my,Burmese,13.0
+320,tl,Tagalog,35.0
+320,uk,Ukrainian,136.0
+320,ru,Russian,95.0
+241,fi,Finnish,7485.0
+241,en,English,12.0
+241,ru,Russian,17.0
+322,fi,Finnish,1890.0
+322,sv,Swedish,4202.0
+322,en,English,14.0
+322,lt,Lithuanian,10.0
+322,th,Thai,13.0
+322,uk,Ukrainian,60.0
+322,ru,Russian,14.0
+322,et,Estonian,80.0
+244,fi,Finnish,19315.0
+244,sv,Swedish,30.0
+244,se,Sami,12.0
+244,ar,Arabic,13.0
+244,en,English,11.0
+244,es,Spanish; Castilian,10.0
+244,zh,Chinese,15.0
+244,de,German,11.0
+244,th,Thai,31.0
+244,tr,Turkish,15.0
+244,uk,Ukrainian,13.0
+244,hu,Hungarian,12.0
+244,ru,Russian,66.0
+244,vi,Vietnamese,27.0
+244,et,Estonian,12.0
+245,fi,Finnish,31361.0
+245,sv,Swedish,443.0
+245,sq,Albanian,145.0
+245,am,Amharic,11.0
+245,ar,Arabic,476.0
+245,bn,"Bengali, (Bangla)",92.0
+245,bg,Bulgarian,38.0
+245,en,English,284.0
+245,es,Spanish; Castilian,114.0
+245,hi,Hindi,16.0
+245,nl,Dutch,16.0
+245,ig,Igbo,15.0
+245,it,Italian,23.0
+245,ja,Japanese,13.0
+245,yo,Yoruba,10.0
+245,zh,Chinese,73.0
+245,el,Greek (modern),14.0
+245,ku,Kurdish,136.0
+245,lv,Latvian,41.0
+245,lt,Lithuanian,20.0
+245,ne,Nepali,158.0
+245,pa,Panjabi; Punjabi,22.0
+245,fa,"Persian, Farsi",240.0
+245,pt,Portuguese,34.0
+245,pl,Polish,45.0
+245,fr,French,36.0
+245,ro,Romanian,125.0
+245,rw,Kinyarwanda,53.0
+245,de,German,71.0
+245,si,Sinhala; Sinhalese,27.0
+245,sk,Slovak,12.0
+245,so,Somali,28.0
+245,sw,Swahili,72.0
+245,tl,Tagalog,63.0
+245,ta,Tamil,14.0
+245,th,Thai,166.0
+245,ti,Tigrinya,239.0
+245,cs,Czech,14.0
+245,tr,Turkish,273.0
+245,tw,Twi,12.0
+245,uk,Ukrainian,366.0
+245,hu,Hungarian,27.0
+245,ur,Urdu,27.0
+245,ru,Russian,1106.0
+245,vi,Vietnamese,172.0
+245,et,Estonian,1317.0
+245,98,Other language,215.0
+245,X,Unknown,29.0
+249,fi,Finnish,8720.0
+249,sv,Swedish,12.0
+249,en,English,20.0
+249,lv,Latvian,12.0
+249,th,Thai,12.0
+249,uk,Ukrainian,96.0
+249,ru,Russian,113.0
+249,et,Estonian,27.0
+250,fi,Finnish,1667.0
+250,et,Estonian,16.0
+256,fi,Finnish,1472.0
+257,fi,Finnish,30183.0
+257,sv,Swedish,6066.0
+257,sq,Albanian,395.0
+257,ar,Arabic,174.0
+257,bn,"Bengali, (Bangla)",18.0
+257,bs,Bosnian,28.0
+257,bg,Bulgarian,34.0
+257,en,English,324.0
+257,es,Spanish; Castilian,86.0
+257,hi,Hindi,21.0
+257,nl,Dutch,31.0
+257,it,Italian,32.0
+257,ja,Japanese,13.0
+257,zh,Chinese,95.0
+257,ky,Kirghiz; Kyrgyz,26.0
+257,el,Greek (modern),18.0
+257,ku,Kurdish,77.0
+257,lv,Latvian,35.0
+257,ml,Malayalam,14.0
+257,ne,Nepali,30.0
+257,no,Norwegian,20.0
+257,fa,"Persian, Farsi",114.0
+257,pt,Portuguese,23.0
+257,pl,Polish,33.0
+257,fr,French,44.0
+257,ro,Romanian,54.0
+257,rw,Kinyarwanda,10.0
+257,de,German,114.0
+257,si,Sinhala; Sinhalese,10.0
+257,so,Somali,26.0
+257,sw,Swahili,21.0
+257,tl,Tagalog,85.0
+257,ta,Tamil,24.0
+257,da,Danish,11.0
+257,th,Thai,61.0
+257,ti,Tigrinya,96.0
+257,tr,Turkish,70.0
+257,uk,Ukrainian,561.0
+257,hu,Hungarian,73.0
+257,ur,Urdu,32.0
+257,uz,Uzbek,30.0
+257,ru,Russian,971.0
+257,vi,Vietnamese,69.0
+257,et,Estonian,1131.0
+257,98,Other language,44.0
+257,X,Unknown,20.0
+260,fi,Finnish,8745.0
+260,sq,Albanian,10.0
+260,my,Burmese,18.0
+260,de,German,12.0
+260,sd,Sindhi,10.0
+260,th,Thai,10.0
+260,tr,Turkish,16.0
+260,uk,Ukrainian,174.0
+260,ur,Urdu,13.0
+260,ru,Russian,468.0
+260,et,Estonian,16.0
+261,fi,Finnish,6405.0
+261,sv,Swedish,28.0
+261,se,Sami,26.0
+261,sq,Albanian,11.0
+261,ar,Arabic,11.0
+261,bg,Bulgarian,31.0
+261,en,English,48.0
+261,de,German,20.0
+261,tl,Tagalog,23.0
+261,th,Thai,17.0
+261,tr,Turkish,18.0
+261,uk,Ukrainian,32.0
+261,hu,Hungarian,11.0
+261,ru,Russian,54.0
+261,et,Estonian,20.0
+263,fi,Finnish,7203.0
+263,fa,"Persian, Farsi",13.0
+263,uk,Ukrainian,33.0
+263,ru,Russian,35.0
+263,et,Estonian,24.0
+265,fi,Finnish,989.0
+265,et,Estonian,10.0
+271,fi,Finnish,6406.0
+271,sv,Swedish,19.0
+271,en,English,12.0
+271,ku,Kurdish,12.0
+271,pl,Polish,22.0
+271,th,Thai,21.0
+271,uk,Ukrainian,25.0
+271,ru,Russian,50.0
+271,et,Estonian,69.0
+272,fi,Finnish,39918.0
+272,sv,Swedish,5731.0
+272,sq,Albanian,38.0
+272,ar,Arabic,172.0
+272,bn,"Bengali, (Bangla)",119.0
+272,bg,Bulgarian,32.0
+272,my,Burmese,19.0
+272,en,English,203.0
+272,es,Spanish; Castilian,53.0
+272,hi,Hindi,17.0
+272,ig,Igbo,20.0
+272,yo,Yoruba,23.0
+272,zh,Chinese,135.0
+272,el,Greek (modern),14.0
+272,ku,Kurdish,56.0
+272,lv,Latvian,15.0
+272,ne,Nepali,128.0
+272,no,Norwegian,11.0
+272,pa,Panjabi; Punjabi,15.0
+272,fa,"Persian, Farsi",47.0
+272,pl,Polish,35.0
+272,fr,French,18.0
+272,ro,Romanian,25.0
+272,rw,Kinyarwanda,18.0
+272,de,German,23.0
+272,sh,Serbo-Croatian,16.0
+272,si,Sinhala; Sinhalese,48.0
+272,so,Somali,13.0
+272,sw,Swahili,34.0
+272,tl,Tagalog,43.0
+272,th,Thai,112.0
+272,tr,Turkish,42.0
+272,uk,Ukrainian,283.0
+272,hu,Hungarian,28.0
+272,ur,Urdu,25.0
+272,ru,Russian,354.0
+272,vi,Vietnamese,87.0
+272,et,Estonian,73.0
+272,98,Other language,219.0
+273,fi,Finnish,3841.0
+273,sv,Swedish,26.0
+273,en,English,19.0
+273,el,Greek (modern),11.0
+273,uk,Ukrainian,11.0
+273,ru,Russian,12.0
+273,et,Estonian,18.0
+275,fi,Finnish,2386.0
+275,uk,Ukrainian,26.0
+276,fi,Finnish,14701.0
+276,sv,Swedish,10.0
+276,en,English,24.0
+276,de,German,11.0
+276,so,Somali,13.0
+276,tl,Tagalog,11.0
+276,th,Thai,21.0
+276,ru,Russian,170.0
+276,et,Estonian,17.0
+276,98,Other language,11.0
+280,fi,Finnish,71.0
+280,sv,Swedish,1656.0
+280,bs,Bosnian,69.0
+280,my,Burmese,11.0
+280,uk,Ukrainian,15.0
+280,ru,Russian,22.0
+280,vi,Vietnamese,59.0
+280,98,Other language,29.0
+284,fi,Finnish,2077.0
+284,uk,Ukrainian,10.0
+284,ru,Russian,13.0
+284,et,Estonian,44.0
+285,fi,Finnish,44162.0
+285,sv,Swedish,477.0
+285,sq,Albanian,67.0
+285,am,Amharic,12.0
+285,ar,Arabic,209.0
+285,hy,Armenian,12.0
+285,az,Azerbaijani,10.0
+285,bn,"Bengali, (Bangla)",21.0
+285,bg,Bulgarian,19.0
+285,my,Burmese,50.0
+285,en,English,209.0
+285,es,Spanish; Castilian,71.0
+285,hi,Hindi,16.0
+285,nl,Dutch,28.0
+285,it,Italian,27.0
+285,zh,Chinese,70.0
+285,el,Greek (modern),17.0
+285,ku,Kurdish,128.0
+285,lv,Latvian,23.0
+285,lt,Lithuanian,34.0
+285,ln,Lingala,14.0
+285,ml,Malayalam,10.0
+285,ne,Nepali,40.0
+285,pa,Panjabi; Punjabi,17.0
+285,fa,"Persian, Farsi",98.0
+285,pt,Portuguese,43.0
+285,pl,Polish,31.0
+285,fr,French,39.0
+285,ro,Romanian,31.0
+285,rw,Kinyarwanda,48.0
+285,de,German,40.0
+285,sh,Serbo-Croatian,37.0
+285,si,Sinhala; Sinhalese,54.0
+285,so,Somali,70.0
+285,sw,Swahili,23.0
+285,tl,Tagalog,58.0
+285,th,Thai,102.0
+285,ti,Tigrinya,35.0
+285,tr,Turkish,101.0
+285,tk,Turkmen,15.0
+285,uk,Ukrainian,405.0
+285,hu,Hungarian,10.0
+285,ur,Urdu,21.0
+285,ru,Russian,2603.0
+285,vi,Vietnamese,14.0
+285,et,Estonian,342.0
+285,98,Other language,101.0
+285,X,Unknown,26.0
+286,fi,Finnish,73473.0
+286,sv,Swedish,279.0
+286,sq,Albanian,41.0
+286,ar,Arabic,228.0
+286,bn,"Bengali, (Bangla)",32.0
+286,my,Burmese,14.0
+286,en,English,172.0
+286,es,Spanish; Castilian,75.0
+286,hi,Hindi,12.0
+286,nl,Dutch,12.0
+286,it,Italian,15.0
+286,zh,Chinese,118.0
+286,ku,Kurdish,104.0
+286,lv,Latvian,35.0
+286,lt,Lithuanian,25.0
+286,ne,Nepali,96.0
+286,fa,"Persian, Farsi",70.0
+286,pt,Portuguese,14.0
+286,pl,Polish,36.0
+286,fr,French,20.0
+286,ro,Romanian,31.0
+286,rw,Kinyarwanda,18.0
+286,de,German,50.0
+286,si,Sinhala; Sinhalese,59.0
+286,so,Somali,164.0
+286,sw,Swahili,13.0
+286,tl,Tagalog,77.0
+286,ta,Tamil,12.0
+286,th,Thai,179.0
+286,ti,Tigrinya,52.0
+286,tr,Turkish,154.0
+286,uk,Ukrainian,389.0
+286,hu,Hungarian,27.0
+286,ur,Urdu,52.0
+286,ru,Russian,1580.0
+286,vi,Vietnamese,38.0
+286,et,Estonian,388.0
+286,98,Other language,46.0
+286,X,Unknown,21.0
+287,fi,Finnish,2457.0
+287,sv,Swedish,3220.0
+287,en,English,31.0
+287,ku,Kurdish,14.0
+287,fa,"Persian, Farsi",13.0
+287,tl,Tagalog,13.0
+287,th,Thai,12.0
+287,tr,Turkish,11.0
+287,uk,Ukrainian,148.0
+287,ru,Russian,25.0
+287,vi,Vietnamese,17.0
+287,et,Estonian,50.0
+287,98,Other language,11.0
+288,fi,Finnish,1231.0
+288,sv,Swedish,4784.0
+288,ar,Arabic,40.0
+288,bg,Bulgarian,23.0
+288,en,English,17.0
+288,it,Italian,11.0
+288,tl,Tagalog,15.0
+288,th,Thai,12.0
+288,uk,Ukrainian,52.0
+288,hu,Hungarian,11.0
+288,ru,Russian,33.0
+288,et,Estonian,21.0
+290,fi,Finnish,7225.0
+290,en,English,11.0
+290,tl,Tagalog,17.0
+290,uk,Ukrainian,10.0
+290,ru,Russian,165.0
+291,fi,Finnish,1978.0
+291,sv,Swedish,10.0
+291,uk,Ukrainian,18.0
+291,ru,Russian,11.0
+295,fi,Finnish,21.0
+295,sv,Swedish,231.0
+297,fi,Finnish,117144.0
+297,sv,Swedish,131.0
+297,ak,Akan,10.0
+297,sq,Albanian,54.0
+297,am,Amharic,31.0
+297,ar,Arabic,864.0
+297,bn,"Bengali, (Bangla)",330.0
+297,bg,Bulgarian,15.0
+297,my,Burmese,178.0
+297,en,English,595.0
+297,es,Spanish; Castilian,185.0
+297,he,Hebrew,14.0
+297,hi,Hindi,47.0
+297,nl,Dutch,30.0
+297,ig,Igbo,70.0
+297,it,Italian,66.0
+297,ja,Japanese,20.0
+297,yo,Yoruba,100.0
+297,zh,Chinese,245.0
+297,el,Greek (modern),18.0
+297,ku,Kurdish,101.0
+297,lv,Latvian,16.0
+297,lt,Lithuanian,22.0
+297,ml,Malayalam,25.0
+297,mn,Mongolian,11.0
+297,ne,Nepali,95.0
+297,ny,"Chichewa, Chewa, Nyanja",24.0
+297,pa,Panjabi; Punjabi,16.0
+297,ps,Pushto; Pashto,21.0
+297,fa,"Persian, Farsi",228.0
+297,pt,Portuguese,42.0
+297,pl,Polish,55.0
+297,fr,French,64.0
+297,ro,Romanian,53.0
+297,rw,Kinyarwanda,43.0
+297,de,German,119.0
+297,sr,Serbian,11.0
+297,sh,Serbo-Croatian,17.0
+297,si,Sinhala; Sinhalese,120.0
+297,sk,Slovak,14.0
+297,so,Somali,48.0
+297,sw,Swahili,74.0
+297,tl,Tagalog,127.0
+297,ta,Tamil,34.0
+297,te,Telugu,33.0
+297,th,Thai,203.0
+297,ti,Tigrinya,13.0
+297,cs,Czech,14.0
+297,tr,Turkish,164.0
+297,tw,Twi,24.0
+297,uk,Ukrainian,741.0
+297,hu,Hungarian,31.0
+297,ur,Urdu,175.0
+297,uz,Uzbek,23.0
+297,ru,Russian,1856.0
+297,vi,Vietnamese,113.0
+297,et,Estonian,285.0
+297,98,Other language,291.0
+297,X,Unknown,48.0
+300,fi,Finnish,3246.0
+300,pl,Polish,14.0
+300,uk,Ukrainian,18.0
+300,et,Estonian,15.0
+301,fi,Finnish,18785.0
+301,sv,Swedish,81.0
+301,sq,Albanian,18.0
+301,bg,Bulgarian,12.0
+301,en,English,24.0
+301,fa,"Persian, Farsi",18.0
+301,de,German,11.0
+301,th,Thai,47.0
+301,uk,Ukrainian,218.0
+301,hu,Hungarian,52.0
+301,ru,Russian,45.0
+301,vi,Vietnamese,36.0
+301,et,Estonian,71.0
+304,fi,Finnish,902.0
+304,sv,Swedish,18.0
+304,uk,Ukrainian,11.0
+304,ru,Russian,10.0
+304,et,Estonian,11.0
+305,fi,Finnish,14176.0
+305,sv,Swedish,43.0
+305,ar,Arabic,35.0
+305,en,English,33.0
+305,nl,Dutch,24.0
+305,fa,"Persian, Farsi",12.0
+305,rw,Kinyarwanda,32.0
+305,de,German,32.0
+305,sw,Swahili,40.0
+305,tl,Tagalog,42.0
+305,th,Thai,22.0
+305,tr,Turkish,26.0
+305,uk,Ukrainian,77.0
+305,ru,Russian,159.0
+305,et,Estonian,15.0
+305,98,Other language,24.0
+312,fi,Finnish,1125.0
+316,fi,Finnish,3847.0
+316,sv,Swedish,22.0
+316,en,English,10.0
+316,th,Thai,12.0
+316,uk,Ukrainian,35.0
+316,ru,Russian,44.0
+316,et,Estonian,87.0
+317,fi,Finnish,2337.0
+317,et,Estonian,12.0
+318,fi,Finnish,21.0
+318,sv,Swedish,196.0
+398,fi,Finnish,108248.0
+398,sv,Swedish,537.0
+398,se,Sami,19.0
+398,sq,Albanian,194.0
+398,am,Amharic,32.0
+398,ar,Arabic,1314.0
+398,bn,"Bengali, (Bangla)",155.0
+398,bs,Bosnian,13.0
+398,bg,Bulgarian,47.0
+398,my,Burmese,76.0
+398,en,English,563.0
+398,es,Spanish; Castilian,212.0
+398,he,Hebrew,12.0
+398,hi,Hindi,38.0
+398,nl,Dutch,33.0
+398,ig,Igbo,19.0
+398,id,Indonesian,13.0
+398,it,Italian,31.0
+398,ja,Japanese,21.0
+398,yo,Yoruba,26.0
+398,zh,Chinese,450.0
+398,el,Greek (modern),31.0
+398,ku,Kurdish,777.0
+398,lv,Latvian,74.0
+398,lt,Lithuanian,32.0
+398,mr,Marathi,12.0
+398,mn,Mongolian,15.0
+398,ne,Nepali,113.0
+398,no,Norwegian,32.0
+398,om,Oromo,23.0
+398,pa,Panjabi; Punjabi,28.0
+398,ps,Pushto; Pashto,32.0
+398,fa,"Persian, Farsi",369.0
+398,pt,Portuguese,77.0
+398,pl,Polish,71.0
+398,fr,French,73.0
+398,ro,Romanian,53.0
+398,rw,Kinyarwanda,33.0
+398,de,German,150.0
+398,sd,Sindhi,12.0
+398,si,Sinhala; Sinhalese,156.0
+398,sk,Slovak,13.0
+398,so,Somali,65.0
+398,sw,Swahili,59.0
+398,tl,Tagalog,217.0
+398,ta,Tamil,11.0
+398,th,Thai,356.0
+398,ti,Tigrinya,154.0
+398,ce,Chechen,16.0
+398,tr,Turkish,312.0
+398,tk,Turkmen,13.0
+398,uk,Ukrainian,1006.0
+398,hu,Hungarian,60.0
+398,ur,Urdu,125.0
+398,uz,Uzbek,18.0
+398,ru,Russian,3359.0
+398,vi,Vietnamese,148.0
+398,et,Estonian,875.0
+398,98,Other language,95.0
+398,X,Unknown,61.0
+399,fi,Finnish,7402.0
+399,sv,Swedish,88.0
+399,bg,Bulgarian,11.0
+399,en,English,12.0
+399,tl,Tagalog,14.0
+399,th,Thai,27.0
+399,uk,Ukrainian,10.0
+399,hu,Hungarian,16.0
+399,ru,Russian,19.0
+399,et,Estonian,23.0
+400,fi,Finnish,7345.0
+400,sv,Swedish,23.0
+400,ar,Arabic,26.0
+400,en,English,28.0
+400,lv,Latvian,17.0
+400,mo,Moldavian,18.0
+400,pl,Polish,48.0
+400,ro,Romanian,96.0
+400,sk,Slovak,12.0
+400,tl,Tagalog,23.0
+400,tr,Turkish,30.0
+400,uk,Ukrainian,443.0
+400,ru,Russian,80.0
+400,et,Estonian,191.0
+407,fi,Finnish,1531.0
+407,sv,Swedish,716.0
+407,th,Thai,10.0
+407,uk,Ukrainian,34.0
+407,ru,Russian,30.0
+407,et,Estonian,55.0
+402,fi,Finnish,8581.0
+402,sv,Swedish,12.0
+402,fa,"Persian, Farsi",10.0
+402,th,Thai,23.0
+402,uk,Ukrainian,36.0
+402,ru,Russian,91.0
+402,et,Estonian,41.0
+403,fi,Finnish,2563.0
+403,sv,Swedish,11.0
+403,uk,Ukrainian,26.0
+403,ru,Russian,105.0
+403,vi,Vietnamese,10.0
+405,fi,Finnish,64996.0
+405,sv,Swedish,120.0
+405,sq,Albanian,19.0
+405,am,Amharic,12.0
+405,ar,Arabic,239.0
+405,az,Azerbaijani,14.0
+405,bn,"Bengali, (Bangla)",271.0
+405,bs,Bosnian,11.0
+405,bg,Bulgarian,30.0
+405,my,Burmese,69.0
+405,en,English,397.0
+405,es,Spanish; Castilian,139.0
+405,gu,Gujarati,17.0
+405,hi,Hindi,61.0
+405,nl,Dutch,22.0
+405,ig,Igbo,28.0
+405,id,Indonesian,17.0
+405,it,Italian,26.0
+405,ja,Japanese,13.0
+405,yo,Yoruba,20.0
+405,kn,Kannada,21.0
+405,zh,Chinese,399.0
+405,ko,Korean,13.0
+405,el,Greek (modern),15.0
+405,ku,Kurdish,97.0
+405,lv,Latvian,22.0
+405,lt,Lithuanian,23.0
+405,ml,Malayalam,24.0
+405,mr,Marathi,26.0
+405,mn,Mongolian,26.0
+405,ne,Nepali,152.0
+405,pa,Panjabi; Punjabi,13.0
+405,ps,Pushto; Pashto,15.0
+405,fa,"Persian, Farsi",300.0
+405,pt,Portuguese,63.0
+405,pl,Polish,58.0
+405,fr,French,34.0
+405,ro,Romanian,45.0
+405,rw,Kinyarwanda,49.0
+405,de,German,68.0
+405,si,Sinhala; Sinhalese,205.0
+405,so,Somali,41.0
+405,sw,Swahili,35.0
+405,tl,Tagalog,37.0
+405,ta,Tamil,49.0
+405,te,Telugu,21.0
+405,th,Thai,188.0
+405,tr,Turkish,191.0
+405,uk,Ukrainian,255.0
+405,hu,Hungarian,31.0
+405,ur,Urdu,271.0
+405,ru,Russian,3379.0
+405,vi,Vietnamese,165.0
+405,et,Estonian,220.0
+405,98,Other language,90.0
+405,X,Unknown,18.0
+408,fi,Finnish,13364.0
+408,sv,Swedish,22.0
+408,en,English,13.0
+408,pl,Polish,10.0
+408,th,Thai,37.0
+408,tr,Turkish,19.0
+408,uk,Ukrainian,217.0
+408,hu,Hungarian,73.0
+408,ru,Russian,132.0
+408,vi,Vietnamese,26.0
+408,et,Estonian,45.0
+410,fi,Finnish,18407.0
+410,sv,Swedish,24.0
+410,sq,Albanian,13.0
+410,en,English,28.0
+410,zh,Chinese,29.0
+410,ku,Kurdish,12.0
+410,th,Thai,23.0
+410,tr,Turkish,11.0
+410,uk,Ukrainian,97.0
+410,ru,Russian,98.0
+410,et,Estonian,42.0
+416,fi,Finnish,2778.0
+416,ru,Russian,42.0
+417,fi,Finnish,73.0
+417,sv,Swedish,1941.0
+417,en,English,24.0
+417,lv,Latvian,21.0
+417,et,Estonian,11.0
+418,fi,Finnish,23990.0
+418,sv,Swedish,76.0
+418,sq,Albanian,13.0
+418,ar,Arabic,76.0
+418,en,English,53.0
+418,es,Spanish; Castilian,26.0
+418,zh,Chinese,32.0
+418,ku,Kurdish,16.0
+418,fa,"Persian, Farsi",27.0
+418,pt,Portuguese,11.0
+418,pl,Polish,11.0
+418,de,German,25.0
+418,sw,Swahili,50.0
+418,tl,Tagalog,19.0
+418,th,Thai,30.0
+418,tr,Turkish,20.0
+418,uk,Ukrainian,31.0
+418,hu,Hungarian,13.0
+418,ru,Russian,129.0
+418,vi,Vietnamese,18.0
+418,et,Estonian,88.0
+420,fi,Finnish,8693.0
+420,sv,Swedish,12.0
+420,de,German,15.0
+420,th,Thai,15.0
+420,uk,Ukrainian,32.0
+420,ru,Russian,108.0
+420,98,Other language,10.0
+421,fi,Finnish,648.0
+422,fi,Finnish,9386.0
+422,ar,Arabic,17.0
+422,en,English,34.0
+422,de,German,14.0
+422,so,Somali,19.0
+422,th,Thai,27.0
+422,tr,Turkish,12.0
+422,uk,Ukrainian,101.0
+422,ru,Russian,293.0
+422,et,Estonian,11.0
+422,98,Other language,19.0
+423,fi,Finnish,19373.0
+423,sv,Swedish,318.0
+423,sq,Albanian,65.0
+423,ar,Arabic,62.0
+423,en,English,55.0
+423,es,Spanish; Castilian,20.0
+423,zh,Chinese,20.0
+423,ku,Kurdish,145.0
+423,lv,Latvian,11.0
+423,ne,Nepali,11.0
+423,fa,"Persian, Farsi",30.0
+423,pl,Polish,26.0
+423,ro,Romanian,23.0
+423,tl,Tagalog,17.0
+423,th,Thai,46.0
+423,uk,Ukrainian,55.0
+423,ru,Russian,117.0
+423,vi,Vietnamese,60.0
+423,et,Estonian,82.0
+425,fi,Finnish,10074.0
+425,sv,Swedish,11.0
+425,uk,Ukrainian,21.0
+425,ru,Russian,15.0
+426,fi,Finnish,11585.0
+426,ar,Arabic,11.0
+426,my,Burmese,13.0
+426,en,English,14.0
+426,th,Thai,22.0
+426,uk,Ukrainian,17.0
+426,ru,Russian,158.0
+426,et,Estonian,13.0
+426,98,Other language,12.0
+444,fi,Finnish,41001.0
+444,sv,Swedish,1568.0
+444,sq,Albanian,39.0
+444,am,Amharic,13.0
+444,ar,Arabic,167.0
+444,bg,Bulgarian,71.0
+444,en,English,179.0
+444,es,Spanish; Castilian,53.0
+444,nl,Dutch,24.0
+444,zh,Chinese,67.0
+444,el,Greek (modern),10.0
+444,ku,Kurdish,80.0
+444,lv,Latvian,30.0
+444,lt,Lithuanian,16.0
+444,ne,Nepali,23.0
+444,no,Norwegian,13.0
+444,pa,Panjabi; Punjabi,10.0
+444,fa,"Persian, Farsi",68.0
+444,pt,Portuguese,13.0
+444,pl,Polish,76.0
+444,fr,French,18.0
+444,ro,Romanian,23.0
+444,de,German,38.0
+444,si,Sinhala; Sinhalese,27.0
+444,so,Somali,38.0
+444,sw,Swahili,32.0
+444,tl,Tagalog,101.0
+444,th,Thai,115.0
+444,ti,Tigrinya,20.0
+444,cs,Czech,17.0
+444,tr,Turkish,162.0
+444,uk,Ukrainian,225.0
+444,hu,Hungarian,10.0
+444,ru,Russian,467.0
+444,vi,Vietnamese,24.0
+444,et,Estonian,697.0
+444,98,Other language,42.0
+430,fi,Finnish,14328.0
+430,sv,Swedish,35.0
+430,ar,Arabic,32.0
+430,en,English,25.0
+430,zh,Chinese,10.0
+430,ku,Kurdish,23.0
+430,lv,Latvian,22.0
+430,fa,"Persian, Farsi",25.0
+430,pl,Polish,15.0
+430,ro,Romanian,66.0
+430,so,Somali,13.0
+430,th,Thai,26.0
+430,tr,Turkish,29.0
+430,uk,Ukrainian,305.0
+430,ru,Russian,101.0
+430,et,Estonian,144.0
+433,fi,Finnish,7334.0
+433,sv,Swedish,36.0
+433,en,English,15.0
+433,th,Thai,13.0
+433,uk,Ukrainian,46.0
+433,ru,Russian,47.0
+433,vi,Vietnamese,25.0
+433,et,Estonian,66.0
+434,fi,Finnish,7907.0
+434,sv,Swedish,5562.0
+434,ar,Arabic,45.0
+434,en,English,48.0
+434,es,Spanish; Castilian,19.0
+434,it,Italian,17.0
+434,ku,Kurdish,12.0
+434,lv,Latvian,18.0
+434,pl,Polish,13.0
+434,ro,Romanian,11.0
+434,de,German,17.0
+434,th,Thai,54.0
+434,uk,Ukrainian,130.0
+434,ru,Russian,203.0
+434,et,Estonian,180.0
+434,98,Other language,16.0
+435,fi,Finnish,706.0
+436,fi,Finnish,1915.0
+436,uk,Ukrainian,70.0
+438,fi,Finnish,23.0
+438,sv,Swedish,317.0
+438,lv,Latvian,15.0
+440,fi,Finnish,280.0
+440,sv,Swedish,5399.0
+440,ar,Arabic,22.0
+440,en,English,15.0
+440,es,Spanish; Castilian,12.0
+440,ku,Kurdish,25.0
+440,pl,Polish,15.0
+440,uk,Ukrainian,18.0
+440,ru,Russian,17.0
+441,fi,Finnish,4089.0
+441,sv,Swedish,21.0
+441,en,English,18.0
+441,tr,Turkish,10.0
+441,uk,Ukrainian,53.0
+441,ru,Russian,118.0
+441,et,Estonian,11.0
+475,fi,Finnish,507.0
+475,sv,Swedish,4591.0
+475,bs,Bosnian,95.0
+475,ro,Romanian,13.0
+475,th,Thai,12.0
+475,uk,Ukrainian,63.0
+475,ru,Russian,18.0
+475,vi,Vietnamese,16.0
+475,98,Other language,19.0
+478,fi,Finnish,562.0
+478,sv,Swedish,9629.0
+478,sq,Albanian,55.0
+478,ar,Arabic,84.0
+478,bs,Bosnian,11.0
+478,en,English,110.0
+478,es,Spanish; Castilian,44.0
+478,it,Italian,23.0
+478,zh,Chinese,19.0
+478,ku,Kurdish,33.0
+478,lv,Latvian,212.0
+478,lt,Lithuanian,18.0
+478,ml,Malayalam,10.0
+478,no,Norwegian,19.0
+478,fa,"Persian, Farsi",52.0
+478,pt,Portuguese,44.0
+478,pl,Polish,34.0
+478,ro,Romanian,248.0
+478,de,German,32.0
+478,sr,Serbian,48.0
+478,sh,Serbo-Croatian,12.0
+478,tl,Tagalog,82.0
+478,th,Thai,99.0
+478,tr,Turkish,24.0
+478,uk,Ukrainian,51.0
+478,ru,Russian,92.0
+478,vi,Vietnamese,21.0
+478,et,Estonian,76.0
+478,98,Other language,17.0
+480,fi,Finnish,1832.0
+480,sv,Swedish,19.0
+480,uk,Ukrainian,13.0
+480,et,Estonian,12.0
+481,fi,Finnish,9184.0
+481,sv,Swedish,121.0
+481,en,English,13.0
+481,pt,Portuguese,10.0
+481,pl,Polish,17.0
+481,ro,Romanian,27.0
+481,th,Thai,20.0
+481,uk,Ukrainian,26.0
+481,ru,Russian,50.0
+481,et,Estonian,34.0
+483,fi,Finnish,1052.0
+484,fi,Finnish,2776.0
+484,sv,Swedish,13.0
+484,uk,Ukrainian,45.0
+484,ru,Russian,11.0
+489,fi,Finnish,1587.0
+489,uk,Ukrainian,23.0
+489,ru,Russian,68.0
+491,fi,Finnish,48551.0
+491,sv,Swedish,90.0
+491,am,Amharic,30.0
+491,ar,Arabic,229.0
+491,bn,"Bengali, (Bangla)",32.0
+491,bs,Bosnian,42.0
+491,bg,Bulgarian,16.0
+491,my,Burmese,37.0
+491,en,English,143.0
+491,es,Spanish; Castilian,36.0
+491,hi,Hindi,10.0
+491,nl,Dutch,10.0
+491,it,Italian,11.0
+491,zh,Chinese,48.0
+491,ku,Kurdish,37.0
+491,lv,Latvian,24.0
+491,ne,Nepali,42.0
+491,fa,"Persian, Farsi",170.0
+491,pt,Portuguese,10.0
+491,pl,Polish,24.0
+491,fr,French,12.0
+491,rw,Kinyarwanda,18.0
+491,de,German,54.0
+491,sh,Serbo-Croatian,33.0
+491,si,Sinhala; Sinhalese,37.0
+491,so,Somali,11.0
+491,sw,Swahili,52.0
+491,tl,Tagalog,111.0
+491,th,Thai,76.0
+491,ti,Tigrinya,14.0
+491,tr,Turkish,41.0
+491,tw,Twi,13.0
+491,uk,Ukrainian,552.0
+491,hu,Hungarian,11.0
+491,ur,Urdu,14.0
+491,ru,Russian,722.0
+491,vi,Vietnamese,84.0
+491,et,Estonian,176.0
+491,98,Other language,118.0
+494,fi,Finnish,8608.0
+494,en,English,11.0
+494,ru,Russian,25.0
+494,vi,Vietnamese,18.0
+494,et,Estonian,18.0
+495,fi,Finnish,1357.0
+495,ru,Russian,11.0
+498,fi,Finnish,2179.0
+498,sv,Swedish,14.0
+498,se,Sami,13.0
+498,en,English,10.0
+498,de,German,43.0
+499,fi,Finnish,5620.0
+499,sv,Swedish,13425.0
+499,sq,Albanian,13.0
+499,ar,Arabic,23.0
+499,en,English,55.0
+499,es,Spanish; Castilian,17.0
+499,zh,Chinese,19.0
+499,ku,Kurdish,13.0
+499,no,Norwegian,14.0
+499,fa,"Persian, Farsi",19.0
+499,pt,Portuguese,12.0
+499,ro,Romanian,10.0
+499,de,German,13.0
+499,sw,Swahili,72.0
+499,tl,Tagalog,24.0
+499,th,Thai,30.0
+499,uk,Ukrainian,35.0
+499,hu,Hungarian,10.0
+499,ru,Russian,80.0
+499,vi,Vietnamese,80.0
+499,et,Estonian,12.0
+499,98,Other language,32.0
+500,fi,Finnish,10348.0
+500,sv,Swedish,16.0
+500,en,English,24.0
+500,zh,Chinese,10.0
+500,th,Thai,19.0
+500,ru,Russian,73.0
+500,et,Estonian,14.0
+503,fi,Finnish,7105.0
+503,sv,Swedish,67.0
+503,en,English,17.0
+503,pl,Polish,13.0
+503,ro,Romanian,30.0
+503,th,Thai,17.0
+503,uk,Ukrainian,103.0
+503,ru,Russian,40.0
+503,et,Estonian,36.0
+504,fi,Finnish,1451.0
+504,sv,Swedish,159.0
+504,et,Estonian,34.0
+505,fi,Finnish,19540.0
+505,sv,Swedish,153.0
+505,am,Amharic,11.0
+505,ar,Arabic,36.0
+505,en,English,71.0
+505,es,Spanish; Castilian,26.0
+505,it,Italian,10.0
+505,zh,Chinese,17.0
+505,ku,Kurdish,16.0
+505,fa,"Persian, Farsi",46.0
+505,pl,Polish,17.0
+505,ro,Romanian,10.0
+505,de,German,15.0
+505,si,Sinhala; Sinhalese,10.0
+505,tl,Tagalog,16.0
+505,th,Thai,75.0
+505,tr,Turkish,49.0
+505,uk,Ukrainian,181.0
+505,ru,Russian,181.0
+505,vi,Vietnamese,15.0
+505,et,Estonian,332.0
+505,98,Other language,13.0
+508,fi,Finnish,8785.0
+508,sv,Swedish,15.0
+508,ar,Arabic,16.0
+508,my,Burmese,12.0
+508,en,English,23.0
+508,zh,Chinese,25.0
+508,pl,Polish,12.0
+508,tl,Tagalog,12.0
+508,th,Thai,13.0
+508,uk,Ukrainian,135.0
+508,ru,Russian,63.0
+508,vi,Vietnamese,24.0
+508,et,Estonian,47.0
+507,fi,Finnish,6686.0
+507,sv,Swedish,20.0
+507,bn,"Bengali, (Bangla)",11.0
+507,en,English,19.0
+507,pl,Polish,13.0
+507,de,German,13.0
+507,tl,Tagalog,23.0
+507,th,Thai,24.0
+507,tr,Turkish,10.0
+507,uk,Ukrainian,73.0
+507,ru,Russian,64.0
+507,et,Estonian,41.0
+529,fi,Finnish,19022.0
+529,sv,Swedish,266.0
+529,ar,Arabic,42.0
+529,en,English,77.0
+529,es,Spanish; Castilian,27.0
+529,zh,Chinese,21.0
+529,ku,Kurdish,15.0
+529,lv,Latvian,11.0
+529,lt,Lithuanian,16.0
+529,fa,"Persian, Farsi",19.0
+529,pt,Portuguese,17.0
+529,pl,Polish,11.0
+529,ro,Romanian,20.0
+529,de,German,25.0
+529,so,Somali,11.0
+529,tl,Tagalog,14.0
+529,th,Thai,27.0
+529,uk,Ukrainian,158.0
+529,ru,Russian,126.0
+529,et,Estonian,91.0
+531,fi,Finnish,4800.0
+531,sv,Swedish,31.0
+531,bg,Bulgarian,13.0
+531,ru,Russian,16.0
+531,et,Estonian,30.0
+535,fi,Finnish,10185.0
+535,en,English,10.0
+535,th,Thai,13.0
+535,uk,Ukrainian,43.0
+535,ru,Russian,65.0
+535,et,Estonian,10.0
+536,fi,Finnish,34648.0
+536,sv,Swedish,116.0
+536,sq,Albanian,11.0
+536,ar,Arabic,51.0
+536,az,Azerbaijani,18.0
+536,bs,Bosnian,12.0
+536,bg,Bulgarian,10.0
+536,en,English,86.0
+536,es,Spanish; Castilian,28.0
+536,hi,Hindi,10.0
+536,nl,Dutch,12.0
+536,it,Italian,12.0
+536,zh,Chinese,47.0
+536,ky,Kirghiz; Kyrgyz,11.0
+536,ku,Kurdish,24.0
+536,lt,Lithuanian,11.0
+536,ne,Nepali,12.0
+536,fa,"Persian, Farsi",82.0
+536,pt,Portuguese,16.0
+536,fr,French,16.0
+536,de,German,24.0
+536,sw,Swahili,17.0
+536,tl,Tagalog,38.0
+536,th,Thai,78.0
+536,ce,Chechen,24.0
+536,tr,Turkish,65.0
+536,uk,Ukrainian,130.0
+536,hu,Hungarian,10.0
+536,ru,Russian,265.0
+536,vi,Vietnamese,20.0
+536,et,Estonian,113.0
+536,98,Other language,20.0
+538,fi,Finnish,4454.0
+538,sv,Swedish,36.0
+538,uk,Ukrainian,86.0
+538,ru,Russian,16.0
+538,et,Estonian,25.0
+541,fi,Finnish,8625.0
+541,en,English,32.0
+541,tl,Tagalog,12.0
+541,th,Thai,11.0
+541,tr,Turkish,17.0
+541,uk,Ukrainian,54.0
+541,ru,Russian,129.0
+543,fi,Finnish,40830.0
+543,sv,Swedish,569.0
+543,sq,Albanian,35.0
+543,ar,Arabic,146.0
+543,bg,Bulgarian,19.0
+543,en,English,153.0
+543,es,Spanish; Castilian,40.0
+543,nl,Dutch,10.0
+543,it,Italian,19.0
+543,zh,Chinese,49.0
+543,el,Greek (modern),22.0
+543,ku,Kurdish,102.0
+543,lv,Latvian,18.0
+543,lt,Lithuanian,10.0
+543,pa,Panjabi; Punjabi,16.0
+543,fa,"Persian, Farsi",63.0
+543,pt,Portuguese,25.0
+543,pl,Polish,18.0
+543,fr,French,27.0
+543,ro,Romanian,101.0
+543,rw,Kinyarwanda,11.0
+543,de,German,50.0
+543,sw,Swahili,56.0
+543,tl,Tagalog,51.0
+543,ta,Tamil,13.0
+543,th,Thai,95.0
+543,tr,Turkish,58.0
+543,uk,Ukrainian,148.0
+543,hu,Hungarian,24.0
+543,ur,Urdu,35.0
+543,ru,Russian,629.0
+543,vi,Vietnamese,25.0
+543,et,Estonian,1377.0
+543,98,Other language,31.0
+543,X,Unknown,14.0
+545,fi,Finnish,470.0
+545,sv,Swedish,7003.0
+545,ar,Arabic,16.0
+545,bs,Bosnian,341.0
+545,bg,Bulgarian,11.0
+545,en,English,24.0
+545,es,Spanish; Castilian,30.0
+545,hr,Croatian,14.0
+545,lv,Latvian,19.0
+545,lt,Lithuanian,31.0
+545,pl,Polish,13.0
+545,ro,Romanian,17.0
+545,sr,Serbian,12.0
+545,sh,Serbo-Croatian,80.0
+545,tl,Tagalog,11.0
+545,th,Thai,115.0
+545,uk,Ukrainian,168.0
+545,ru,Russian,75.0
+545,vi,Vietnamese,977.0
+545,et,Estonian,27.0
+545,98,Other language,15.0
+560,fi,Finnish,14831.0
+560,sv,Swedish,89.0
+560,ar,Arabic,15.0
+560,en,English,28.0
+560,es,Spanish; Castilian,15.0
+560,ku,Kurdish,10.0
+560,fa,"Persian, Farsi",12.0
+560,de,German,13.0
+560,tl,Tagalog,11.0
+560,th,Thai,30.0
+560,tr,Turkish,23.0
+560,uk,Ukrainian,134.0
+560,ru,Russian,154.0
+560,et,Estonian,173.0
+561,fi,Finnish,1174.0
+561,uk,Ukrainian,58.0
+561,ru,Russian,11.0
+561,et,Estonian,23.0
+562,fi,Finnish,8626.0
+562,sv,Swedish,15.0
+562,en,English,33.0
+562,de,German,13.0
+562,tl,Tagalog,14.0
+562,th,Thai,19.0
+562,uk,Ukrainian,14.0
+562,ru,Russian,31.0
+562,et,Estonian,53.0
+563,fi,Finnish,6720.0
+563,en,English,10.0
+563,zh,Chinese,10.0
+563,pl,Polish,11.0
+563,th,Thai,12.0
+563,uk,Ukrainian,37.0
+563,ru,Russian,48.0
+563,98,Other language,13.0
+564,fi,Finnish,201569.0
+564,sv,Swedish,481.0
+564,se,Sami,157.0
+564,aa,Afar,11.0
+564,ak,Akan,30.0
+564,sq,Albanian,226.0
+564,am,Amharic,62.0
+564,ar,Arabic,1092.0
+564,az,Azerbaijani,21.0
+564,bn,"Bengali, (Bangla)",500.0
+564,bs,Bosnian,20.0
+564,bg,Bulgarian,29.0
+564,my,Burmese,26.0
+564,en,English,1028.0
+564,es,Spanish; Castilian,317.0
+564,gu,Gujarati,16.0
+564,ha,Hausa,13.0
+564,hi,Hindi,184.0
+564,nl,Dutch,66.0
+564,ig,Igbo,57.0
+564,id,Indonesian,76.0
+564,it,Italian,126.0
+564,ja,Japanese,101.0
+564,yo,Yoruba,77.0
+564,kn,Kannada,34.0
+564,kk,Kazakh,17.0
+564,zh,Chinese,821.0
+564,ko,Korean,38.0
+564,el,Greek (modern),58.0
+564,ku,Kurdish,370.0
+564,lv,Latvian,49.0
+564,lt,Lithuanian,32.0
+564,ms,Malay,11.0
+564,ml,Malayalam,94.0
+564,mr,Marathi,31.0
+564,ne,Nepali,213.0
+564,no,Norwegian,23.0
+564,or,Oriya,16.0
+564,pa,Panjabi; Punjabi,36.0
+564,ps,Pushto; Pashto,57.0
+564,fa,"Persian, Farsi",651.0
+564,pt,Portuguese,142.0
+564,pl,Polish,150.0
+564,fr,French,144.0
+564,ro,Romanian,76.0
+564,rw,Kinyarwanda,46.0
+564,rn,Rundi,11.0
+564,de,German,209.0
+564,sr,Serbian,21.0
+564,sd,Sindhi,15.0
+564,si,Sinhala; Sinhalese,410.0
+564,sk,Slovak,27.0
+564,so,Somali,535.0
+564,sw,Swahili,111.0
+564,tl,Tagalog,270.0
+564,ta,Tamil,153.0
+564,da,Danish,15.0
+564,tt,Tatar,11.0
+564,te,Telugu,77.0
+564,th,Thai,374.0
+564,ti,Tigrinya,172.0
+564,cs,Czech,31.0
+564,ce,Chechen,18.0
+564,tr,Turkish,413.0
+564,tk,Turkmen,10.0
+564,tw,Twi,16.0
+564,uk,Ukrainian,453.0
+564,hu,Hungarian,114.0
+564,ur,Urdu,433.0
+564,uz,Uzbek,48.0
+564,be,Belarusian,10.0
+564,ru,Russian,1385.0
+564,vi,Vietnamese,508.0
+564,et,Estonian,187.0
+564,98,Other language,510.0
+564,X,Unknown,54.0
+309,fi,Finnish,5888.0
+309,ar,Arabic,57.0
+309,en,English,21.0
+309,ku,Kurdish,11.0
+309,pl,Polish,13.0
+309,tl,Tagalog,10.0
+309,uk,Ukrainian,136.0
+309,ru,Russian,221.0
+309,et,Estonian,12.0
+576,fi,Finnish,2587.0
+576,en,English,11.0
+576,uk,Ukrainian,24.0
+576,ru,Russian,14.0
+576,et,Estonian,15.0
+577,fi,Finnish,10552.0
+577,sv,Swedish,97.0
+577,bg,Bulgarian,15.0
+577,en,English,23.0
+577,lv,Latvian,22.0
+577,ro,Romanian,12.0
+577,tl,Tagalog,12.0
+577,th,Thai,17.0
+577,tr,Turkish,12.0
+577,uk,Ukrainian,202.0
+577,ru,Russian,71.0
+577,et,Estonian,107.0
+578,fi,Finnish,2931.0
+578,uk,Ukrainian,17.0
+578,ru,Russian,15.0
+445,fi,Finnish,6167.0
+445,sv,Swedish,8007.0
+445,ar,Arabic,97.0
+445,en,English,53.0
+445,es,Spanish; Castilian,15.0
+445,zh,Chinese,19.0
+445,pl,Polish,17.0
+445,de,German,23.0
+445,tl,Tagalog,18.0
+445,da,Danish,10.0
+445,th,Thai,32.0
+445,uk,Ukrainian,94.0
+445,hu,Hungarian,12.0
+445,ru,Russian,58.0
+445,vi,Vietnamese,26.0
+445,et,Estonian,84.0
+445,98,Other language,10.0
+580,fi,Finnish,4155.0
+580,th,Thai,12.0
+580,uk,Ukrainian,13.0
+580,ru,Russian,68.0
+580,et,Estonian,13.0
+581,fi,Finnish,5849.0
+581,sv,Swedish,11.0
+581,tl,Tagalog,13.0
+581,th,Thai,13.0
+581,tr,Turkish,15.0
+581,uk,Ukrainian,47.0
+581,ru,Russian,31.0
+581,et,Estonian,40.0
+599,fi,Finnish,899.0
+599,sv,Swedish,9927.0
+599,sq,Albanian,11.0
+599,ar,Arabic,33.0
+599,en,English,30.0
+599,ne,Nepali,22.0
+599,ny,"Chichewa, Chewa, Nyanja",15.0
+599,no,Norwegian,11.0
+599,de,German,10.0
+599,sw,Swahili,19.0
+599,th,Thai,15.0
+599,cs,Czech,16.0
+599,uk,Ukrainian,51.0
+599,ru,Russian,15.0
+599,vi,Vietnamese,35.0
+599,et,Estonian,19.0
+599,98,Other language,15.0
+583,fi,Finnish,892.0
+854,fi,Finnish,3080.0
+854,sv,Swedish,26.0
+854,uk,Ukrainian,30.0
+854,ru,Russian,15.0
+584,fi,Finnish,2552.0
+584,sv,Swedish,11.0
+592,fi,Finnish,3479.0
+592,ru,Russian,14.0
+592,et,Estonian,10.0
+593,fi,Finnish,15938.0
+593,sv,Swedish,19.0
+593,ar,Arabic,34.0
+593,bs,Bosnian,12.0
+593,my,Burmese,84.0
+593,en,English,55.0
+593,ku,Kurdish,17.0
+593,lv,Latvian,15.0
+593,fa,"Persian, Farsi",36.0
+593,pl,Polish,15.0
+593,de,German,19.0
+593,tl,Tagalog,52.0
+593,th,Thai,33.0
+593,tr,Turkish,14.0
+593,uk,Ukrainian,408.0
+593,ru,Russian,228.0
+593,et,Estonian,58.0
+593,98,Other language,38.0
+595,fi,Finnish,3884.0
+595,sv,Swedish,10.0
+595,ru,Russian,41.0
+595,et,Estonian,11.0
+598,fi,Finnish,5941.0
+598,sv,Swedish,10477.0
+598,sq,Albanian,286.0
+598,ar,Arabic,314.0
+598,bn,"Bengali, (Bangla)",189.0
+598,bg,Bulgarian,157.0
+598,en,English,220.0
+598,es,Spanish; Castilian,42.0
+598,hi,Hindi,26.0
+598,nl,Dutch,11.0
+598,ig,Igbo,17.0
+598,yo,Yoruba,15.0
+598,el,Greek (modern),10.0
+598,ku,Kurdish,45.0
+598,lv,Latvian,16.0
+598,ne,Nepali,143.0
+598,ny,"Chichewa, Chewa, Nyanja",15.0
+598,no,Norwegian,10.0
+598,fa,"Persian, Farsi",156.0
+598,pt,Portuguese,21.0
+598,pl,Polish,37.0
+598,ro,Romanian,47.0
+598,rw,Kinyarwanda,14.0
+598,de,German,11.0
+598,si,Sinhala; Sinhalese,12.0
+598,so,Somali,79.0
+598,sw,Swahili,15.0
+598,tl,Tagalog,67.0
+598,th,Thai,70.0
+598,tr,Turkish,22.0
+598,tw,Twi,15.0
+598,uk,Ukrainian,460.0
+598,ru,Russian,146.0
+598,vi,Vietnamese,237.0
+598,et,Estonian,44.0
+598,98,Other language,49.0
+598,X,Unknown,12.0
+601,fi,Finnish,3634.0
+601,th,Thai,16.0
+601,ru,Russian,10.0
+604,fi,Finnish,19953.0
+604,sv,Swedish,81.0
+604,sq,Albanian,35.0
+604,ar,Arabic,139.0
+604,bs,Bosnian,36.0
+604,en,English,70.0
+604,es,Spanish; Castilian,21.0
+604,hi,Hindi,10.0
+604,zh,Chinese,26.0
+604,ku,Kurdish,41.0
+604,lv,Latvian,15.0
+604,ml,Malayalam,16.0
+604,fa,"Persian, Farsi",86.0
+604,pt,Portuguese,20.0
+604,pl,Polish,31.0
+604,fr,French,14.0
+604,de,German,13.0
+604,sh,Serbo-Croatian,13.0
+604,th,Thai,36.0
+604,tr,Turkish,13.0
+604,uk,Ukrainian,26.0
+604,hu,Hungarian,10.0
+604,ru,Russian,150.0
+604,et,Estonian,75.0
+604,98,Other language,18.0
+607,fi,Finnish,3936.0
+607,ru,Russian,23.0
+608,fi,Finnish,1896.0
+609,fi,Finnish,77974.0
+609,sv,Swedish,467.0
+609,sq,Albanian,26.0
+609,ar,Arabic,312.0
+609,bn,"Bengali, (Bangla)",60.0
+609,bg,Bulgarian,33.0
+609,my,Burmese,17.0
+609,en,English,301.0
+609,es,Spanish; Castilian,105.0
+609,hi,Hindi,28.0
+609,nl,Dutch,18.0
+609,ig,Igbo,14.0
+609,it,Italian,17.0
+609,ja,Japanese,30.0
+609,yo,Yoruba,12.0
+609,zh,Chinese,183.0
+609,hr,Croatian,27.0
+609,ku,Kurdish,71.0
+609,lv,Latvian,38.0
+609,lt,Lithuanian,31.0
+609,ms,Malay,14.0
+609,ml,Malayalam,14.0
+609,ne,Nepali,116.0
+609,fa,"Persian, Farsi",148.0
+609,pt,Portuguese,41.0
+609,pl,Polish,101.0
+609,fr,French,43.0
+609,ro,Romanian,175.0
+609,de,German,78.0
+609,si,Sinhala; Sinhalese,235.0
+609,sk,Slovak,20.0
+609,so,Somali,34.0
+609,sw,Swahili,15.0
+609,tl,Tagalog,100.0
+609,ta,Tamil,26.0
+609,th,Thai,175.0
+609,tr,Turkish,180.0
+609,tk,Turkmen,10.0
+609,uk,Ukrainian,522.0
+609,hu,Hungarian,67.0
+609,ur,Urdu,33.0
+609,ru,Russian,817.0
+609,vi,Vietnamese,74.0
+609,et,Estonian,273.0
+609,98,Other language,74.0
+609,X,Unknown,24.0
+611,fi,Finnish,4649.0
+611,sv,Swedish,119.0
+611,en,English,16.0
+611,th,Thai,13.0
+611,ru,Russian,43.0
+611,et,Estonian,56.0
+638,fi,Finnish,32725.0
+638,sv,Swedish,14191.0
+638,sq,Albanian,399.0
+638,ar,Arabic,419.0
+638,bn,"Bengali, (Bangla)",20.0
+638,bg,Bulgarian,16.0
+638,my,Burmese,63.0
+638,en,English,242.0
+638,es,Spanish; Castilian,80.0
+638,hi,Hindi,12.0
+638,nl,Dutch,18.0
+638,it,Italian,22.0
+638,zh,Chinese,154.0
+638,el,Greek (modern),15.0
+638,ku,Kurdish,115.0
+638,lv,Latvian,36.0
+638,lt,Lithuanian,15.0
+638,ne,Nepali,79.0
+638,no,Norwegian,20.0
+638,fa,"Persian, Farsi",46.0
+638,pt,Portuguese,23.0
+638,pl,Polish,70.0
+638,fr,French,23.0
+638,ro,Romanian,90.0
+638,rw,Kinyarwanda,72.0
+638,de,German,74.0
+638,sh,Serbo-Croatian,25.0
+638,si,Sinhala; Sinhalese,15.0
+638,so,Somali,29.0
+638,sw,Swahili,21.0
+638,tl,Tagalog,80.0
+638,th,Thai,159.0
+638,ti,Tigrinya,14.0
+638,tr,Turkish,117.0
+638,uk,Ukrainian,334.0
+638,hu,Hungarian,12.0
+638,ur,Urdu,27.0
+638,ru,Russian,706.0
+638,vi,Vietnamese,309.0
+638,et,Estonian,615.0
+638,98,Other language,71.0
+638,X,Unknown,12.0
+614,fi,Finnish,2806.0
+614,ru,Russian,22.0
+615,fi,Finnish,7130.0
+615,sv,Swedish,11.0
+615,ar,Arabic,25.0
+615,ku,Kurdish,14.0
+615,fa,"Persian, Farsi",16.0
+615,sw,Swahili,10.0
+615,ru,Russian,28.0
+616,fi,Finnish,1665.0
+616,sv,Swedish,14.0
+616,ru,Russian,12.0
+616,et,Estonian,18.0
+619,fi,Finnish,2515.0
+619,uk,Ukrainian,15.0
+619,98,Other language,19.0
+620,fi,Finnish,2255.0
+620,uk,Ukrainian,27.0
+620,ru,Russian,21.0
+623,fi,Finnish,2023.0
+623,ru,Russian,35.0
+624,fi,Finnish,4424.0
+624,sv,Swedish,331.0
+624,th,Thai,25.0
+624,ru,Russian,150.0
+624,et,Estonian,26.0
+625,fi,Finnish,2843.0
+625,ru,Russian,46.0
+625,et,Estonian,16.0
+626,fi,Finnish,4549.0
+626,en,English,10.0
+626,th,Thai,10.0
+626,uk,Ukrainian,32.0
+626,ru,Russian,30.0
+626,98,Other language,12.0
+630,fi,Finnish,1494.0
+630,bg,Bulgarian,10.0
+630,uk,Ukrainian,67.0
+630,ru,Russian,53.0
+631,fi,Finnish,1845.0
+631,sv,Swedish,10.0
+631,pl,Polish,12.0
+631,et,Estonian,10.0
+635,fi,Finnish,5969.0
+635,sv,Swedish,22.0
+635,en,English,10.0
+635,lv,Latvian,20.0
+635,pl,Polish,18.0
+635,tl,Tagalog,11.0
+635,th,Thai,12.0
+635,uk,Ukrainian,51.0
+635,ru,Russian,26.0
+635,et,Estonian,47.0
+636,fi,Finnish,7536.0
+636,sv,Swedish,43.0
+636,bg,Bulgarian,15.0
+636,en,English,10.0
+636,lv,Latvian,18.0
+636,pl,Polish,36.0
+636,ro,Romanian,14.0
+636,th,Thai,13.0
+636,uk,Ukrainian,144.0
+636,ru,Russian,45.0
+636,et,Estonian,68.0
+678,fi,Finnish,22503.0
+678,sv,Swedish,19.0
+678,sq,Albanian,55.0
+678,ar,Arabic,20.0
+678,en,English,41.0
+678,zh,Chinese,17.0
+678,ku,Kurdish,32.0
+678,fa,"Persian, Farsi",27.0
+678,pl,Polish,30.0
+678,sk,Slovak,15.0
+678,tl,Tagalog,32.0
+678,th,Thai,50.0
+678,tr,Turkish,27.0
+678,uk,Ukrainian,118.0
+678,hu,Hungarian,25.0
+678,ru,Russian,326.0
+678,et,Estonian,27.0
+678,98,Other language,87.0
+710,fi,Finnish,8209.0
+710,sv,Swedish,17143.0
+710,sq,Albanian,58.0
+710,ar,Arabic,165.0
+710,bg,Bulgarian,17.0
+710,en,English,139.0
+710,es,Spanish; Castilian,39.0
+710,nl,Dutch,18.0
+710,it,Italian,15.0
+710,zh,Chinese,21.0
+710,ku,Kurdish,111.0
+710,lv,Latvian,16.0
+710,no,Norwegian,17.0
+710,fa,"Persian, Farsi",14.0
+710,pt,Portuguese,25.0
+710,pl,Polish,23.0
+710,fr,French,19.0
+710,de,German,46.0
+710,si,Sinhala; Sinhalese,10.0
+710,tl,Tagalog,51.0
+710,th,Thai,86.0
+710,ti,Tigrinya,16.0
+710,tr,Turkish,24.0
+710,uk,Ukrainian,142.0
+710,ur,Urdu,10.0
+710,ru,Russian,219.0
+710,et,Estonian,208.0
+710,98,Other language,43.0
+680,fi,Finnish,21867.0
+680,sv,Swedish,362.0
+680,sq,Albanian,322.0
+680,ar,Arabic,140.0
+680,bs,Bosnian,223.0
+680,bg,Bulgarian,19.0
+680,en,English,75.0
+680,es,Spanish; Castilian,48.0
+680,it,Italian,13.0
+680,ja,Japanese,10.0
+680,zh,Chinese,49.0
+680,ku,Kurdish,144.0
+680,lv,Latvian,40.0
+680,lt,Lithuanian,46.0
+680,ps,Pushto; Pashto,17.0
+680,fa,"Persian, Farsi",112.0
+680,pt,Portuguese,37.0
+680,pl,Polish,125.0
+680,ro,Romanian,106.0
+680,rw,Kinyarwanda,14.0
+680,de,German,21.0
+680,sh,Serbo-Croatian,116.0
+680,so,Somali,95.0
+680,tl,Tagalog,53.0
+680,th,Thai,51.0
+680,tr,Turkish,43.0
+680,uk,Ukrainian,576.0
+680,hu,Hungarian,15.0
+680,uz,Uzbek,11.0
+680,ru,Russian,559.0
+680,vi,Vietnamese,29.0
+680,et,Estonian,204.0
+680,98,Other language,26.0
+680,X,Unknown,34.0
+681,fi,Finnish,3030.0
+681,th,Thai,32.0
+681,uk,Ukrainian,56.0
+681,ru,Russian,57.0
+683,fi,Finnish,3493.0
+683,de,German,11.0
+683,uk,Ukrainian,12.0
+683,ru,Russian,10.0
+684,fi,Finnish,35169.0
+684,sv,Swedish,118.0
+684,sq,Albanian,41.0
+684,ar,Arabic,127.0
+684,bn,"Bengali, (Bangla)",24.0
+684,bg,Bulgarian,94.0
+684,en,English,173.0
+684,es,Spanish; Castilian,49.0
+684,hi,Hindi,42.0
+684,it,Italian,13.0
+684,zh,Chinese,155.0
+684,el,Greek (modern),29.0
+684,hr,Croatian,13.0
+684,ku,Kurdish,19.0
+684,lv,Latvian,119.0
+684,lt,Lithuanian,56.0
+684,mr,Marathi,23.0
+684,ne,Nepali,102.0
+684,pa,Panjabi; Punjabi,25.0
+684,fa,"Persian, Farsi",26.0
+684,pt,Portuguese,26.0
+684,pl,Polish,311.0
+684,fr,French,152.0
+684,ro,Romanian,220.0
+684,de,German,126.0
+684,si,Sinhala; Sinhalese,78.0
+684,sk,Slovak,55.0
+684,so,Somali,14.0
+684,tl,Tagalog,124.0
+684,te,Telugu,21.0
+684,th,Thai,76.0
+684,cs,Czech,11.0
+684,tr,Turkish,121.0
+684,uk,Ukrainian,306.0
+684,hu,Hungarian,28.0
+684,ur,Urdu,21.0
+684,uz,Uzbek,58.0
+684,ru,Russian,363.0
+684,vi,Vietnamese,26.0
+684,et,Estonian,234.0
+684,98,Other language,32.0
+684,X,Unknown,11.0
+686,fi,Finnish,2808.0
+686,ar,Arabic,12.0
+686,uk,Ukrainian,49.0
+686,ru,Russian,26.0
+686,et,Estonian,12.0
+687,fi,Finnish,1378.0
+687,uk,Ukrainian,10.0
+687,ru,Russian,11.0
+689,fi,Finnish,2820.0
+689,ny,"Chichewa, Chewa, Nyanja",17.0
+689,rw,Kinyarwanda,25.0
+689,sw,Swahili,25.0
+689,th,Thai,12.0
+689,ru,Russian,45.0
+689,et,Estonian,10.0
+691,fi,Finnish,2541.0
+694,fi,Finnish,26191.0
+694,sv,Swedish,122.0
+694,sq,Albanian,25.0
+694,ar,Arabic,72.0
+694,bn,"Bengali, (Bangla)",19.0
+694,bg,Bulgarian,12.0
+694,en,English,85.0
+694,es,Spanish; Castilian,34.0
+694,hi,Hindi,16.0
+694,it,Italian,11.0
+694,yo,Yoruba,29.0
+694,zh,Chinese,61.0
+694,ku,Kurdish,47.0
+694,lv,Latvian,13.0
+694,ne,Nepali,72.0
+694,pa,Panjabi; Punjabi,12.0
+694,fa,"Persian, Farsi",26.0
+694,pt,Portuguese,12.0
+694,pl,Polish,57.0
+694,fr,French,20.0
+694,ro,Romanian,25.0
+694,rw,Kinyarwanda,19.0
+694,de,German,12.0
+694,sr,Serbian,11.0
+694,si,Sinhala; Sinhalese,44.0
+694,sw,Swahili,27.0
+694,tl,Tagalog,35.0
+694,th,Thai,63.0
+694,tr,Turkish,95.0
+694,uk,Ukrainian,400.0
+694,hu,Hungarian,10.0
+694,ru,Russian,357.0
+694,vi,Vietnamese,142.0
+694,et,Estonian,285.0
+694,98,Other language,25.0
+694,X,Unknown,10.0
+697,fi,Finnish,1120.0
+697,tl,Tagalog,11.0
+698,fi,Finnish,61750.0
+698,sv,Swedish,140.0
+698,se,Sami,216.0
+698,sq,Albanian,20.0
+698,am,Amharic,17.0
+698,ar,Arabic,199.0
+698,bn,"Bengali, (Bangla)",63.0
+698,bg,Bulgarian,11.0
+698,my,Burmese,38.0
+698,en,English,280.0
+698,es,Spanish; Castilian,110.0
+698,gu,Gujarati,40.0
+698,hi,Hindi,10.0
+698,nl,Dutch,35.0
+698,it,Italian,49.0
+698,ja,Japanese,20.0
+698,yo,Yoruba,11.0
+698,zh,Chinese,232.0
+698,ko,Korean,14.0
+698,el,Greek (modern),20.0
+698,ku,Kurdish,99.0
+698,lv,Latvian,26.0
+698,lt,Lithuanian,22.0
+698,ne,Nepali,33.0
+698,fa,"Persian, Farsi",148.0
+698,pt,Portuguese,37.0
+698,pl,Polish,43.0
+698,fr,French,85.0
+698,ro,Romanian,23.0
+698,de,German,114.0
+698,si,Sinhala; Sinhalese,26.0
+698,sk,Slovak,15.0
+698,so,Somali,97.0
+698,sw,Swahili,12.0
+698,tl,Tagalog,90.0
+698,ta,Tamil,14.0
+698,th,Thai,104.0
+698,ti,Tigrinya,46.0
+698,cs,Czech,11.0
+698,tr,Turkish,54.0
+698,uk,Ukrainian,418.0
+698,hu,Hungarian,37.0
+698,ur,Urdu,36.0
+698,ru,Russian,475.0
+698,vi,Vietnamese,49.0
+698,et,Estonian,79.0
+698,98,Other language,130.0
+698,X,Unknown,16.0
+700,fi,Finnish,4523.0
+700,sv,Swedish,11.0
+700,ru,Russian,143.0
+700,et,Estonian,16.0
+702,fi,Finnish,3884.0
+702,sv,Swedish,11.0
+702,uk,Ukrainian,38.0
+702,ru,Russian,23.0
+702,vi,Vietnamese,26.0
+704,fi,Finnish,6109.0
+704,sv,Swedish,101.0
+704,sq,Albanian,18.0
+704,en,English,15.0
+704,ku,Kurdish,22.0
+704,pl,Polish,11.0
+704,ro,Romanian,19.0
+704,uk,Ukrainian,38.0
+704,ru,Russian,31.0
+707,fi,Finnish,1790.0
+707,uk,Ukrainian,15.0
+707,ru,Russian,48.0
+729,fi,Finnish,8600.0
+729,sv,Swedish,12.0
+729,en,English,10.0
+729,tl,Tagalog,10.0
+729,th,Thai,19.0
+729,uk,Ukrainian,96.0
+729,ru,Russian,44.0
+729,et,Estonian,17.0
+732,fi,Finnish,3133.0
+732,sv,Swedish,10.0
+732,en,English,15.0
+732,tl,Tagalog,13.0
+732,th,Thai,12.0
+732,ru,Russian,50.0
+734,fi,Finnish,45609.0
+734,sv,Swedish,588.0
+734,sq,Albanian,180.0
+734,ar,Arabic,145.0
+734,bn,"Bengali, (Bangla)",25.0
+734,bs,Bosnian,12.0
+734,bg,Bulgarian,36.0
+734,en,English,152.0
+734,es,Spanish; Castilian,55.0
+734,nl,Dutch,10.0
+734,it,Italian,18.0
+734,kn,Kannada,10.0
+734,zh,Chinese,91.0
+734,ku,Kurdish,340.0
+734,lv,Latvian,144.0
+734,ne,Nepali,21.0
+734,ps,Pushto; Pashto,31.0
+734,fa,"Persian, Farsi",72.0
+734,pt,Portuguese,28.0
+734,pl,Polish,113.0
+734,fr,French,13.0
+734,ro,Romanian,26.0
+734,de,German,46.0
+734,sr,Serbian,29.0
+734,si,Sinhala; Sinhalese,31.0
+734,so,Somali,19.0
+734,tl,Tagalog,56.0
+734,ta,Tamil,14.0
+734,th,Thai,138.0
+734,tr,Turkish,79.0
+734,uk,Ukrainian,857.0
+734,hu,Hungarian,28.0
+734,ru,Russian,915.0
+734,vi,Vietnamese,33.0
+734,et,Estonian,717.0
+734,98,Other language,27.0
+734,X,Unknown,28.0
+736,fi,Finnish,69.0
+736,sv,Swedish,1607.0
+736,lv,Latvian,19.0
+736,ro,Romanian,20.0
+736,de,German,11.0
+736,uk,Ukrainian,14.0
+790,fi,Finnish,22518.0
+790,sv,Swedish,48.0
+790,am,Amharic,10.0
+790,ar,Arabic,19.0
+790,az,Azerbaijani,12.0
+790,en,English,49.0
+790,es,Spanish; Castilian,17.0
+790,ku,Kurdish,12.0
+790,lv,Latvian,20.0
+790,lt,Lithuanian,42.0
+790,pl,Polish,37.0
+790,de,German,20.0
+790,tl,Tagalog,24.0
+790,th,Thai,28.0
+790,tr,Turkish,18.0
+790,uk,Ukrainian,191.0
+790,ru,Russian,131.0
+790,et,Estonian,140.0
+738,fi,Finnish,2698.0
+738,sv,Swedish,69.0
+738,pl,Polish,10.0
+738,uk,Ukrainian,120.0
+738,ru,Russian,23.0
+738,et,Estonian,14.0
+739,fi,Finnish,3081.0
+739,sv,Swedish,11.0
+739,uk,Ukrainian,31.0
+739,ru,Russian,26.0
+740,fi,Finnish,29628.0
+740,sv,Swedish,41.0
+740,sq,Albanian,17.0
+740,ar,Arabic,24.0
+740,bg,Bulgarian,29.0
+740,my,Burmese,68.0
+740,en,English,83.0
+740,es,Spanish; Castilian,25.0
+740,nl,Dutch,10.0
+740,zh,Chinese,21.0
+740,ku,Kurdish,15.0
+740,ne,Nepali,22.0
+740,fa,"Persian, Farsi",51.0
+740,fr,French,14.0
+740,de,German,45.0
+740,si,Sinhala; Sinhalese,12.0
+740,tl,Tagalog,60.0
+740,th,Thai,57.0
+740,tr,Turkish,38.0
+740,uk,Ukrainian,223.0
+740,ru,Russian,696.0
+740,vi,Vietnamese,10.0
+740,et,Estonian,54.0
+740,98,Other language,89.0
+740,X,Unknown,13.0
+742,fi,Finnish,933.0
+743,fi,Finnish,62894.0
+743,sv,Swedish,152.0
+743,sq,Albanian,54.0
+743,ar,Arabic,216.0
+743,bn,"Bengali, (Bangla)",158.0
+743,bg,Bulgarian,21.0
+743,my,Burmese,42.0
+743,en,English,247.0
+743,es,Spanish; Castilian,61.0
+743,gu,Gujarati,12.0
+743,hi,Hindi,34.0
+743,ig,Igbo,15.0
+743,it,Italian,10.0
+743,yo,Yoruba,20.0
+743,zh,Chinese,52.0
+743,ku,Kurdish,108.0
+743,ml,Malayalam,10.0
+743,mo,Moldavian,15.0
+743,ne,Nepali,168.0
+743,pa,Panjabi; Punjabi,15.0
+743,ps,Pushto; Pashto,10.0
+743,fa,"Persian, Farsi",65.0
+743,pt,Portuguese,15.0
+743,pl,Polish,43.0
+743,fr,French,11.0
+743,ro,Romanian,31.0
+743,rw,Kinyarwanda,18.0
+743,de,German,25.0
+743,si,Sinhala; Sinhalese,179.0
+743,so,Somali,18.0
+743,sw,Swahili,16.0
+743,tl,Tagalog,50.0
+743,ta,Tamil,12.0
+743,th,Thai,120.0
+743,tr,Turkish,142.0
+743,tw,Twi,12.0
+743,uk,Ukrainian,553.0
+743,hu,Hungarian,42.0
+743,ur,Urdu,42.0
+743,ru,Russian,348.0
+743,vi,Vietnamese,77.0
+743,et,Estonian,178.0
+743,98,Other language,167.0
+746,fi,Finnish,4409.0
+746,sv,Swedish,11.0
+746,th,Thai,85.0
+746,ru,Russian,52.0
+747,fi,Finnish,1242.0
+748,fi,Finnish,4712.0
+748,ru,Russian,23.0
+748,et,Estonian,12.0
+791,fi,Finnish,4835.0
+791,en,English,13.0
+791,tl,Tagalog,26.0
+791,ru,Russian,18.0
+791,et,Estonian,11.0
+749,fi,Finnish,20734.0
+749,sv,Swedish,15.0
+749,en,English,16.0
+749,es,Spanish; Castilian,13.0
+749,fa,"Persian, Farsi",13.0
+749,de,German,10.0
+749,tl,Tagalog,13.0
+749,th,Thai,43.0
+749,tr,Turkish,12.0
+749,uk,Ukrainian,138.0
+749,hu,Hungarian,10.0
+749,ru,Russian,128.0
+749,et,Estonian,45.0
+751,fi,Finnish,2739.0
+751,sv,Swedish,10.0
+753,fi,Finnish,14827.0
+753,sv,Swedish,6265.0
+753,sq,Albanian,17.0
+753,ar,Arabic,86.0
+753,en,English,99.0
+753,es,Spanish; Castilian,29.0
+753,nl,Dutch,19.0
+753,ku,Kurdish,57.0
+753,lv,Latvian,16.0
+753,pa,Panjabi; Punjabi,12.0
+753,fa,"Persian, Farsi",61.0
+753,pt,Portuguese,14.0
+753,pl,Polish,19.0
+753,fr,French,19.0
+753,ro,Romanian,17.0
+753,de,German,33.0
+753,tl,Tagalog,47.0
+753,th,Thai,55.0
+753,tr,Turkish,43.0
+753,uk,Ukrainian,105.0
+753,ru,Russian,362.0
+753,vi,Vietnamese,35.0
+753,et,Estonian,450.0
+753,98,Other language,12.0
+755,fi,Finnish,4030.0
+755,sv,Swedish,1620.0
+755,bg,Bulgarian,16.0
+755,en,English,50.0
+755,nl,Dutch,10.0
+755,fa,"Persian, Farsi",10.0
+755,pl,Polish,12.0
+755,de,German,14.0
+755,uk,Ukrainian,37.0
+755,ru,Russian,110.0
+755,et,Estonian,162.0
+758,fi,Finnish,7765.0
+758,sv,Swedish,12.0
+758,se,Sami,129.0
+758,ar,Arabic,12.0
+758,en,English,40.0
+758,de,German,10.0
+758,uk,Ukrainian,30.0
+758,ru,Russian,20.0
+758,et,Estonian,17.0
+758,98,Other language,14.0
+759,fi,Finnish,1773.0
+761,fi,Finnish,7815.0
+761,sv,Swedish,50.0
+761,en,English,13.0
+761,pl,Polish,14.0
+761,th,Thai,16.0
+761,tr,Turkish,11.0
+761,uk,Ukrainian,242.0
+761,ru,Russian,85.0
+761,et,Estonian,117.0
+762,fi,Finnish,3509.0
+762,uk,Ukrainian,21.0
+765,fi,Finnish,9643.0
+765,sv,Swedish,17.0
+765,en,English,32.0
+765,es,Spanish; Castilian,10.0
+765,de,German,12.0
+765,tl,Tagalog,16.0
+765,th,Thai,38.0
+765,uk,Ukrainian,136.0
+765,ru,Russian,194.0
+765,et,Estonian,28.0
+766,sv,Swedish,93.0
+768,fi,Finnish,2249.0
+768,uk,Ukrainian,11.0
+768,ru,Russian,35.0
+768,vi,Vietnamese,10.0
+771,fi,Finnish,42.0
+771,sv,Swedish,878.0
+771,lv,Latvian,14.0
+771,ro,Romanian,11.0
+771,de,German,12.0
+777,fi,Finnish,6785.0
+777,ar,Arabic,77.0
+777,en,English,13.0
+777,ru,Russian,106.0
+778,fi,Finnish,6338.0
+778,sv,Swedish,14.0
+778,my,Burmese,11.0
+778,th,Thai,10.0
+778,tr,Turkish,13.0
+778,uk,Ukrainian,114.0
+778,ru,Russian,56.0
+778,et,Estonian,27.0
+781,fi,Finnish,3300.0
+781,sv,Swedish,11.0
+781,uk,Ukrainian,12.0
+781,ru,Russian,16.0
+781,et,Estonian,39.0
+783,fi,Finnish,5905.0
+783,sv,Swedish,19.0
+783,en,English,10.0
+783,ro,Romanian,20.0
+783,th,Thai,14.0
+783,tr,Turkish,15.0
+783,uk,Ukrainian,150.0
+783,ru,Russian,33.0
+783,et,Estonian,53.0
+831,fi,Finnish,4277.0
+831,th,Thai,11.0
+831,uk,Ukrainian,71.0
+831,ru,Russian,178.0
+831,et,Estonian,10.0
+832,fi,Finnish,3568.0
+832,ro,Romanian,11.0
+832,ru,Russian,33.0
+833,fi,Finnish,1545.0
+833,sv,Swedish,15.0
+833,uk,Ukrainian,61.0
+833,ru,Russian,14.0
+833,et,Estonian,23.0
+834,fi,Finnish,5650.0
+834,sv,Swedish,14.0
+834,ar,Arabic,12.0
+834,en,English,13.0
+834,ne,Nepali,17.0
+834,th,Thai,11.0
+834,uk,Ukrainian,14.0
+834,ru,Russian,20.0
+834,et,Estonian,31.0
+837,fi,Finnish,229164.0
+837,sv,Swedish,1421.0
+837,se,Sami,16.0
+837,af,Afrikaans,18.0
+837,ak,Akan,24.0
+837,sq,Albanian,617.0
+837,am,Amharic,91.0
+837,ar,Arabic,2605.0
+837,hy,Armenian,35.0
+837,az,Azerbaijani,30.0
+837,bn,"Bengali, (Bangla)",870.0
+837,bs,Bosnian,181.0
+837,bg,Bulgarian,107.0
+837,my,Burmese,27.0
+837,en,English,2324.0
+837,es,Spanish; Castilian,729.0
+837,ee,Ewe,11.0
+837,ff,"Fula, Fulah, Pulaar, Pular",14.0
+837,ka,Georgian,23.0
+837,gu,Gujarati,74.0
+837,ha,Hausa,15.0
+837,he,Hebrew,25.0
+837,hi,Hindi,265.0
+837,nl,Dutch,91.0
+837,ig,Igbo,124.0
+837,id,Indonesian,73.0
+837,it,Italian,177.0
+837,ja,Japanese,92.0
+837,yo,Yoruba,186.0
+837,kn,Kannada,52.0
+837,kk,Kazakh,22.0
+837,km,Central Khmer,14.0
+837,zh,Chinese,1129.0
+837,ko,Korean,69.0
+837,el,Greek (modern),107.0
+837,hr,Croatian,25.0
+837,ku,Kurdish,818.0
+837,lv,Latvian,102.0
+837,lt,Lithuanian,69.0
+837,ln,Lingala,34.0
+837,mk,Macedonian,35.0
+837,ms,Malay,15.0
+837,ml,Malayalam,121.0
+837,mr,Marathi,63.0
+837,mo,Moldavian,17.0
+837,mn,Mongolian,17.0
+837,ne,Nepali,451.0
+837,ny,"Chichewa, Chewa, Nyanja",10.0
+837,no,Norwegian,31.0
+837,os,"Ossetian, Ossetic",13.0
+837,pa,Panjabi; Punjabi,144.0
+837,ps,Pushto; Pashto,324.0
+837,fa,"Persian, Farsi",2467.0
+837,pt,Portuguese,278.0
+837,pl,Polish,221.0
+837,fr,French,331.0
+837,ro,Romanian,206.0
+837,rw,Kinyarwanda,89.0
+837,de,German,362.0
+837,sr,Serbian,37.0
+837,sh,Serbo-Croatian,52.0
+837,sd,Sindhi,18.0
+837,si,Sinhala; Sinhalese,805.0
+837,sk,Slovak,42.0
+837,so,Somali,666.0
+837,sw,Swahili,211.0
+837,tg,Tajik,13.0
+837,tl,Tagalog,625.0
+837,ta,Tamil,235.0
+837,da,Danish,33.0
+837,te,Telugu,136.0
+837,th,Thai,485.0
+837,ti,Tigrinya,29.0
+837,cs,Czech,74.0
+837,ce,Chechen,56.0
+837,tr,Turkish,793.0
+837,tk,Turkmen,44.0
+837,tw,Twi,23.0
+837,ug,Uighur; Uyghur,11.0
+837,uk,Ukrainian,1044.0
+837,hu,Hungarian,206.0
+837,ur,Urdu,786.0
+837,uz,Uzbek,88.0
+837,be,Belarusian,22.0
+837,ru,Russian,3808.0
+837,vi,Vietnamese,1082.0
+837,et,Estonian,953.0
+837,wo,Wolof,28.0
+837,98,Other language,496.0
+837,X,Unknown,94.0
+844,fi,Finnish,1350.0
+845,fi,Finnish,2727.0
+845,ar,Arabic,26.0
+845,ru,Russian,13.0
+846,fi,Finnish,4502.0
+846,sv,Swedish,33.0
+846,en,English,13.0
+846,uk,Ukrainian,22.0
+846,ru,Russian,19.0
+846,et,Estonian,21.0
+848,fi,Finnish,3713.0
+848,sv,Swedish,10.0
+848,uk,Ukrainian,20.0
+848,ru,Russian,189.0
+849,fi,Finnish,2726.0
+849,uk,Ukrainian,21.0
+849,et,Estonian,13.0
+850,fi,Finnish,2291.0
+850,ru,Russian,16.0
+851,fi,Finnish,19978.0
+851,sv,Swedish,104.0
+851,se,Sami,16.0
+851,sq,Albanian,13.0
+851,ar,Arabic,203.0
+851,my,Burmese,44.0
+851,en,English,47.0
+851,es,Spanish; Castilian,20.0
+851,zh,Chinese,15.0
+851,ku,Kurdish,21.0
+851,fa,"Persian, Farsi",30.0
+851,tl,Tagalog,26.0
+851,th,Thai,74.0
+851,tr,Turkish,37.0
+851,ru,Russian,135.0
+851,vi,Vietnamese,15.0
+851,et,Estonian,32.0
+851,98,Other language,27.0
+853,fi,Finnish,160561.0
+853,sv,Swedish,11164.0
+853,se,Sami,10.0
+853,aa,Afar,24.0
+853,ak,Akan,22.0
+853,sq,Albanian,2571.0
+853,am,Amharic,86.0
+853,ar,Arabic,3612.0
+853,hy,Armenian,31.0
+853,az,Azerbaijani,71.0
+853,bn,"Bengali, (Bangla)",659.0
+853,bs,Bosnian,398.0
+853,bg,Bulgarian,146.0
+853,en,English,1625.0
+853,es,Spanish; Castilian,620.0
+853,ee,Ewe,15.0
+853,ka,Georgian,25.0
+853,gu,Gujarati,261.0
+853,ha,Hausa,13.0
+853,he,Hebrew,20.0
+853,hi,Hindi,259.0
+853,nl,Dutch,79.0
+853,ig,Igbo,105.0
+853,id,Indonesian,46.0
+853,it,Italian,229.0
+853,ja,Japanese,88.0
+853,yo,Yoruba,147.0
+853,kn,Kannada,19.0
+853,kk,Kazakh,25.0
+853,km,Central Khmer,34.0
+853,zh,Chinese,807.0
+853,ki,Kikuyu; Gikuyu,11.0
+853,ky,Kirghiz; Kyrgyz,21.0
+853,ko,Korean,47.0
+853,el,Greek (modern),157.0
+853,hr,Croatian,24.0
+853,ku,Kurdish,2403.0
+853,lv,Latvian,347.0
+853,lt,Lithuanian,237.0
+853,ln,Lingala,30.0
+853,ms,Malay,10.0
+853,ml,Malayalam,42.0
+853,mr,Marathi,50.0
+853,mo,Moldavian,24.0
+853,ne,Nepali,391.0
+853,no,Norwegian,47.0
+853,om,Oromo,11.0
+853,pa,Panjabi; Punjabi,77.0
+853,ps,Pushto; Pashto,225.0
+853,fa,"Persian, Farsi",1356.0
+853,pt,Portuguese,278.0
+853,pl,Polish,591.0
+853,fr,French,255.0
+853,ro,Romanian,811.0
+853,rw,Kinyarwanda,49.0
+853,de,German,315.0
+853,sr,Serbian,38.0
+853,sh,Serbo-Croatian,118.0
+853,si,Sinhala; Sinhalese,438.0
+853,sk,Slovak,29.0
+853,so,Somali,1839.0
+853,sw,Swahili,98.0
+853,tl,Tagalog,462.0
+853,ta,Tamil,93.0
+853,da,Danish,61.0
+853,te,Telugu,62.0
+853,th,Thai,419.0
+853,ti,Tigrinya,103.0
+853,cs,Czech,32.0
+853,ce,Chechen,10.0
+853,tr,Turkish,536.0
+853,tk,Turkmen,34.0
+853,tw,Twi,34.0
+853,ug,Uighur; Uyghur,12.0
+853,uk,Ukrainian,1892.0
+853,hu,Hungarian,162.0
+853,ur,Urdu,515.0
+853,uz,Uzbek,235.0
+853,be,Belarusian,38.0
+853,ru,Russian,3902.0
+853,vi,Vietnamese,1001.0
+853,et,Estonian,1490.0
+853,wo,Wolof,33.0
+853,98,Other language,537.0
+853,X,Unknown,148.0
+857,fi,Finnish,2247.0
+857,uk,Ukrainian,10.0
+857,ru,Russian,19.0
+858,fi,Finnish,37974.0
+858,sv,Swedish,605.0
+858,sq,Albanian,51.0
+858,ar,Arabic,130.0
+858,bn,"Bengali, (Bangla)",18.0
+858,bg,Bulgarian,21.0
+858,en,English,181.0
+858,es,Spanish; Castilian,51.0
+858,nl,Dutch,17.0
+858,it,Italian,19.0
+858,yo,Yoruba,11.0
+858,zh,Chinese,31.0
+858,el,Greek (modern),10.0
+858,ku,Kurdish,54.0
+858,lv,Latvian,20.0
+858,lt,Lithuanian,11.0
+858,ne,Nepali,25.0
+858,pa,Panjabi; Punjabi,11.0
+858,fa,"Persian, Farsi",89.0
+858,pt,Portuguese,29.0
+858,pl,Polish,47.0
+858,fr,French,24.0
+858,ro,Romanian,62.0
+858,de,German,53.0
+858,sw,Swahili,36.0
+858,tl,Tagalog,53.0
+858,th,Thai,117.0
+858,tr,Turkish,65.0
+858,uk,Ukrainian,257.0
+858,hu,Hungarian,26.0
+858,ru,Russian,679.0
+858,vi,Vietnamese,55.0
+858,et,Estonian,1200.0
+858,98,Other language,25.0
+858,X,Unknown,15.0
+859,fi,Finnish,6417.0
+859,sv,Swedish,14.0
+859,en,English,14.0
+859,uk,Ukrainian,18.0
+886,fi,Finnish,11963.0
+886,sv,Swedish,38.0
+886,en,English,24.0
+886,pl,Polish,19.0
+886,de,German,10.0
+886,th,Thai,20.0
+886,uk,Ukrainian,89.0
+886,ru,Russian,84.0
+886,et,Estonian,44.0
+887,fi,Finnish,4330.0
+887,sv,Swedish,12.0
+887,uk,Ukrainian,25.0
+887,ru,Russian,19.0
+887,et,Estonian,44.0
+889,fi,Finnish,2389.0
+889,sw,Swahili,11.0
+889,tr,Turkish,15.0
+889,98,Other language,12.0
+890,fi,Finnish,616.0
+890,se,Sami,472.0
+890,ru,Russian,11.0
+892,fi,Finnish,3594.0
+892,uk,Ukrainian,10.0
+893,fi,Finnish,484.0
+893,sv,Swedish,6227.0
+893,sq,Albanian,59.0
+893,ar,Arabic,58.0
+893,en,English,35.0
+893,es,Spanish; Castilian,11.0
+893,ro,Romanian,10.0
+893,sw,Swahili,15.0
+893,tl,Tagalog,28.0
+893,th,Thai,16.0
+893,uk,Ukrainian,206.0
+893,ru,Russian,43.0
+893,vi,Vietnamese,83.0
+893,et,Estonian,57.0
+895,fi,Finnish,13452.0
+895,sv,Swedish,56.0
+895,ar,Arabic,65.0
+895,bg,Bulgarian,18.0
+895,en,English,56.0
+895,es,Spanish; Castilian,12.0
+895,zh,Chinese,17.0
+895,ku,Kurdish,28.0
+895,lv,Latvian,15.0
+895,lt,Lithuanian,10.0
+895,fa,"Persian, Farsi",59.0
+895,pl,Polish,54.0
+895,ro,Romanian,42.0
+895,de,German,20.0
+895,sk,Slovak,36.0
+895,so,Somali,19.0
+895,tl,Tagalog,69.0
+895,ta,Tamil,10.0
+895,th,Thai,40.0
+895,ti,Tigrinya,13.0
+895,tr,Turkish,43.0
+895,uk,Ukrainian,288.0
+895,hu,Hungarian,10.0
+895,ru,Russian,134.0
+895,vi,Vietnamese,14.0
+895,et,Estonian,80.0
+895,98,Other language,20.0
+785,fi,Finnish,2518.0
+785,uk,Ukrainian,15.0
+785,ru,Russian,10.0
+905,fi,Finnish,44487.0
+905,sv,Swedish,16167.0
+905,ak,Akan,31.0
+905,sq,Albanian,282.0
+905,am,Amharic,82.0
+905,ar,Arabic,762.0
+905,az,Azerbaijani,49.0
+905,bn,"Bengali, (Bangla)",457.0
+905,bs,Bosnian,85.0
+905,bg,Bulgarian,269.0
+905,my,Burmese,24.0
+905,en,English,691.0
+905,es,Spanish; Castilian,183.0
+905,ee,Ewe,25.0
+905,lg,Ganda,11.0
+905,gu,Gujarati,16.0
+905,he,Hebrew,10.0
+905,hi,Hindi,85.0
+905,nl,Dutch,20.0
+905,ig,Igbo,94.0
+905,id,Indonesian,22.0
+905,it,Italian,51.0
+905,ja,Japanese,10.0
+905,yo,Yoruba,81.0
+905,zh,Chinese,266.0
+905,ki,Kikuyu; Gikuyu,12.0
+905,ky,Kirghiz; Kyrgyz,32.0
+905,ko,Korean,13.0
+905,el,Greek (modern),34.0
+905,ku,Kurdish,221.0
+905,lv,Latvian,15.0
+905,lt,Lithuanian,16.0
+905,mk,Macedonian,17.0
+905,ml,Malayalam,62.0
+905,mr,Marathi,67.0
+905,ne,Nepali,348.0
+905,no,Norwegian,19.0
+905,pa,Panjabi; Punjabi,27.0
+905,fa,"Persian, Farsi",461.0
+905,pt,Portuguese,55.0
+905,pl,Polish,74.0
+905,fr,French,61.0
+905,ro,Romanian,53.0
+905,rw,Kinyarwanda,57.0
+905,de,German,72.0
+905,sr,Serbian,12.0
+905,sh,Serbo-Croatian,20.0
+905,sd,Sindhi,11.0
+905,si,Sinhala; Sinhalese,195.0
+905,sk,Slovak,11.0
+905,so,Somali,377.0
+905,sw,Swahili,106.0
+905,tl,Tagalog,246.0
+905,ta,Tamil,38.0
+905,da,Danish,10.0
+905,te,Telugu,21.0
+905,th,Thai,188.0
+905,ti,Tigrinya,30.0
+905,tr,Turkish,100.0
+905,tw,Twi,53.0
+905,uk,Ukrainian,832.0
+905,hu,Hungarian,145.0
+905,ur,Urdu,271.0
+905,uz,Uzbek,12.0
+905,ru,Russian,635.0
+905,vi,Vietnamese,441.0
+905,et,Estonian,157.0
+905,98,Other language,328.0
+905,X,Unknown,20.0
+908,fi,Finnish,19516.0
+908,sv,Swedish,43.0
+908,ar,Arabic,31.0
+908,en,English,95.0
+908,es,Spanish; Castilian,12.0
+908,hi,Hindi,11.0
+908,zh,Chinese,41.0
+908,lv,Latvian,24.0
+908,ne,Nepali,31.0
+908,fa,"Persian, Farsi",50.0
+908,pl,Polish,22.0
+908,de,German,15.0
+908,si,Sinhala; Sinhalese,31.0
+908,so,Somali,11.0
+908,tl,Tagalog,22.0
+908,th,Thai,49.0
+908,tr,Turkish,17.0
+908,uk,Ukrainian,272.0
+908,ru,Russian,184.0
+908,vi,Vietnamese,53.0
+908,et,Estonian,192.0
+092,fi,Finnish,173743.0
+092,sv,Swedish,5348.0
+092,se,Sami,26.0
+092,aa,Afar,15.0
+092,ak,Akan,142.0
+092,sq,Albanian,4994.0
+092,am,Amharic,230.0
+092,ar,Arabic,6105.0
+092,hy,Armenian,37.0
+092,az,Azerbaijani,62.0
+092,bn,"Bengali, (Bangla)",1420.0
+092,bs,Bosnian,185.0
+092,bg,Bulgarian,376.0
+092,my,Burmese,101.0
+092,en,English,3254.0
+092,es,Spanish; Castilian,797.0
+092,ee,Ewe,12.0
+092,ff,"Fula, Fulah, Pulaar, Pular",27.0
+092,lg,Ganda,50.0
+092,ka,Georgian,63.0
+092,gu,Gujarati,102.0
+092,ha,Hausa,51.0
+092,he,Hebrew,22.0
+092,hi,Hindi,581.0
+092,nl,Dutch,102.0
+092,ig,Igbo,226.0
+092,id,Indonesian,65.0
+092,it,Italian,254.0
+092,ja,Japanese,100.0
+092,yo,Yoruba,201.0
+092,kn,Kannada,33.0
+092,ca,Catalan; Valencian,13.0
+092,lu,Luba-Katanga,14.0
+092,kk,Kazakh,18.0
+092,km,Central Khmer,37.0
+092,zh,Chinese,1620.0
+092,ki,Kikuyu; Gikuyu,57.0
+092,ky,Kirghiz; Kyrgyz,113.0
+092,kg,Kongo,21.0
+092,ko,Korean,89.0
+092,el,Greek (modern),235.0
+092,hr,Croatian,37.0
+092,ku,Kurdish,2246.0
+092,lv,Latvian,404.0
+092,lt,Lithuanian,205.0
+092,ln,Lingala,216.0
+092,mk,Macedonian,81.0
+092,ms,Malay,16.0
+092,ml,Malayalam,104.0
+092,mr,Marathi,61.0
+092,mo,Moldavian,73.0
+092,ng,Ndonga,12.0
+092,ne,Nepali,1492.0
+092,no,Norwegian,43.0
+092,or,Oriya,15.0
+092,om,Oromo,20.0
+092,pa,Panjabi; Punjabi,657.0
+092,ps,Pushto; Pashto,228.0
+092,fa,"Persian, Farsi",2545.0
+092,pt,Portuguese,435.0
+092,pl,Polish,324.0
+092,fr,French,520.0
+092,ro,Romanian,1129.0
+092,rw,Kinyarwanda,300.0
+092,rn,Rundi,12.0
+092,de,German,263.0
+092,sr,Serbian,121.0
+092,sh,Serbo-Croatian,168.0
+092,sd,Sindhi,11.0
+092,si,Sinhala; Sinhalese,591.0
+092,sk,Slovak,45.0
+092,so,Somali,3386.0
+092,sn,Shona,12.0
+092,sw,Swahili,371.0
+092,tg,Tajik,39.0
+092,tl,Tagalog,1294.0
+092,ta,Tamil,762.0
+092,da,Danish,29.0
+092,te,Telugu,214.0
+092,th,Thai,1112.0
+092,ti,Tigrinya,317.0
+092,cs,Czech,77.0
+092,ce,Chechen,251.0
+092,tr,Turkish,1639.0
+092,tk,Turkmen,98.0
+092,tw,Twi,227.0
+092,ug,Uighur; Uyghur,89.0
+092,uk,Ukrainian,2129.0
+092,hu,Hungarian,237.0
+092,ur,Urdu,778.0
+092,uz,Uzbek,1546.0
+092,be,Belarusian,44.0
+092,ru,Russian,10754.0
+092,vi,Vietnamese,2430.0
+092,et,Estonian,8495.0
+092,wo,Wolof,41.0
+092,98,Other language,1324.0
+092,X,Unknown,184.0
+915,fi,Finnish,18419.0
+915,sv,Swedish,34.0
+915,ar,Arabic,55.0
+915,bn,"Bengali, (Bangla)",15.0
+915,bg,Bulgarian,14.0
+915,en,English,54.0
+915,es,Spanish; Castilian,15.0
+915,zh,Chinese,20.0
+915,ku,Kurdish,53.0
+915,pl,Polish,16.0
+915,de,German,10.0
+915,si,Sinhala; Sinhalese,27.0
+915,tl,Tagalog,19.0
+915,ta,Tamil,14.0
+915,th,Thai,57.0
+915,tr,Turkish,25.0
+915,uk,Ukrainian,341.0
+915,ur,Urdu,13.0
+915,ru,Russian,289.0
+915,vi,Vietnamese,28.0
+915,et,Estonian,46.0
+915,98,Other language,22.0
+918,fi,Finnish,2087.0
+918,sv,Swedish,13.0
+918,tl,Tagalog,13.0
+918,uk,Ukrainian,101.0
+918,et,Estonian,10.0
+921,fi,Finnish,1791.0
+921,uk,Ukrainian,27.0
+921,ru,Russian,10.0
+922,fi,Finnish,4387.0
+922,sv,Swedish,20.0
+922,en,English,13.0
+922,ru,Russian,12.0
+922,et,Estonian,22.0
+924,fi,Finnish,2775.0
+924,sv,Swedish,48.0
+924,uk,Ukrainian,44.0
+924,ru,Russian,15.0
+925,fi,Finnish,3190.0
+925,bg,Bulgarian,11.0
+925,uk,Ukrainian,19.0
+925,ru,Russian,43.0
+925,et,Estonian,27.0
+927,fi,Finnish,26202.0
+927,sv,Swedish,492.0
+927,sq,Albanian,24.0
+927,ar,Arabic,117.0
+927,bg,Bulgarian,32.0
+927,en,English,120.0
+927,es,Spanish; Castilian,27.0
+927,nl,Dutch,11.0
+927,it,Italian,10.0
+927,zh,Chinese,37.0
+927,ku,Kurdish,45.0
+927,lv,Latvian,16.0
+927,pa,Panjabi; Punjabi,15.0
+927,fa,"Persian, Farsi",13.0
+927,pt,Portuguese,12.0
+927,pl,Polish,32.0
+927,fr,French,18.0
+927,ro,Romanian,21.0
+927,de,German,28.0
+927,sw,Swahili,14.0
+927,tl,Tagalog,48.0
+927,th,Thai,58.0
+927,tr,Turkish,109.0
+927,uk,Ukrainian,145.0
+927,hu,Hungarian,12.0
+927,ru,Russian,312.0
+927,et,Estonian,698.0
+927,98,Other language,13.0
+931,fi,Finnish,5613.0
+931,tl,Tagalog,11.0
+931,th,Thai,11.0
+931,uk,Ukrainian,36.0
+931,ru,Russian,19.0
+934,fi,Finnish,2527.0
+934,uk,Ukrainian,13.0
+934,ru,Russian,44.0
+935,fi,Finnish,2626.0
+935,sv,Swedish,13.0
+935,uk,Ukrainian,11.0
+935,ru,Russian,149.0
+935,et,Estonian,14.0
+936,fi,Finnish,5940.0
+936,sv,Swedish,10.0
+936,en,English,10.0
+936,de,German,10.0
+936,uk,Ukrainian,13.0
+936,ru,Russian,89.0
+936,vi,Vietnamese,30.0
+936,et,Estonian,29.0
+941,fi,Finnish,19.0
+941,sv,Swedish,393.0
+941,lv,Latvian,34.0
+946,fi,Finnish,734.0
+946,sv,Swedish,5063.0
+946,sq,Albanian,12.0
+946,bg,Bulgarian,13.0
+946,en,English,11.0
+946,ro,Romanian,12.0
+946,so,Somali,45.0
+946,uk,Ukrainian,97.0
+946,ru,Russian,37.0
+946,vi,Vietnamese,36.0
+946,et,Estonian,33.0
+946,98,Other language,42.0
+976,fi,Finnish,3544.0
+976,sv,Swedish,25.0
+976,ar,Arabic,76.0
+976,th,Thai,13.0
+976,ru,Russian,16.0
+977,fi,Finnish,14997.0
+977,sv,Swedish,36.0
+977,ar,Arabic,21.0
+977,en,English,15.0
+977,es,Spanish; Castilian,11.0
+977,zh,Chinese,17.0
+977,th,Thai,33.0
+977,tr,Turkish,28.0
+977,uk,Ukrainian,65.0
+977,hu,Hungarian,13.0
+977,ru,Russian,86.0
+977,et,Estonian,10.0
+980,fi,Finnish,32463.0
+980,sv,Swedish,128.0
+980,sq,Albanian,25.0
+980,ar,Arabic,50.0
+980,bs,Bosnian,16.0
+980,en,English,83.0
+980,es,Spanish; Castilian,29.0
+980,nl,Dutch,10.0
+980,it,Italian,14.0
+980,zh,Chinese,26.0
+980,ky,Kirghiz; Kyrgyz,14.0
+980,ku,Kurdish,13.0
+980,ml,Malayalam,10.0
+980,ps,Pushto; Pashto,29.0
+980,fa,"Persian, Farsi",95.0
+980,pt,Portuguese,14.0
+980,pl,Polish,15.0
+980,fr,French,12.0
+980,ro,Romanian,10.0
+980,de,German,39.0
+980,so,Somali,10.0
+980,tl,Tagalog,23.0
+980,th,Thai,42.0
+980,tr,Turkish,29.0
+980,uk,Ukrainian,61.0
+980,hu,Hungarian,10.0
+980,ru,Russian,217.0
+980,et,Estonian,79.0
+980,98,Other language,14.0
+981,fi,Finnish,2129.0
+981,sv,Swedish,10.0
+989,fi,Finnish,5061.0
+989,uk,Ukrainian,53.0
+989,ru,Russian,29.0
+989,et,Estonian,10.0
+992,fi,Finnish,17113.0
+992,sv,Swedish,16.0
+992,ar,Arabic,20.0
+992,en,English,17.0
+992,ku,Kurdish,27.0
+992,ps,Pushto; Pashto,11.0
+992,fa,"Persian, Farsi",20.0
+992,de,German,10.0
+992,tl,Tagalog,11.0
+992,th,Thai,48.0
+992,tr,Turkish,21.0
+992,uk,Ukrainian,175.0
+992,ru,Russian,141.0
+992,et,Estonian,45.0
