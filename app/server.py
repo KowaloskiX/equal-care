@@ -86,3 +86,54 @@ def actions(goal: int | None = None, q: str | None = None):
 @app.get("/api/strategy/search")
 def strategy_search(q: str, doc: str | None = None):
     return {"hits": strategy.search(q, doc)}
+
+
+# ---------------- simulation (Jev residents; precomputed by src/simulate.py, never computed per request)
+SIM_NOTE = ("Simulation, not data: synthetic residents built from Statistics Finland tables answer through Jev "
+            "(TypeSafe). Anchored so Finland matches the real national rate. See validation for how well it tracks reality.")
+
+
+def _sim(prog):
+    p = ROOT / "data/sim" / f"{prog}.json"
+    if not p.exists():
+        raise HTTPException(404, f"no simulation for {prog!r}; run src/simulate.py")
+    return json.loads(p.read_text())
+
+
+@app.get("/api/sim")
+def sim_index():
+    import jev_sim
+    out = []
+    for prog, P in jev_sim.PROGRAMMES.items():
+        try:
+            s = _sim(prog)
+        except HTTPException:
+            continue
+        out.append({"programme": prog, "indicator": P["indicator"], "label": s["label"], "validation": s["validation"],
+                    "scenarios": {k: v["label"] for k, v in s["scenarios"].items()}})
+    return {"note": SIM_NOTE, "programmes": out}
+
+
+@app.get("/api/sim/{prog}")
+def sim_level(prog: str, level: str = "county", scenario: str | None = None):
+    s = _sim(prog); L = s["levels"][level]
+    rows = L["rows"]
+    if scenario:
+        sc = s["scenarios"].get(scenario)
+        if not sc:
+            raise HTTPException(404, f"no scenario {scenario!r}")
+        rows = {c: {**r, **sc["levels"][level].get(c, {})} for c, r in rows.items()}
+    return {"programme": prog, "label": s["label"], "level": level, "year": L["year"], "national_real": L["national_real"],
+            "national_expected": L["national_expected"], "rows": rows, "validation": s["validation"], "anchor": s["anchor"],
+            "scenario": scenario, "note": SIM_NOTE, "source": L["source"]}
+
+
+@app.get("/api/sim/{prog}/region/{code}")
+def sim_region(prog: str, code: str, level: str = "county"):
+    s = _sim(prog); r = s["levels"][level]["rows"].get(code)
+    if r is None:
+        raise HTTPException(404, f"no simulated row for {code!r}")
+    sc = {k: {"label": v["label"], **v["levels"][level].get(code, {})} for k, v in s["scenarios"].items()}
+    return {"programme": prog, "code": code, "name": ds.short_names().get(code, code), **r, "scenarios": sc,
+            "national_real": s["levels"][level]["national_real"], "validation": s["validation"], "note": SIM_NOTE,
+            "source": s["levels"][level]["source"]}

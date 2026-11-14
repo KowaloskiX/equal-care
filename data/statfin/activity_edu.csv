@@ -1,0 +1,2129 @@
+region,sex,ageband,activity,edu,people
+01,M,18-64,Employed,3_4,160332
+01,M,65-,Employed,3_4,1965
+01,F,18-64,Employed,3_4,137732
+01,F,65-,Employed,3_4,2572
+01,M,18-64,Employed,5_6,87825
+01,M,65-,Employed,5_6,1723
+01,F,18-64,Employed,5_6,120550
+01,F,65-,Employed,5_6,2606
+01,M,18-64,Employed,7_8,89073
+01,M,65-,Employed,7_8,2137
+01,F,18-64,Employed,7_8,115759
+01,F,65-,Employed,7_8,1987
+01,M,18-64,Employed,9_X,69784
+01,M,65-,Employed,9_X,1176
+01,F,18-64,Employed,9_X,36861
+01,F,65-,Employed,9_X,966
+01,M,18-64,Unemployed,3_4,25449
+01,M,65-,Unemployed,3_4,0
+01,F,18-64,Unemployed,3_4,17103
+01,F,65-,Unemployed,3_4,0
+01,M,18-64,Unemployed,5_6,7389
+01,M,65-,Unemployed,5_6,0
+01,F,18-64,Unemployed,5_6,8571
+01,F,65-,Unemployed,5_6,0
+01,M,18-64,Unemployed,7_8,5249
+01,M,65-,Unemployed,7_8,0
+01,F,18-64,Unemployed,7_8,6354
+01,F,65-,Unemployed,7_8,0
+01,M,18-64,Unemployed,9_X,21001
+01,M,65-,Unemployed,9_X,0
+01,F,18-64,Unemployed,9_X,14658
+01,F,65-,Unemployed,9_X,0
+01,M,18-64,0-14 years old,3_4,0
+01,M,65-,0-14 years old,3_4,0
+01,F,18-64,0-14 years old,3_4,0
+01,F,65-,0-14 years old,3_4,0
+01,M,18-64,0-14 years old,5_6,0
+01,M,65-,0-14 years old,5_6,0
+01,F,18-64,0-14 years old,5_6,0
+01,F,65-,0-14 years old,5_6,0
+01,M,18-64,0-14 years old,7_8,0
+01,M,65-,0-14 years old,7_8,0
+01,F,18-64,0-14 years old,7_8,0
+01,F,65-,0-14 years old,7_8,0
+01,M,18-64,0-14 years old,9_X,0
+01,M,65-,0-14 years old,9_X,0
+01,F,18-64,0-14 years old,9_X,0
+01,F,65-,0-14 years old,9_X,0
+01,M,18-64,"Students, pupils",3_4,16240
+01,M,65-,"Students, pupils",3_4,34
+01,F,18-64,"Students, pupils",3_4,16834
+01,F,65-,"Students, pupils",3_4,19
+01,M,18-64,"Students, pupils",5_6,3816
+01,M,65-,"Students, pupils",5_6,49
+01,F,18-64,"Students, pupils",5_6,6514
+01,F,65-,"Students, pupils",5_6,51
+01,M,18-64,"Students, pupils",7_8,1223
+01,M,65-,"Students, pupils",7_8,160
+01,F,18-64,"Students, pupils",7_8,2467
+01,F,65-,"Students, pupils",7_8,170
+01,M,18-64,"Students, pupils",9_X,18412
+01,M,65-,"Students, pupils",9_X,5
+01,F,18-64,"Students, pupils",9_X,20382
+01,F,65-,"Students, pupils",9_X,10
+01,M,18-64,"Conscripts, persons in non-military service",3_4,2002
+01,M,65-,"Conscripts, persons in non-military service",3_4,0
+01,F,18-64,"Conscripts, persons in non-military service",3_4,43
+01,F,65-,"Conscripts, persons in non-military service",3_4,0
+01,M,18-64,"Conscripts, persons in non-military service",5_6,49
+01,M,65-,"Conscripts, persons in non-military service",5_6,0
+01,F,18-64,"Conscripts, persons in non-military service",5_6,4
+01,F,65-,"Conscripts, persons in non-military service",5_6,0
+01,M,18-64,"Conscripts, persons in non-military service",7_8,35
+01,M,65-,"Conscripts, persons in non-military service",7_8,0
+01,F,18-64,"Conscripts, persons in non-military service",7_8,2
+01,F,65-,"Conscripts, persons in non-military service",7_8,0
+01,M,18-64,"Conscripts, persons in non-military service",9_X,259
+01,M,65-,"Conscripts, persons in non-military service",9_X,0
+01,F,18-64,"Conscripts, persons in non-military service",9_X,3
+01,F,65-,"Conscripts, persons in non-military service",9_X,0
+01,M,18-64,Pensioners,3_4,8355
+01,M,65-,Pensioners,3_4,38743
+01,F,18-64,Pensioners,3_4,7135
+01,F,65-,Pensioners,3_4,52386
+01,M,18-64,Pensioners,5_6,2285
+01,M,65-,Pensioners,5_6,31958
+01,F,18-64,Pensioners,5_6,3390
+01,F,65-,Pensioners,5_6,47866
+01,M,18-64,Pensioners,7_8,1331
+01,M,65-,Pensioners,7_8,23526
+01,F,18-64,Pensioners,7_8,1565
+01,F,65-,Pensioners,7_8,20989
+01,M,18-64,Pensioners,9_X,8262
+01,M,65-,Pensioners,9_X,37267
+01,F,18-64,Pensioners,9_X,5635
+01,F,65-,Pensioners,9_X,57898
+01,M,18-64,Other persons outside the labour force,3_4,10125
+01,M,65-,Other persons outside the labour force,3_4,90
+01,F,18-64,Other persons outside the labour force,3_4,9272
+01,F,65-,Other persons outside the labour force,3_4,106
+01,M,18-64,Other persons outside the labour force,5_6,2687
+01,M,65-,Other persons outside the labour force,5_6,65
+01,F,18-64,Other persons outside the labour force,5_6,4433
+01,F,65-,Other persons outside the labour force,5_6,112
+01,M,18-64,Other persons outside the labour force,7_8,3325
+01,M,65-,Other persons outside the labour force,7_8,98
+01,F,18-64,Other persons outside the labour force,7_8,4391
+01,F,65-,Other persons outside the labour force,7_8,82
+01,M,18-64,Other persons outside the labour force,9_X,19365
+01,M,65-,Other persons outside the labour force,9_X,451
+01,F,18-64,Other persons outside the labour force,9_X,15327
+01,F,65-,Other persons outside the labour force,9_X,519
+02,M,18-64,Employed,3_4,52380
+02,M,65-,Employed,3_4,802
+02,F,18-64,Employed,3_4,43946
+02,F,65-,Employed,3_4,886
+02,M,18-64,Employed,5_6,22143
+02,M,65-,Employed,5_6,525
+02,F,18-64,Employed,5_6,32065
+02,F,65-,Employed,5_6,725
+02,M,18-64,Employed,7_8,14285
+02,M,65-,Employed,7_8,363
+02,F,18-64,Employed,7_8,22337
+02,F,65-,Employed,7_8,376
+02,M,18-64,Employed,9_X,15699
+02,M,65-,Employed,9_X,336
+02,F,18-64,Employed,9_X,7412
+02,F,65-,Employed,9_X,253
+02,M,18-64,Unemployed,3_4,8070
+02,M,65-,Unemployed,3_4,0
+02,F,18-64,Unemployed,3_4,5017
+02,F,65-,Unemployed,3_4,0
+02,M,18-64,Unemployed,5_6,1869
+02,M,65-,Unemployed,5_6,0
+02,F,18-64,Unemployed,5_6,1966
+02,F,65-,Unemployed,5_6,0
+02,M,18-64,Unemployed,7_8,964
+02,M,65-,Unemployed,7_8,0
+02,F,18-64,Unemployed,7_8,1185
+02,F,65-,Unemployed,7_8,0
+02,M,18-64,Unemployed,9_X,4606
+02,M,65-,Unemployed,9_X,0
+02,F,18-64,Unemployed,9_X,3007
+02,F,65-,Unemployed,9_X,0
+02,M,18-64,0-14 years old,3_4,0
+02,M,65-,0-14 years old,3_4,0
+02,F,18-64,0-14 years old,3_4,0
+02,F,65-,0-14 years old,3_4,0
+02,M,18-64,0-14 years old,5_6,0
+02,M,65-,0-14 years old,5_6,0
+02,F,18-64,0-14 years old,5_6,0
+02,F,65-,0-14 years old,5_6,0
+02,M,18-64,0-14 years old,7_8,0
+02,M,65-,0-14 years old,7_8,0
+02,F,18-64,0-14 years old,7_8,0
+02,F,65-,0-14 years old,7_8,0
+02,M,18-64,0-14 years old,9_X,0
+02,M,65-,0-14 years old,9_X,0
+02,F,18-64,0-14 years old,9_X,0
+02,F,65-,0-14 years old,9_X,0
+02,M,18-64,"Students, pupils",3_4,6043
+02,M,65-,"Students, pupils",3_4,4
+02,F,18-64,"Students, pupils",3_4,6326
+02,F,65-,"Students, pupils",3_4,11
+02,M,18-64,"Students, pupils",5_6,981
+02,M,65-,"Students, pupils",5_6,10
+02,F,18-64,"Students, pupils",5_6,1887
+02,F,65-,"Students, pupils",5_6,13
+02,M,18-64,"Students, pupils",7_8,243
+02,M,65-,"Students, pupils",7_8,32
+02,F,18-64,"Students, pupils",7_8,516
+02,F,65-,"Students, pupils",7_8,28
+02,M,18-64,"Students, pupils",9_X,3959
+02,M,65-,"Students, pupils",9_X,3
+02,F,18-64,"Students, pupils",9_X,4223
+02,F,65-,"Students, pupils",9_X,3
+02,M,18-64,"Conscripts, persons in non-military service",3_4,596
+02,M,65-,"Conscripts, persons in non-military service",3_4,0
+02,F,18-64,"Conscripts, persons in non-military service",3_4,55
+02,F,65-,"Conscripts, persons in non-military service",3_4,0
+02,M,18-64,"Conscripts, persons in non-military service",5_6,10
+02,M,65-,"Conscripts, persons in non-military service",5_6,0
+02,F,18-64,"Conscripts, persons in non-military service",5_6,3
+02,F,65-,"Conscripts, persons in non-military service",5_6,0
+02,M,18-64,"Conscripts, persons in non-military service",7_8,11
+02,M,65-,"Conscripts, persons in non-military service",7_8,0
+02,F,18-64,"Conscripts, persons in non-military service",7_8,1
+02,F,65-,"Conscripts, persons in non-military service",7_8,0
+02,M,18-64,"Conscripts, persons in non-military service",9_X,46
+02,M,65-,"Conscripts, persons in non-military service",9_X,0
+02,F,18-64,"Conscripts, persons in non-military service",9_X,1
+02,F,65-,"Conscripts, persons in non-military service",9_X,0
+02,M,18-64,Pensioners,3_4,3923
+02,M,65-,Pensioners,3_4,18691
+02,F,18-64,Pensioners,3_4,3460
+02,F,65-,Pensioners,3_4,22335
+02,M,18-64,Pensioners,5_6,821
+02,M,65-,Pensioners,5_6,11018
+02,F,18-64,Pensioners,5_6,1155
+02,F,65-,Pensioners,5_6,14605
+02,M,18-64,Pensioners,7_8,310
+02,M,65-,Pensioners,7_8,4691
+02,F,18-64,Pensioners,7_8,438
+02,F,65-,Pensioners,7_8,4594
+02,M,18-64,Pensioners,9_X,2828
+02,M,65-,Pensioners,9_X,16300
+02,F,18-64,Pensioners,9_X,1935
+02,F,65-,Pensioners,9_X,23017
+02,M,18-64,Other persons outside the labour force,3_4,2628
+02,M,65-,Other persons outside the labour force,3_4,36
+02,F,18-64,Other persons outside the labour force,3_4,2349
+02,F,65-,Other persons outside the labour force,3_4,32
+02,M,18-64,Other persons outside the labour force,5_6,521
+02,M,65-,Other persons outside the labour force,5_6,20
+02,F,18-64,Other persons outside the labour force,5_6,859
+02,F,65-,Other persons outside the labour force,5_6,16
+02,M,18-64,Other persons outside the labour force,7_8,419
+02,M,65-,Other persons outside the labour force,7_8,7
+02,F,18-64,Other persons outside the labour force,7_8,621
+02,F,65-,Other persons outside the labour force,7_8,11
+02,M,18-64,Other persons outside the labour force,9_X,3755
+02,M,65-,Other persons outside the labour force,9_X,112
+02,F,18-64,Other persons outside the labour force,9_X,2853
+02,F,65-,Other persons outside the labour force,9_X,154
+05,M,18-64,Employed,3_4,19393
+05,M,65-,Employed,3_4,304
+05,F,18-64,Employed,3_4,15523
+05,F,65-,Employed,3_4,413
+05,M,18-64,Employed,5_6,7048
+05,M,65-,Employed,5_6,201
+05,F,18-64,Employed,5_6,11203
+05,F,65-,Employed,5_6,305
+05,M,18-64,Employed,7_8,3174
+05,M,65-,Employed,7_8,89
+05,F,18-64,Employed,7_8,5298
+05,F,65-,Employed,7_8,111
+05,M,18-64,Employed,9_X,4649
+05,M,65-,Employed,9_X,107
+05,F,18-64,Employed,9_X,2418
+05,F,65-,Employed,9_X,97
+05,M,18-64,Unemployed,3_4,2835
+05,M,65-,Unemployed,3_4,0
+05,F,18-64,Unemployed,3_4,1704
+05,F,65-,Unemployed,3_4,0
+05,M,18-64,Unemployed,5_6,549
+05,M,65-,Unemployed,5_6,0
+05,F,18-64,Unemployed,5_6,602
+05,F,65-,Unemployed,5_6,0
+05,M,18-64,Unemployed,7_8,146
+05,M,65-,Unemployed,7_8,0
+05,F,18-64,Unemployed,7_8,172
+05,F,65-,Unemployed,7_8,0
+05,M,18-64,Unemployed,9_X,1537
+05,M,65-,Unemployed,9_X,0
+05,F,18-64,Unemployed,9_X,973
+05,F,65-,Unemployed,9_X,0
+05,M,18-64,0-14 years old,3_4,0
+05,M,65-,0-14 years old,3_4,0
+05,F,18-64,0-14 years old,3_4,0
+05,F,65-,0-14 years old,3_4,0
+05,M,18-64,0-14 years old,5_6,0
+05,M,65-,0-14 years old,5_6,0
+05,F,18-64,0-14 years old,5_6,0
+05,F,65-,0-14 years old,5_6,0
+05,M,18-64,0-14 years old,7_8,0
+05,M,65-,0-14 years old,7_8,0
+05,F,18-64,0-14 years old,7_8,0
+05,F,65-,0-14 years old,7_8,0
+05,M,18-64,0-14 years old,9_X,0
+05,M,65-,0-14 years old,9_X,0
+05,F,18-64,0-14 years old,9_X,0
+05,F,65-,0-14 years old,9_X,0
+05,M,18-64,"Students, pupils",3_4,1187
+05,M,65-,"Students, pupils",3_4,0
+05,F,18-64,"Students, pupils",3_4,1210
+05,F,65-,"Students, pupils",3_4,2
+05,M,18-64,"Students, pupils",5_6,112
+05,M,65-,"Students, pupils",5_6,4
+05,F,18-64,"Students, pupils",5_6,283
+05,F,65-,"Students, pupils",5_6,6
+05,M,18-64,"Students, pupils",7_8,32
+05,M,65-,"Students, pupils",7_8,3
+05,F,18-64,"Students, pupils",7_8,74
+05,F,65-,"Students, pupils",7_8,9
+05,M,18-64,"Students, pupils",9_X,1604
+05,M,65-,"Students, pupils",9_X,1
+05,F,18-64,"Students, pupils",9_X,1447
+05,F,65-,"Students, pupils",9_X,0
+05,M,18-64,"Conscripts, persons in non-military service",3_4,235
+05,M,65-,"Conscripts, persons in non-military service",3_4,0
+05,F,18-64,"Conscripts, persons in non-military service",3_4,12
+05,F,65-,"Conscripts, persons in non-military service",3_4,0
+05,M,18-64,"Conscripts, persons in non-military service",5_6,1
+05,M,65-,"Conscripts, persons in non-military service",5_6,0
+05,F,18-64,"Conscripts, persons in non-military service",5_6,1
+05,F,65-,"Conscripts, persons in non-military service",5_6,0
+05,M,18-64,"Conscripts, persons in non-military service",7_8,0
+05,M,65-,"Conscripts, persons in non-military service",7_8,0
+05,F,18-64,"Conscripts, persons in non-military service",7_8,0
+05,F,65-,"Conscripts, persons in non-military service",7_8,0
+05,M,18-64,"Conscripts, persons in non-military service",9_X,22
+05,M,65-,"Conscripts, persons in non-military service",9_X,0
+05,F,18-64,"Conscripts, persons in non-military service",9_X,1
+05,F,65-,"Conscripts, persons in non-military service",9_X,0
+05,M,18-64,Pensioners,3_4,1586
+05,M,65-,Pensioners,3_4,7738
+05,F,18-64,Pensioners,3_4,1295
+05,F,65-,Pensioners,3_4,9143
+05,M,18-64,Pensioners,5_6,345
+05,M,65-,Pensioners,5_6,4320
+05,F,18-64,Pensioners,5_6,462
+05,F,65-,Pensioners,5_6,5631
+05,M,18-64,Pensioners,7_8,110
+05,M,65-,Pensioners,7_8,1467
+05,F,18-64,Pensioners,7_8,126
+05,F,65-,Pensioners,7_8,1296
+05,M,18-64,Pensioners,9_X,1074
+05,M,65-,Pensioners,9_X,6460
+05,F,18-64,Pensioners,9_X,669
+05,F,65-,Pensioners,9_X,8809
+05,M,18-64,Other persons outside the labour force,3_4,1047
+05,M,65-,Other persons outside the labour force,3_4,5
+05,F,18-64,Other persons outside the labour force,3_4,892
+05,F,65-,Other persons outside the labour force,3_4,14
+05,M,18-64,Other persons outside the labour force,5_6,184
+05,M,65-,Other persons outside the labour force,5_6,6
+05,F,18-64,Other persons outside the labour force,5_6,311
+05,F,65-,Other persons outside the labour force,5_6,10
+05,M,18-64,Other persons outside the labour force,7_8,57
+05,M,65-,Other persons outside the labour force,7_8,4
+05,F,18-64,Other persons outside the labour force,7_8,124
+05,F,65-,Other persons outside the labour force,7_8,0
+05,M,18-64,Other persons outside the labour force,9_X,1076
+05,M,65-,Other persons outside the labour force,9_X,49
+05,F,18-64,Other persons outside the labour force,9_X,811
+05,F,65-,Other persons outside the labour force,9_X,69
+07,M,18-64,Employed,3_4,20806
+07,M,65-,Employed,3_4,324
+07,F,18-64,Employed,3_4,17779
+07,F,65-,Employed,3_4,422
+07,M,18-64,Employed,5_6,8320
+07,M,65-,Employed,5_6,216
+07,F,18-64,Employed,5_6,12644
+07,F,65-,Employed,5_6,293
+07,M,18-64,Employed,7_8,3706
+07,M,65-,Employed,7_8,93
+07,F,18-64,Employed,7_8,6091
+07,F,65-,Employed,7_8,109
+07,M,18-64,Employed,9_X,5584
+07,M,65-,Employed,9_X,156
+07,F,18-64,Employed,9_X,3033
+07,F,65-,Employed,9_X,92
+07,M,18-64,Unemployed,3_4,4224
+07,M,65-,Unemployed,3_4,0
+07,F,18-64,Unemployed,3_4,2622
+07,F,65-,Unemployed,3_4,0
+07,M,18-64,Unemployed,5_6,932
+07,M,65-,Unemployed,5_6,0
+07,F,18-64,Unemployed,5_6,954
+07,F,65-,Unemployed,5_6,0
+07,M,18-64,Unemployed,7_8,256
+07,M,65-,Unemployed,7_8,0
+07,F,18-64,Unemployed,7_8,325
+07,F,65-,Unemployed,7_8,0
+07,M,18-64,Unemployed,9_X,2669
+07,M,65-,Unemployed,9_X,0
+07,F,18-64,Unemployed,9_X,1636
+07,F,65-,Unemployed,9_X,0
+07,M,18-64,0-14 years old,3_4,0
+07,M,65-,0-14 years old,3_4,0
+07,F,18-64,0-14 years old,3_4,0
+07,F,65-,0-14 years old,3_4,0
+07,M,18-64,0-14 years old,5_6,0
+07,M,65-,0-14 years old,5_6,0
+07,F,18-64,0-14 years old,5_6,0
+07,F,65-,0-14 years old,5_6,0
+07,M,18-64,0-14 years old,7_8,0
+07,M,65-,0-14 years old,7_8,0
+07,F,18-64,0-14 years old,7_8,0
+07,F,65-,0-14 years old,7_8,0
+07,M,18-64,0-14 years old,9_X,0
+07,M,65-,0-14 years old,9_X,0
+07,F,18-64,0-14 years old,9_X,0
+07,F,65-,0-14 years old,9_X,0
+07,M,18-64,"Students, pupils",3_4,1534
+07,M,65-,"Students, pupils",3_4,1
+07,F,18-64,"Students, pupils",3_4,1646
+07,F,65-,"Students, pupils",3_4,2
+07,M,18-64,"Students, pupils",5_6,170
+07,M,65-,"Students, pupils",5_6,0
+07,F,18-64,"Students, pupils",5_6,327
+07,F,65-,"Students, pupils",5_6,1
+07,M,18-64,"Students, pupils",7_8,47
+07,M,65-,"Students, pupils",7_8,7
+07,F,18-64,"Students, pupils",7_8,110
+07,F,65-,"Students, pupils",7_8,9
+07,M,18-64,"Students, pupils",9_X,1962
+07,M,65-,"Students, pupils",9_X,0
+07,F,18-64,"Students, pupils",9_X,1746
+07,F,65-,"Students, pupils",9_X,1
+07,M,18-64,"Conscripts, persons in non-military service",3_4,295
+07,M,65-,"Conscripts, persons in non-military service",3_4,0
+07,F,18-64,"Conscripts, persons in non-military service",3_4,7
+07,F,65-,"Conscripts, persons in non-military service",3_4,0
+07,M,18-64,"Conscripts, persons in non-military service",5_6,3
+07,M,65-,"Conscripts, persons in non-military service",5_6,0
+07,F,18-64,"Conscripts, persons in non-military service",5_6,0
+07,F,65-,"Conscripts, persons in non-military service",5_6,0
+07,M,18-64,"Conscripts, persons in non-military service",7_8,0
+07,M,65-,"Conscripts, persons in non-military service",7_8,0
+07,F,18-64,"Conscripts, persons in non-military service",7_8,0
+07,F,65-,"Conscripts, persons in non-military service",7_8,0
+07,M,18-64,"Conscripts, persons in non-military service",9_X,47
+07,M,65-,"Conscripts, persons in non-military service",9_X,0
+07,F,18-64,"Conscripts, persons in non-military service",9_X,0
+07,F,65-,"Conscripts, persons in non-military service",9_X,0
+07,M,18-64,Pensioners,3_4,1872
+07,M,65-,Pensioners,3_4,9482
+07,F,18-64,Pensioners,3_4,1593
+07,F,65-,Pensioners,3_4,12370
+07,M,18-64,Pensioners,5_6,339
+07,M,65-,Pensioners,5_6,5148
+07,F,18-64,Pensioners,5_6,528
+07,F,65-,Pensioners,5_6,6560
+07,M,18-64,Pensioners,7_8,102
+07,M,65-,Pensioners,7_8,1608
+07,F,18-64,Pensioners,7_8,145
+07,F,65-,Pensioners,7_8,1474
+07,M,18-64,Pensioners,9_X,1350
+07,M,65-,Pensioners,9_X,8448
+07,F,18-64,Pensioners,9_X,928
+07,F,65-,Pensioners,9_X,11527
+07,M,18-64,Other persons outside the labour force,3_4,1151
+07,M,65-,Other persons outside the labour force,3_4,8
+07,F,18-64,Other persons outside the labour force,3_4,1202
+07,F,65-,Other persons outside the labour force,3_4,14
+07,M,18-64,Other persons outside the labour force,5_6,221
+07,M,65-,Other persons outside the labour force,5_6,7
+07,F,18-64,Other persons outside the labour force,5_6,378
+07,F,65-,Other persons outside the labour force,5_6,14
+07,M,18-64,Other persons outside the labour force,7_8,111
+07,M,65-,Other persons outside the labour force,7_8,5
+07,F,18-64,Other persons outside the labour force,7_8,170
+07,F,65-,Other persons outside the labour force,7_8,7
+07,M,18-64,Other persons outside the labour force,9_X,1537
+07,M,65-,Other persons outside the labour force,9_X,48
+07,F,18-64,Other persons outside the labour force,9_X,1181
+07,F,65-,Other persons outside the labour force,9_X,69
+08,M,18-64,Employed,3_4,17411
+08,M,65-,Employed,3_4,229
+08,F,18-64,Employed,3_4,13604
+08,F,65-,Employed,3_4,355
+08,M,18-64,Employed,5_6,5908
+08,M,65-,Employed,5_6,172
+08,F,18-64,Employed,5_6,10081
+08,F,65-,Employed,5_6,256
+08,M,18-64,Employed,7_8,2378
+08,M,65-,Employed,7_8,70
+08,F,18-64,Employed,7_8,4024
+08,F,65-,Employed,7_8,92
+08,M,18-64,Employed,9_X,3633
+08,M,65-,Employed,9_X,112
+08,F,18-64,Employed,9_X,1892
+08,F,65-,Employed,9_X,74
+08,M,18-64,Unemployed,3_4,3881
+08,M,65-,Unemployed,3_4,0
+08,F,18-64,Unemployed,3_4,2003
+08,F,65-,Unemployed,3_4,0
+08,M,18-64,Unemployed,5_6,663
+08,M,65-,Unemployed,5_6,0
+08,F,18-64,Unemployed,5_6,742
+08,F,65-,Unemployed,5_6,0
+08,M,18-64,Unemployed,7_8,169
+08,M,65-,Unemployed,7_8,0
+08,F,18-64,Unemployed,7_8,218
+08,F,65-,Unemployed,7_8,0
+08,M,18-64,Unemployed,9_X,1695
+08,M,65-,Unemployed,9_X,0
+08,F,18-64,Unemployed,9_X,1001
+08,F,65-,Unemployed,9_X,0
+08,M,18-64,0-14 years old,3_4,0
+08,M,65-,0-14 years old,3_4,0
+08,F,18-64,0-14 years old,3_4,0
+08,F,65-,0-14 years old,3_4,0
+08,M,18-64,0-14 years old,5_6,0
+08,M,65-,0-14 years old,5_6,0
+08,F,18-64,0-14 years old,5_6,0
+08,F,65-,0-14 years old,5_6,0
+08,M,18-64,0-14 years old,7_8,0
+08,M,65-,0-14 years old,7_8,0
+08,F,18-64,0-14 years old,7_8,0
+08,F,65-,0-14 years old,7_8,0
+08,M,18-64,0-14 years old,9_X,0
+08,M,65-,0-14 years old,9_X,0
+08,F,18-64,0-14 years old,9_X,0
+08,F,65-,0-14 years old,9_X,0
+08,M,18-64,"Students, pupils",3_4,1234
+08,M,65-,"Students, pupils",3_4,2
+08,F,18-64,"Students, pupils",3_4,1083
+08,F,65-,"Students, pupils",3_4,1
+08,M,18-64,"Students, pupils",5_6,87
+08,M,65-,"Students, pupils",5_6,0
+08,F,18-64,"Students, pupils",5_6,192
+08,F,65-,"Students, pupils",5_6,1
+08,M,18-64,"Students, pupils",7_8,19
+08,M,65-,"Students, pupils",7_8,6
+08,F,18-64,"Students, pupils",7_8,73
+08,F,65-,"Students, pupils",7_8,3
+08,M,18-64,"Students, pupils",9_X,1221
+08,M,65-,"Students, pupils",9_X,1
+08,F,18-64,"Students, pupils",9_X,1084
+08,F,65-,"Students, pupils",9_X,0
+08,M,18-64,"Conscripts, persons in non-military service",3_4,182
+08,M,65-,"Conscripts, persons in non-military service",3_4,0
+08,F,18-64,"Conscripts, persons in non-military service",3_4,23
+08,F,65-,"Conscripts, persons in non-military service",3_4,0
+08,M,18-64,"Conscripts, persons in non-military service",5_6,1
+08,M,65-,"Conscripts, persons in non-military service",5_6,0
+08,F,18-64,"Conscripts, persons in non-military service",5_6,1
+08,F,65-,"Conscripts, persons in non-military service",5_6,0
+08,M,18-64,"Conscripts, persons in non-military service",7_8,0
+08,M,65-,"Conscripts, persons in non-military service",7_8,0
+08,F,18-64,"Conscripts, persons in non-military service",7_8,0
+08,F,65-,"Conscripts, persons in non-military service",7_8,0
+08,M,18-64,"Conscripts, persons in non-military service",9_X,25
+08,M,65-,"Conscripts, persons in non-military service",9_X,0
+08,F,18-64,"Conscripts, persons in non-military service",9_X,0
+08,F,65-,"Conscripts, persons in non-military service",9_X,0
+08,M,18-64,Pensioners,3_4,2054
+08,M,65-,Pensioners,3_4,8388
+08,F,18-64,Pensioners,3_4,1532
+08,F,65-,Pensioners,3_4,10282
+08,M,18-64,Pensioners,5_6,354
+08,M,65-,Pensioners,5_6,4414
+08,F,18-64,Pensioners,5_6,477
+08,F,65-,Pensioners,5_6,5353
+08,M,18-64,Pensioners,7_8,98
+08,M,65-,Pensioners,7_8,1123
+08,F,18-64,Pensioners,7_8,102
+08,F,65-,Pensioners,7_8,991
+08,M,18-64,Pensioners,9_X,1256
+08,M,65-,Pensioners,9_X,6759
+08,F,18-64,Pensioners,9_X,794
+08,F,65-,Pensioners,9_X,9271
+08,M,18-64,Other persons outside the labour force,3_4,968
+08,M,65-,Other persons outside the labour force,3_4,15
+08,F,18-64,Other persons outside the labour force,3_4,792
+08,F,65-,Other persons outside the labour force,3_4,22
+08,M,18-64,Other persons outside the labour force,5_6,133
+08,M,65-,Other persons outside the labour force,5_6,4
+08,F,18-64,Other persons outside the labour force,5_6,316
+08,F,65-,Other persons outside the labour force,5_6,11
+08,M,18-64,Other persons outside the labour force,7_8,48
+08,M,65-,Other persons outside the labour force,7_8,4
+08,F,18-64,Other persons outside the labour force,7_8,114
+08,F,65-,Other persons outside the labour force,7_8,5
+08,M,18-64,Other persons outside the labour force,9_X,1207
+08,M,65-,Other persons outside the labour force,9_X,34
+08,F,18-64,Other persons outside the labour force,9_X,837
+08,F,65-,Other persons outside the labour force,9_X,73
+09,M,18-64,Employed,3_4,13482
+09,M,65-,Employed,3_4,193
+09,F,18-64,Employed,3_4,10077
+09,F,65-,Employed,3_4,239
+09,M,18-64,Employed,5_6,4682
+09,M,65-,Employed,5_6,137
+09,F,18-64,Employed,5_6,7788
+09,F,65-,Employed,5_6,177
+09,M,18-64,Employed,7_8,2783
+09,M,65-,Employed,7_8,77
+09,F,18-64,Employed,7_8,3893
+09,F,65-,Employed,7_8,68
+09,M,18-64,Employed,9_X,2613
+09,M,65-,Employed,9_X,77
+09,F,18-64,Employed,9_X,1308
+09,F,65-,Employed,9_X,46
+09,M,18-64,Unemployed,3_4,2951
+09,M,65-,Unemployed,3_4,0
+09,F,18-64,Unemployed,3_4,1615
+09,F,65-,Unemployed,3_4,0
+09,M,18-64,Unemployed,5_6,445
+09,M,65-,Unemployed,5_6,0
+09,F,18-64,Unemployed,5_6,563
+09,F,65-,Unemployed,5_6,0
+09,M,18-64,Unemployed,7_8,190
+09,M,65-,Unemployed,7_8,0
+09,F,18-64,Unemployed,7_8,253
+09,F,65-,Unemployed,7_8,0
+09,M,18-64,Unemployed,9_X,1240
+09,M,65-,Unemployed,9_X,0
+09,F,18-64,Unemployed,9_X,794
+09,F,65-,Unemployed,9_X,0
+09,M,18-64,0-14 years old,3_4,0
+09,M,65-,0-14 years old,3_4,0
+09,F,18-64,0-14 years old,3_4,0
+09,F,65-,0-14 years old,3_4,0
+09,M,18-64,0-14 years old,5_6,0
+09,M,65-,0-14 years old,5_6,0
+09,F,18-64,0-14 years old,5_6,0
+09,F,65-,0-14 years old,5_6,0
+09,M,18-64,0-14 years old,7_8,0
+09,M,65-,0-14 years old,7_8,0
+09,F,18-64,0-14 years old,7_8,0
+09,F,65-,0-14 years old,7_8,0
+09,M,18-64,0-14 years old,9_X,0
+09,M,65-,0-14 years old,9_X,0
+09,F,18-64,0-14 years old,9_X,0
+09,F,65-,0-14 years old,9_X,0
+09,M,18-64,"Students, pupils",3_4,1876
+09,M,65-,"Students, pupils",3_4,2
+09,F,18-64,"Students, pupils",3_4,1235
+09,F,65-,"Students, pupils",3_4,1
+09,M,18-64,"Students, pupils",5_6,349
+09,M,65-,"Students, pupils",5_6,4
+09,F,18-64,"Students, pupils",5_6,310
+09,F,65-,"Students, pupils",5_6,3
+09,M,18-64,"Students, pupils",7_8,36
+09,M,65-,"Students, pupils",7_8,6
+09,F,18-64,"Students, pupils",7_8,89
+09,F,65-,"Students, pupils",7_8,3
+09,M,18-64,"Students, pupils",9_X,1312
+09,M,65-,"Students, pupils",9_X,1
+09,F,18-64,"Students, pupils",9_X,1025
+09,F,65-,"Students, pupils",9_X,0
+09,M,18-64,"Conscripts, persons in non-military service",3_4,160
+09,M,65-,"Conscripts, persons in non-military service",3_4,0
+09,F,18-64,"Conscripts, persons in non-military service",3_4,20
+09,F,65-,"Conscripts, persons in non-military service",3_4,0
+09,M,18-64,"Conscripts, persons in non-military service",5_6,4
+09,M,65-,"Conscripts, persons in non-military service",5_6,0
+09,F,18-64,"Conscripts, persons in non-military service",5_6,0
+09,F,65-,"Conscripts, persons in non-military service",5_6,0
+09,M,18-64,"Conscripts, persons in non-military service",7_8,3
+09,M,65-,"Conscripts, persons in non-military service",7_8,0
+09,F,18-64,"Conscripts, persons in non-military service",7_8,0
+09,F,65-,"Conscripts, persons in non-military service",7_8,0
+09,M,18-64,"Conscripts, persons in non-military service",9_X,9
+09,M,65-,"Conscripts, persons in non-military service",9_X,0
+09,F,18-64,"Conscripts, persons in non-military service",9_X,0
+09,F,65-,"Conscripts, persons in non-military service",9_X,0
+09,M,18-64,Pensioners,3_4,1323
+09,M,65-,Pensioners,3_4,6082
+09,F,18-64,Pensioners,3_4,922
+09,F,65-,Pensioners,3_4,7662
+09,M,18-64,Pensioners,5_6,211
+09,M,65-,Pensioners,5_6,3082
+09,F,18-64,Pensioners,5_6,340
+09,F,65-,Pensioners,5_6,3937
+09,M,18-64,Pensioners,7_8,80
+09,M,65-,Pensioners,7_8,953
+09,F,18-64,Pensioners,7_8,97
+09,F,65-,Pensioners,7_8,805
+09,M,18-64,Pensioners,9_X,877
+09,M,65-,Pensioners,9_X,5693
+09,F,18-64,Pensioners,9_X,476
+09,F,65-,Pensioners,9_X,7418
+09,M,18-64,Other persons outside the labour force,3_4,760
+09,M,65-,Other persons outside the labour force,3_4,4
+09,F,18-64,Other persons outside the labour force,3_4,651
+09,F,65-,Other persons outside the labour force,3_4,11
+09,M,18-64,Other persons outside the labour force,5_6,177
+09,M,65-,Other persons outside the labour force,5_6,5
+09,F,18-64,Other persons outside the labour force,5_6,287
+09,F,65-,Other persons outside the labour force,5_6,2
+09,M,18-64,Other persons outside the labour force,7_8,176
+09,M,65-,Other persons outside the labour force,7_8,7
+09,F,18-64,Other persons outside the labour force,7_8,200
+09,F,65-,Other persons outside the labour force,7_8,7
+09,M,18-64,Other persons outside the labour force,9_X,977
+09,M,65-,Other persons outside the labour force,9_X,40
+09,F,18-64,Other persons outside the labour force,9_X,733
+09,F,65-,Other persons outside the labour force,9_X,53
+04,M,18-64,Employed,3_4,24579
+04,M,65-,Employed,3_4,362
+04,F,18-64,Employed,3_4,19101
+04,F,65-,Employed,3_4,467
+04,M,18-64,Employed,5_6,8408
+04,M,65-,Employed,5_6,218
+04,F,18-64,Employed,5_6,13727
+04,F,65-,Employed,5_6,340
+04,M,18-64,Employed,7_8,3310
+04,M,65-,Employed,7_8,90
+04,F,18-64,Employed,7_8,5797
+04,F,65-,Employed,7_8,86
+04,M,18-64,Employed,9_X,5924
+04,M,65-,Employed,9_X,180
+04,F,18-64,Employed,9_X,2825
+04,F,65-,Employed,9_X,112
+04,M,18-64,Unemployed,3_4,3961
+04,M,65-,Unemployed,3_4,0
+04,F,18-64,Unemployed,3_4,2345
+04,F,65-,Unemployed,3_4,0
+04,M,18-64,Unemployed,5_6,630
+04,M,65-,Unemployed,5_6,0
+04,F,18-64,Unemployed,5_6,774
+04,F,65-,Unemployed,5_6,0
+04,M,18-64,Unemployed,7_8,166
+04,M,65-,Unemployed,7_8,0
+04,F,18-64,Unemployed,7_8,238
+04,F,65-,Unemployed,7_8,0
+04,M,18-64,Unemployed,9_X,1910
+04,M,65-,Unemployed,9_X,0
+04,F,18-64,Unemployed,9_X,1122
+04,F,65-,Unemployed,9_X,0
+04,M,18-64,0-14 years old,3_4,0
+04,M,65-,0-14 years old,3_4,0
+04,F,18-64,0-14 years old,3_4,0
+04,F,65-,0-14 years old,3_4,0
+04,M,18-64,0-14 years old,5_6,0
+04,M,65-,0-14 years old,5_6,0
+04,F,18-64,0-14 years old,5_6,0
+04,F,65-,0-14 years old,5_6,0
+04,M,18-64,0-14 years old,7_8,0
+04,M,65-,0-14 years old,7_8,0
+04,F,18-64,0-14 years old,7_8,0
+04,F,65-,0-14 years old,7_8,0
+04,M,18-64,0-14 years old,9_X,0
+04,M,65-,0-14 years old,9_X,0
+04,F,18-64,0-14 years old,9_X,0
+04,F,65-,0-14 years old,9_X,0
+04,M,18-64,"Students, pupils",3_4,1754
+04,M,65-,"Students, pupils",3_4,3
+04,F,18-64,"Students, pupils",3_4,1538
+04,F,65-,"Students, pupils",3_4,1
+04,M,18-64,"Students, pupils",5_6,145
+04,M,65-,"Students, pupils",5_6,3
+04,F,18-64,"Students, pupils",5_6,329
+04,F,65-,"Students, pupils",5_6,1
+04,M,18-64,"Students, pupils",7_8,37
+04,M,65-,"Students, pupils",7_8,9
+04,F,18-64,"Students, pupils",7_8,74
+04,F,65-,"Students, pupils",7_8,6
+04,M,18-64,"Students, pupils",9_X,1553
+04,M,65-,"Students, pupils",9_X,0
+04,F,18-64,"Students, pupils",9_X,1419
+04,F,65-,"Students, pupils",9_X,0
+04,M,18-64,"Conscripts, persons in non-military service",3_4,214
+04,M,65-,"Conscripts, persons in non-military service",3_4,0
+04,F,18-64,"Conscripts, persons in non-military service",3_4,23
+04,F,65-,"Conscripts, persons in non-military service",3_4,0
+04,M,18-64,"Conscripts, persons in non-military service",5_6,3
+04,M,65-,"Conscripts, persons in non-military service",5_6,0
+04,F,18-64,"Conscripts, persons in non-military service",5_6,0
+04,F,65-,"Conscripts, persons in non-military service",5_6,0
+04,M,18-64,"Conscripts, persons in non-military service",7_8,0
+04,M,65-,"Conscripts, persons in non-military service",7_8,0
+04,F,18-64,"Conscripts, persons in non-military service",7_8,0
+04,F,65-,"Conscripts, persons in non-military service",7_8,0
+04,M,18-64,"Conscripts, persons in non-military service",9_X,18
+04,M,65-,"Conscripts, persons in non-military service",9_X,0
+04,F,18-64,"Conscripts, persons in non-military service",9_X,1
+04,F,65-,"Conscripts, persons in non-military service",9_X,0
+04,M,18-64,Pensioners,3_4,2134
+04,M,65-,Pensioners,3_4,10461
+04,F,18-64,Pensioners,3_4,1758
+04,F,65-,Pensioners,3_4,12420
+04,M,18-64,Pensioners,5_6,410
+04,M,65-,Pensioners,5_6,5073
+04,F,18-64,Pensioners,5_6,576
+04,F,65-,Pensioners,5_6,6738
+04,M,18-64,Pensioners,7_8,98
+04,M,65-,Pensioners,7_8,1328
+04,F,18-64,Pensioners,7_8,119
+04,F,65-,Pensioners,7_8,1229
+04,M,18-64,Pensioners,9_X,1528
+04,M,65-,Pensioners,9_X,9487
+04,F,18-64,Pensioners,9_X,918
+04,F,65-,Pensioners,9_X,12300
+04,M,18-64,Other persons outside the labour force,3_4,1150
+04,M,65-,Other persons outside the labour force,3_4,21
+04,F,18-64,Other persons outside the labour force,3_4,1095
+04,F,65-,Other persons outside the labour force,3_4,24
+04,M,18-64,Other persons outside the labour force,5_6,182
+04,M,65-,Other persons outside the labour force,5_6,7
+04,F,18-64,Other persons outside the labour force,5_6,350
+04,F,65-,Other persons outside the labour force,5_6,7
+04,M,18-64,Other persons outside the labour force,7_8,75
+04,M,65-,Other persons outside the labour force,7_8,2
+04,F,18-64,Other persons outside the labour force,7_8,141
+04,F,65-,Other persons outside the labour force,7_8,1
+04,M,18-64,Other persons outside the labour force,9_X,1495
+04,M,65-,Other persons outside the labour force,9_X,41
+04,F,18-64,Other persons outside the labour force,9_X,1034
+04,F,65-,Other persons outside the labour force,9_X,47
+06,M,18-64,Employed,3_4,57828
+06,M,65-,Employed,3_4,797
+06,F,18-64,Employed,3_4,48027
+06,F,65-,Employed,3_4,977
+06,M,18-64,Employed,5_6,26527
+06,M,65-,Employed,5_6,531
+06,F,18-64,Employed,5_6,37148
+06,F,65-,Employed,5_6,760
+06,M,18-64,Employed,7_8,20838
+06,M,65-,Employed,7_8,373
+06,F,18-64,Employed,7_8,26065
+06,F,65-,Employed,7_8,366
+06,M,18-64,Employed,9_X,11749
+06,M,65-,Employed,9_X,275
+06,F,18-64,Employed,9_X,6468
+06,F,65-,Employed,9_X,218
+06,M,18-64,Unemployed,3_4,9962
+06,M,65-,Unemployed,3_4,0
+06,F,18-64,Unemployed,3_4,6494
+06,F,65-,Unemployed,3_4,0
+06,M,18-64,Unemployed,5_6,2371
+06,M,65-,Unemployed,5_6,0
+06,F,18-64,Unemployed,5_6,2576
+06,F,65-,Unemployed,5_6,0
+06,M,18-64,Unemployed,7_8,1230
+06,M,65-,Unemployed,7_8,0
+06,F,18-64,Unemployed,7_8,1405
+06,F,65-,Unemployed,7_8,0
+06,M,18-64,Unemployed,9_X,4249
+06,M,65-,Unemployed,9_X,0
+06,F,18-64,Unemployed,9_X,2770
+06,F,65-,Unemployed,9_X,0
+06,M,18-64,0-14 years old,3_4,0
+06,M,65-,0-14 years old,3_4,0
+06,F,18-64,0-14 years old,3_4,0
+06,F,65-,0-14 years old,3_4,0
+06,M,18-64,0-14 years old,5_6,0
+06,M,65-,0-14 years old,5_6,0
+06,F,18-64,0-14 years old,5_6,0
+06,F,65-,0-14 years old,5_6,0
+06,M,18-64,0-14 years old,7_8,0
+06,M,65-,0-14 years old,7_8,0
+06,F,18-64,0-14 years old,7_8,0
+06,F,65-,0-14 years old,7_8,0
+06,M,18-64,0-14 years old,9_X,0
+06,M,65-,0-14 years old,9_X,0
+06,F,18-64,0-14 years old,9_X,0
+06,F,65-,0-14 years old,9_X,0
+06,M,18-64,"Students, pupils",3_4,7518
+06,M,65-,"Students, pupils",3_4,10
+06,F,18-64,"Students, pupils",3_4,7266
+06,F,65-,"Students, pupils",3_4,6
+06,M,18-64,"Students, pupils",5_6,1325
+06,M,65-,"Students, pupils",5_6,13
+06,F,18-64,"Students, pupils",5_6,2308
+06,F,65-,"Students, pupils",5_6,14
+06,M,18-64,"Students, pupils",7_8,288
+06,M,65-,"Students, pupils",7_8,52
+06,F,18-64,"Students, pupils",7_8,548
+06,F,65-,"Students, pupils",7_8,29
+06,M,18-64,"Students, pupils",9_X,4865
+06,M,65-,"Students, pupils",9_X,0
+06,F,18-64,"Students, pupils",9_X,5017
+06,F,65-,"Students, pupils",9_X,0
+06,M,18-64,"Conscripts, persons in non-military service",3_4,641
+06,M,65-,"Conscripts, persons in non-military service",3_4,0
+06,F,18-64,"Conscripts, persons in non-military service",3_4,68
+06,F,65-,"Conscripts, persons in non-military service",3_4,0
+06,M,18-64,"Conscripts, persons in non-military service",5_6,13
+06,M,65-,"Conscripts, persons in non-military service",5_6,0
+06,F,18-64,"Conscripts, persons in non-military service",5_6,1
+06,F,65-,"Conscripts, persons in non-military service",5_6,0
+06,M,18-64,"Conscripts, persons in non-military service",7_8,10
+06,M,65-,"Conscripts, persons in non-military service",7_8,0
+06,F,18-64,"Conscripts, persons in non-military service",7_8,2
+06,F,65-,"Conscripts, persons in non-military service",7_8,0
+06,M,18-64,"Conscripts, persons in non-military service",9_X,58
+06,M,65-,"Conscripts, persons in non-military service",9_X,0
+06,F,18-64,"Conscripts, persons in non-military service",9_X,4
+06,F,65-,"Conscripts, persons in non-military service",9_X,0
+06,M,18-64,Pensioners,3_4,4330
+06,M,65-,Pensioners,3_4,19532
+06,F,18-64,Pensioners,3_4,3592
+06,F,65-,Pensioners,3_4,24208
+06,M,18-64,Pensioners,5_6,840
+06,M,65-,Pensioners,5_6,11289
+06,F,18-64,Pensioners,5_6,1237
+06,F,65-,Pensioners,5_6,15159
+06,M,18-64,Pensioners,7_8,384
+06,M,65-,Pensioners,7_8,4754
+06,F,18-64,Pensioners,7_8,489
+06,F,65-,Pensioners,7_8,4363
+06,M,18-64,Pensioners,9_X,2632
+06,M,65-,Pensioners,9_X,15926
+06,F,18-64,Pensioners,9_X,1836
+06,F,65-,Pensioners,9_X,22277
+06,M,18-64,Other persons outside the labour force,3_4,3668
+06,M,65-,Other persons outside the labour force,3_4,29
+06,F,18-64,Other persons outside the labour force,3_4,3126
+06,F,65-,Other persons outside the labour force,3_4,35
+06,M,18-64,Other persons outside the labour force,5_6,678
+06,M,65-,Other persons outside the labour force,5_6,11
+06,F,18-64,Other persons outside the labour force,5_6,1150
+06,F,65-,Other persons outside the labour force,5_6,20
+06,M,18-64,Other persons outside the labour force,7_8,465
+06,M,65-,Other persons outside the labour force,7_8,4
+06,F,18-64,Other persons outside the labour force,7_8,726
+06,F,65-,Other persons outside the labour force,7_8,11
+06,M,18-64,Other persons outside the labour force,9_X,3680
+06,M,65-,Other persons outside the labour force,9_X,78
+06,F,18-64,Other persons outside the labour force,9_X,2744
+06,F,65-,Other persons outside the labour force,9_X,114
+13,M,18-64,Employed,3_4,28808
+13,M,65-,Employed,3_4,439
+13,F,18-64,Employed,3_4,23181
+13,F,65-,Employed,3_4,590
+13,M,18-64,Employed,5_6,12147
+13,M,65-,Employed,5_6,250
+13,F,18-64,Employed,5_6,16934
+13,F,65-,Employed,5_6,379
+13,M,18-64,Employed,7_8,7244
+13,M,65-,Employed,7_8,146
+13,F,18-64,Employed,7_8,11211
+13,F,65-,Employed,7_8,168
+13,M,18-64,Employed,9_X,4965
+13,M,65-,Employed,9_X,147
+13,F,18-64,Employed,9_X,2371
+13,F,65-,Employed,9_X,89
+13,M,18-64,Unemployed,3_4,6608
+13,M,65-,Unemployed,3_4,0
+13,F,18-64,Unemployed,3_4,3658
+13,F,65-,Unemployed,3_4,0
+13,M,18-64,Unemployed,5_6,1304
+13,M,65-,Unemployed,5_6,0
+13,F,18-64,Unemployed,5_6,1237
+13,F,65-,Unemployed,5_6,0
+13,M,18-64,Unemployed,7_8,560
+13,M,65-,Unemployed,7_8,0
+13,F,18-64,Unemployed,7_8,667
+13,F,65-,Unemployed,7_8,0
+13,M,18-64,Unemployed,9_X,2735
+13,M,65-,Unemployed,9_X,0
+13,F,18-64,Unemployed,9_X,1666
+13,F,65-,Unemployed,9_X,0
+13,M,18-64,0-14 years old,3_4,0
+13,M,65-,0-14 years old,3_4,0
+13,F,18-64,0-14 years old,3_4,0
+13,F,65-,0-14 years old,3_4,0
+13,M,18-64,0-14 years old,5_6,0
+13,M,65-,0-14 years old,5_6,0
+13,F,18-64,0-14 years old,5_6,0
+13,F,65-,0-14 years old,5_6,0
+13,M,18-64,0-14 years old,7_8,0
+13,M,65-,0-14 years old,7_8,0
+13,F,18-64,0-14 years old,7_8,0
+13,F,65-,0-14 years old,7_8,0
+13,M,18-64,0-14 years old,9_X,0
+13,M,65-,0-14 years old,9_X,0
+13,F,18-64,0-14 years old,9_X,0
+13,F,65-,0-14 years old,9_X,0
+13,M,18-64,"Students, pupils",3_4,3845
+13,M,65-,"Students, pupils",3_4,2
+13,F,18-64,"Students, pupils",3_4,3894
+13,F,65-,"Students, pupils",3_4,3
+13,M,18-64,"Students, pupils",5_6,731
+13,M,65-,"Students, pupils",5_6,5
+13,F,18-64,"Students, pupils",5_6,1315
+13,F,65-,"Students, pupils",5_6,6
+13,M,18-64,"Students, pupils",7_8,153
+13,M,65-,"Students, pupils",7_8,17
+13,F,18-64,"Students, pupils",7_8,287
+13,F,65-,"Students, pupils",7_8,20
+13,M,18-64,"Students, pupils",9_X,2595
+13,M,65-,"Students, pupils",9_X,1
+13,F,18-64,"Students, pupils",9_X,2345
+13,F,65-,"Students, pupils",9_X,1
+13,M,18-64,"Conscripts, persons in non-military service",3_4,348
+13,M,65-,"Conscripts, persons in non-military service",3_4,0
+13,F,18-64,"Conscripts, persons in non-military service",3_4,27
+13,F,65-,"Conscripts, persons in non-military service",3_4,0
+13,M,18-64,"Conscripts, persons in non-military service",5_6,3
+13,M,65-,"Conscripts, persons in non-military service",5_6,0
+13,F,18-64,"Conscripts, persons in non-military service",5_6,1
+13,F,65-,"Conscripts, persons in non-military service",5_6,0
+13,M,18-64,"Conscripts, persons in non-military service",7_8,4
+13,M,65-,"Conscripts, persons in non-military service",7_8,0
+13,F,18-64,"Conscripts, persons in non-military service",7_8,0
+13,F,65-,"Conscripts, persons in non-military service",7_8,0
+13,M,18-64,"Conscripts, persons in non-military service",9_X,27
+13,M,65-,"Conscripts, persons in non-military service",9_X,0
+13,F,18-64,"Conscripts, persons in non-military service",9_X,0
+13,F,65-,"Conscripts, persons in non-military service",9_X,0
+13,M,18-64,Pensioners,3_4,2481
+13,M,65-,Pensioners,3_4,11555
+13,F,18-64,Pensioners,3_4,2015
+13,F,65-,Pensioners,3_4,14091
+13,M,18-64,Pensioners,5_6,449
+13,M,65-,Pensioners,5_6,5975
+13,F,18-64,Pensioners,5_6,748
+13,F,65-,Pensioners,5_6,7744
+13,M,18-64,Pensioners,7_8,236
+13,M,65-,Pensioners,7_8,2206
+13,F,18-64,Pensioners,7_8,262
+13,F,65-,Pensioners,7_8,2254
+13,M,18-64,Pensioners,9_X,1566
+13,M,65-,Pensioners,9_X,10037
+13,F,18-64,Pensioners,9_X,945
+13,F,65-,Pensioners,9_X,12210
+13,M,18-64,Other persons outside the labour force,3_4,1674
+13,M,65-,Other persons outside the labour force,3_4,21
+13,F,18-64,Other persons outside the labour force,3_4,1444
+13,F,65-,Other persons outside the labour force,3_4,22
+13,M,18-64,Other persons outside the labour force,5_6,270
+13,M,65-,Other persons outside the labour force,5_6,6
+13,F,18-64,Other persons outside the labour force,5_6,467
+13,F,65-,Other persons outside the labour force,5_6,9
+13,M,18-64,Other persons outside the labour force,7_8,204
+13,M,65-,Other persons outside the labour force,7_8,4
+13,F,18-64,Other persons outside the labour force,7_8,348
+13,F,65-,Other persons outside the labour force,7_8,5
+13,M,18-64,Other persons outside the labour force,9_X,1674
+13,M,65-,Other persons outside the labour force,9_X,79
+13,F,18-64,Other persons outside the labour force,9_X,1204
+13,F,65-,Other persons outside the labour force,9_X,98
+14,M,18-64,Employed,3_4,23562
+14,M,65-,Employed,3_4,426
+14,F,18-64,Employed,3_4,17660
+14,F,65-,Employed,3_4,510
+14,M,18-64,Employed,5_6,7894
+14,M,65-,Employed,5_6,197
+14,F,18-64,Employed,5_6,13140
+14,F,65-,Employed,5_6,317
+14,M,18-64,Employed,7_8,2650
+14,M,65-,Employed,7_8,72
+14,F,18-64,Employed,7_8,5291
+14,F,65-,Employed,7_8,83
+14,M,18-64,Employed,9_X,4560
+14,M,65-,Employed,9_X,141
+14,F,18-64,Employed,9_X,2214
+14,F,65-,Employed,9_X,87
+14,M,18-64,Unemployed,3_4,3048
+14,M,65-,Unemployed,3_4,0
+14,F,18-64,Unemployed,3_4,1495
+14,F,65-,Unemployed,3_4,0
+14,M,18-64,Unemployed,5_6,531
+14,M,65-,Unemployed,5_6,0
+14,F,18-64,Unemployed,5_6,509
+14,F,65-,Unemployed,5_6,0
+14,M,18-64,Unemployed,7_8,83
+14,M,65-,Unemployed,7_8,0
+14,F,18-64,Unemployed,7_8,118
+14,F,65-,Unemployed,7_8,0
+14,M,18-64,Unemployed,9_X,1154
+14,M,65-,Unemployed,9_X,0
+14,F,18-64,Unemployed,9_X,653
+14,F,65-,Unemployed,9_X,0
+14,M,18-64,0-14 years old,3_4,0
+14,M,65-,0-14 years old,3_4,0
+14,F,18-64,0-14 years old,3_4,0
+14,F,65-,0-14 years old,3_4,0
+14,M,18-64,0-14 years old,5_6,0
+14,M,65-,0-14 years old,5_6,0
+14,F,18-64,0-14 years old,5_6,0
+14,F,65-,0-14 years old,5_6,0
+14,M,18-64,0-14 years old,7_8,0
+14,M,65-,0-14 years old,7_8,0
+14,F,18-64,0-14 years old,7_8,0
+14,F,65-,0-14 years old,7_8,0
+14,M,18-64,0-14 years old,9_X,0
+14,M,65-,0-14 years old,9_X,0
+14,F,18-64,0-14 years old,9_X,0
+14,F,65-,0-14 years old,9_X,0
+14,M,18-64,"Students, pupils",3_4,1441
+14,M,65-,"Students, pupils",3_4,2
+14,F,18-64,"Students, pupils",3_4,1199
+14,F,65-,"Students, pupils",3_4,2
+14,M,18-64,"Students, pupils",5_6,129
+14,M,65-,"Students, pupils",5_6,2
+14,F,18-64,"Students, pupils",5_6,278
+14,F,65-,"Students, pupils",5_6,9
+14,M,18-64,"Students, pupils",7_8,34
+14,M,65-,"Students, pupils",7_8,5
+14,F,18-64,"Students, pupils",7_8,65
+14,F,65-,"Students, pupils",7_8,7
+14,M,18-64,"Students, pupils",9_X,1499
+14,M,65-,"Students, pupils",9_X,0
+14,F,18-64,"Students, pupils",9_X,1363
+14,F,65-,"Students, pupils",9_X,0
+14,M,18-64,"Conscripts, persons in non-military service",3_4,301
+14,M,65-,"Conscripts, persons in non-military service",3_4,0
+14,F,18-64,"Conscripts, persons in non-military service",3_4,21
+14,F,65-,"Conscripts, persons in non-military service",3_4,0
+14,M,18-64,"Conscripts, persons in non-military service",5_6,1
+14,M,65-,"Conscripts, persons in non-military service",5_6,0
+14,F,18-64,"Conscripts, persons in non-military service",5_6,0
+14,F,65-,"Conscripts, persons in non-military service",5_6,0
+14,M,18-64,"Conscripts, persons in non-military service",7_8,0
+14,M,65-,"Conscripts, persons in non-military service",7_8,0
+14,F,18-64,"Conscripts, persons in non-military service",7_8,0
+14,F,65-,"Conscripts, persons in non-military service",7_8,0
+14,M,18-64,"Conscripts, persons in non-military service",9_X,16
+14,M,65-,"Conscripts, persons in non-military service",9_X,0
+14,F,18-64,"Conscripts, persons in non-military service",9_X,0
+14,F,65-,"Conscripts, persons in non-military service",9_X,0
+14,M,18-64,Pensioners,3_4,1903
+14,M,65-,Pensioners,3_4,9425
+14,F,18-64,Pensioners,3_4,1609
+14,F,65-,Pensioners,3_4,10547
+14,M,18-64,Pensioners,5_6,316
+14,M,65-,Pensioners,5_6,3998
+14,F,18-64,Pensioners,5_6,525
+14,F,65-,Pensioners,5_6,5501
+14,M,18-64,Pensioners,7_8,63
+14,M,65-,Pensioners,7_8,902
+14,F,18-64,Pensioners,7_8,117
+14,F,65-,Pensioners,7_8,905
+14,M,18-64,Pensioners,9_X,1241
+14,M,65-,Pensioners,9_X,8712
+14,F,18-64,Pensioners,9_X,760
+14,F,65-,Pensioners,9_X,10091
+14,M,18-64,Other persons outside the labour force,3_4,1089
+14,M,65-,Other persons outside the labour force,3_4,9
+14,F,18-64,Other persons outside the labour force,3_4,892
+14,F,65-,Other persons outside the labour force,3_4,6
+14,M,18-64,Other persons outside the labour force,5_6,132
+14,M,65-,Other persons outside the labour force,5_6,1
+14,F,18-64,Other persons outside the labour force,5_6,324
+14,F,65-,Other persons outside the labour force,5_6,6
+14,M,18-64,Other persons outside the labour force,7_8,51
+14,M,65-,Other persons outside the labour force,7_8,1
+14,F,18-64,Other persons outside the labour force,7_8,81
+14,F,65-,Other persons outside the labour force,7_8,0
+14,M,18-64,Other persons outside the labour force,9_X,1089
+14,M,65-,Other persons outside the labour force,9_X,36
+14,F,18-64,Other persons outside the labour force,9_X,838
+14,F,65-,Other persons outside the labour force,9_X,58
+15,M,18-64,Employed,3_4,21333
+15,M,65-,Employed,3_4,329
+15,F,18-64,Employed,3_4,15133
+15,F,65-,Employed,3_4,345
+15,M,18-64,Employed,5_6,9110
+15,M,65-,Employed,5_6,201
+15,F,18-64,Employed,5_6,12037
+15,F,65-,Employed,5_6,268
+15,M,18-64,Employed,7_8,4569
+15,M,65-,Employed,7_8,103
+15,F,18-64,Employed,7_8,7695
+15,F,65-,Employed,7_8,124
+15,M,18-64,Employed,9_X,5509
+15,M,65-,Employed,9_X,164
+15,F,18-64,Employed,9_X,2984
+15,F,65-,Employed,9_X,77
+15,M,18-64,Unemployed,3_4,1785
+15,M,65-,Unemployed,3_4,0
+15,F,18-64,Unemployed,3_4,1023
+15,F,65-,Unemployed,3_4,0
+15,M,18-64,Unemployed,5_6,399
+15,M,65-,Unemployed,5_6,0
+15,F,18-64,Unemployed,5_6,384
+15,F,65-,Unemployed,5_6,0
+15,M,18-64,Unemployed,7_8,160
+15,M,65-,Unemployed,7_8,0
+15,F,18-64,Unemployed,7_8,185
+15,F,65-,Unemployed,7_8,0
+15,M,18-64,Unemployed,9_X,1181
+15,M,65-,Unemployed,9_X,0
+15,F,18-64,Unemployed,9_X,915
+15,F,65-,Unemployed,9_X,0
+15,M,18-64,0-14 years old,3_4,0
+15,M,65-,0-14 years old,3_4,0
+15,F,18-64,0-14 years old,3_4,0
+15,F,65-,0-14 years old,3_4,0
+15,M,18-64,0-14 years old,5_6,0
+15,M,65-,0-14 years old,5_6,0
+15,F,18-64,0-14 years old,5_6,0
+15,F,65-,0-14 years old,5_6,0
+15,M,18-64,0-14 years old,7_8,0
+15,M,65-,0-14 years old,7_8,0
+15,F,18-64,0-14 years old,7_8,0
+15,F,65-,0-14 years old,7_8,0
+15,M,18-64,0-14 years old,9_X,0
+15,M,65-,0-14 years old,9_X,0
+15,F,18-64,0-14 years old,9_X,0
+15,F,65-,0-14 years old,9_X,0
+15,M,18-64,"Students, pupils",3_4,2477
+15,M,65-,"Students, pupils",3_4,1
+15,F,18-64,"Students, pupils",3_4,1661
+15,F,65-,"Students, pupils",3_4,0
+15,M,18-64,"Students, pupils",5_6,262
+15,M,65-,"Students, pupils",5_6,1
+15,F,18-64,"Students, pupils",5_6,393
+15,F,65-,"Students, pupils",5_6,4
+15,M,18-64,"Students, pupils",7_8,52
+15,M,65-,"Students, pupils",7_8,8
+15,F,18-64,"Students, pupils",7_8,113
+15,F,65-,"Students, pupils",7_8,6
+15,M,18-64,"Students, pupils",9_X,1581
+15,M,65-,"Students, pupils",9_X,1
+15,F,18-64,"Students, pupils",9_X,1379
+15,F,65-,"Students, pupils",9_X,1
+15,M,18-64,"Conscripts, persons in non-military service",3_4,187
+15,M,65-,"Conscripts, persons in non-military service",3_4,0
+15,F,18-64,"Conscripts, persons in non-military service",3_4,12
+15,F,65-,"Conscripts, persons in non-military service",3_4,0
+15,M,18-64,"Conscripts, persons in non-military service",5_6,2
+15,M,65-,"Conscripts, persons in non-military service",5_6,0
+15,F,18-64,"Conscripts, persons in non-military service",5_6,0
+15,F,65-,"Conscripts, persons in non-military service",5_6,0
+15,M,18-64,"Conscripts, persons in non-military service",7_8,1
+15,M,65-,"Conscripts, persons in non-military service",7_8,0
+15,F,18-64,"Conscripts, persons in non-military service",7_8,0
+15,F,65-,"Conscripts, persons in non-military service",7_8,0
+15,M,18-64,"Conscripts, persons in non-military service",9_X,10
+15,M,65-,"Conscripts, persons in non-military service",9_X,0
+15,F,18-64,"Conscripts, persons in non-military service",9_X,0
+15,F,65-,"Conscripts, persons in non-military service",9_X,0
+15,M,18-64,Pensioners,3_4,1027
+15,M,65-,Pensioners,3_4,6795
+15,F,18-64,Pensioners,3_4,854
+15,F,65-,Pensioners,3_4,7609
+15,M,18-64,Pensioners,5_6,233
+15,M,65-,Pensioners,5_6,3963
+15,F,18-64,Pensioners,5_6,360
+15,F,65-,Pensioners,5_6,5107
+15,M,18-64,Pensioners,7_8,66
+15,M,65-,Pensioners,7_8,1122
+15,F,18-64,Pensioners,7_8,109
+15,F,65-,Pensioners,7_8,1107
+15,M,18-64,Pensioners,9_X,870
+15,M,65-,Pensioners,9_X,6780
+15,F,18-64,Pensioners,9_X,558
+15,F,65-,Pensioners,9_X,8021
+15,M,18-64,Other persons outside the labour force,3_4,807
+15,M,65-,Other persons outside the labour force,3_4,20
+15,F,18-64,Other persons outside the labour force,3_4,796
+15,F,65-,Other persons outside the labour force,3_4,11
+15,M,18-64,Other persons outside the labour force,5_6,189
+15,M,65-,Other persons outside the labour force,5_6,9
+15,F,18-64,Other persons outside the labour force,5_6,383
+15,F,65-,Other persons outside the labour force,5_6,14
+15,M,18-64,Other persons outside the labour force,7_8,126
+15,M,65-,Other persons outside the labour force,7_8,8
+15,F,18-64,Other persons outside the labour force,7_8,229
+15,F,65-,Other persons outside the labour force,7_8,4
+15,M,18-64,Other persons outside the labour force,9_X,1152
+15,M,65-,Other persons outside the labour force,9_X,31
+15,F,18-64,Other persons outside the labour force,9_X,909
+15,F,65-,Other persons outside the labour force,9_X,46
+10,M,18-64,Employed,3_4,14009
+10,M,65-,Employed,3_4,294
+10,F,18-64,Employed,3_4,10914
+10,F,65-,Employed,3_4,363
+10,M,18-64,Employed,5_6,4632
+10,M,65-,Employed,5_6,164
+10,F,18-64,Employed,5_6,8042
+10,F,65-,Employed,5_6,246
+10,M,18-64,Employed,7_8,1874
+10,M,65-,Employed,7_8,49
+10,F,18-64,Employed,7_8,3561
+10,F,65-,Employed,7_8,102
+10,M,18-64,Employed,9_X,2780
+10,M,65-,Employed,9_X,107
+10,F,18-64,Employed,9_X,1551
+10,F,65-,Employed,9_X,51
+10,M,18-64,Unemployed,3_4,2552
+10,M,65-,Unemployed,3_4,0
+10,F,18-64,Unemployed,3_4,1386
+10,F,65-,Unemployed,3_4,0
+10,M,18-64,Unemployed,5_6,416
+10,M,65-,Unemployed,5_6,0
+10,F,18-64,Unemployed,5_6,466
+10,F,65-,Unemployed,5_6,0
+10,M,18-64,Unemployed,7_8,99
+10,M,65-,Unemployed,7_8,0
+10,F,18-64,Unemployed,7_8,162
+10,F,65-,Unemployed,7_8,0
+10,M,18-64,Unemployed,9_X,1314
+10,M,65-,Unemployed,9_X,0
+10,F,18-64,Unemployed,9_X,760
+10,F,65-,Unemployed,9_X,0
+10,M,18-64,0-14 years old,3_4,0
+10,M,65-,0-14 years old,3_4,0
+10,F,18-64,0-14 years old,3_4,0
+10,F,65-,0-14 years old,3_4,0
+10,M,18-64,0-14 years old,5_6,0
+10,M,65-,0-14 years old,5_6,0
+10,F,18-64,0-14 years old,5_6,0
+10,F,65-,0-14 years old,5_6,0
+10,M,18-64,0-14 years old,7_8,0
+10,M,65-,0-14 years old,7_8,0
+10,F,18-64,0-14 years old,7_8,0
+10,F,65-,0-14 years old,7_8,0
+10,M,18-64,0-14 years old,9_X,0
+10,M,65-,0-14 years old,9_X,0
+10,F,18-64,0-14 years old,9_X,0
+10,F,65-,0-14 years old,9_X,0
+10,M,18-64,"Students, pupils",3_4,994
+10,M,65-,"Students, pupils",3_4,0
+10,F,18-64,"Students, pupils",3_4,867
+10,F,65-,"Students, pupils",3_4,0
+10,M,18-64,"Students, pupils",5_6,72
+10,M,65-,"Students, pupils",5_6,1
+10,F,18-64,"Students, pupils",5_6,188
+10,F,65-,"Students, pupils",5_6,1
+10,M,18-64,"Students, pupils",7_8,14
+10,M,65-,"Students, pupils",7_8,3
+10,F,18-64,"Students, pupils",7_8,48
+10,F,65-,"Students, pupils",7_8,6
+10,M,18-64,"Students, pupils",9_X,891
+10,M,65-,"Students, pupils",9_X,0
+10,F,18-64,"Students, pupils",9_X,836
+10,F,65-,"Students, pupils",9_X,0
+10,M,18-64,"Conscripts, persons in non-military service",3_4,169
+10,M,65-,"Conscripts, persons in non-military service",3_4,0
+10,F,18-64,"Conscripts, persons in non-military service",3_4,17
+10,F,65-,"Conscripts, persons in non-military service",3_4,0
+10,M,18-64,"Conscripts, persons in non-military service",5_6,0
+10,M,65-,"Conscripts, persons in non-military service",5_6,0
+10,F,18-64,"Conscripts, persons in non-military service",5_6,0
+10,F,65-,"Conscripts, persons in non-military service",5_6,0
+10,M,18-64,"Conscripts, persons in non-military service",7_8,0
+10,M,65-,"Conscripts, persons in non-military service",7_8,0
+10,F,18-64,"Conscripts, persons in non-military service",7_8,0
+10,F,65-,"Conscripts, persons in non-military service",7_8,0
+10,M,18-64,"Conscripts, persons in non-military service",9_X,9
+10,M,65-,"Conscripts, persons in non-military service",9_X,0
+10,F,18-64,"Conscripts, persons in non-military service",9_X,0
+10,F,65-,"Conscripts, persons in non-military service",9_X,0
+10,M,18-64,Pensioners,3_4,1534
+10,M,65-,Pensioners,3_4,7521
+10,F,18-64,Pensioners,3_4,1202
+10,F,65-,Pensioners,3_4,9591
+10,M,18-64,Pensioners,5_6,267
+10,M,65-,Pensioners,5_6,3506
+10,F,18-64,Pensioners,5_6,398
+10,F,65-,Pensioners,5_6,4765
+10,M,18-64,Pensioners,7_8,62
+10,M,65-,Pensioners,7_8,1079
+10,F,18-64,Pensioners,7_8,92
+10,F,65-,Pensioners,7_8,1043
+10,M,18-64,Pensioners,9_X,998
+10,M,65-,Pensioners,9_X,7157
+10,F,18-64,Pensioners,9_X,514
+10,F,65-,Pensioners,9_X,7685
+10,M,18-64,Other persons outside the labour force,3_4,721
+10,M,65-,Other persons outside the labour force,3_4,10
+10,F,18-64,Other persons outside the labour force,3_4,535
+10,F,65-,Other persons outside the labour force,3_4,8
+10,M,18-64,Other persons outside the labour force,5_6,131
+10,M,65-,Other persons outside the labour force,5_6,3
+10,F,18-64,Other persons outside the labour force,5_6,214
+10,F,65-,Other persons outside the labour force,5_6,14
+10,M,18-64,Other persons outside the labour force,7_8,57
+10,M,65-,Other persons outside the labour force,7_8,3
+10,F,18-64,Other persons outside the labour force,7_8,90
+10,F,65-,Other persons outside the labour force,7_8,7
+10,M,18-64,Other persons outside the labour force,9_X,773
+10,M,65-,Other persons outside the labour force,9_X,51
+10,F,18-64,Other persons outside the labour force,9_X,620
+10,F,65-,Other persons outside the labour force,9_X,62
+11,M,18-64,Employed,3_4,27077
+11,M,65-,Employed,3_4,428
+11,F,18-64,Employed,3_4,21517
+11,F,65-,Employed,3_4,537
+11,M,18-64,Employed,5_6,10563
+11,M,65-,Employed,5_6,248
+11,F,18-64,Employed,5_6,16546
+11,F,65-,Employed,5_6,402
+11,M,18-64,Employed,7_8,5504
+11,M,65-,Employed,7_8,148
+11,F,18-64,Employed,7_8,9051
+11,F,65-,Employed,7_8,171
+11,M,18-64,Employed,9_X,5024
+11,M,65-,Employed,9_X,172
+11,F,18-64,Employed,9_X,2751
+11,F,65-,Employed,9_X,94
+11,M,18-64,Unemployed,3_4,5494
+11,M,65-,Unemployed,3_4,0
+11,F,18-64,Unemployed,3_4,2648
+11,F,65-,Unemployed,3_4,0
+11,M,18-64,Unemployed,5_6,953
+11,M,65-,Unemployed,5_6,0
+11,F,18-64,Unemployed,5_6,949
+11,F,65-,Unemployed,5_6,0
+11,M,18-64,Unemployed,7_8,271
+11,M,65-,Unemployed,7_8,0
+11,F,18-64,Unemployed,7_8,312
+11,F,65-,Unemployed,7_8,0
+11,M,18-64,Unemployed,9_X,2291
+11,M,65-,Unemployed,9_X,0
+11,F,18-64,Unemployed,9_X,1335
+11,F,65-,Unemployed,9_X,0
+11,M,18-64,0-14 years old,3_4,0
+11,M,65-,0-14 years old,3_4,0
+11,F,18-64,0-14 years old,3_4,0
+11,F,65-,0-14 years old,3_4,0
+11,M,18-64,0-14 years old,5_6,0
+11,M,65-,0-14 years old,5_6,0
+11,F,18-64,0-14 years old,5_6,0
+11,F,65-,0-14 years old,5_6,0
+11,M,18-64,0-14 years old,7_8,0
+11,M,65-,0-14 years old,7_8,0
+11,F,18-64,0-14 years old,7_8,0
+11,F,65-,0-14 years old,7_8,0
+11,M,18-64,0-14 years old,9_X,0
+11,M,65-,0-14 years old,9_X,0
+11,F,18-64,0-14 years old,9_X,0
+11,F,65-,0-14 years old,9_X,0
+11,M,18-64,"Students, pupils",3_4,2696
+11,M,65-,"Students, pupils",3_4,4
+11,F,18-64,"Students, pupils",3_4,2922
+11,F,65-,"Students, pupils",3_4,1
+11,M,18-64,"Students, pupils",5_6,292
+11,M,65-,"Students, pupils",5_6,5
+11,F,18-64,"Students, pupils",5_6,599
+11,F,65-,"Students, pupils",5_6,5
+11,M,18-64,"Students, pupils",7_8,80
+11,M,65-,"Students, pupils",7_8,6
+11,F,18-64,"Students, pupils",7_8,165
+11,F,65-,"Students, pupils",7_8,4
+11,M,18-64,"Students, pupils",9_X,2094
+11,M,65-,"Students, pupils",9_X,0
+11,F,18-64,"Students, pupils",9_X,1972
+11,F,65-,"Students, pupils",9_X,0
+11,M,18-64,"Conscripts, persons in non-military service",3_4,270
+11,M,65-,"Conscripts, persons in non-military service",3_4,0
+11,F,18-64,"Conscripts, persons in non-military service",3_4,21
+11,F,65-,"Conscripts, persons in non-military service",3_4,0
+11,M,18-64,"Conscripts, persons in non-military service",5_6,5
+11,M,65-,"Conscripts, persons in non-military service",5_6,0
+11,F,18-64,"Conscripts, persons in non-military service",5_6,2
+11,F,65-,"Conscripts, persons in non-military service",5_6,0
+11,M,18-64,"Conscripts, persons in non-military service",7_8,2
+11,M,65-,"Conscripts, persons in non-military service",7_8,0
+11,F,18-64,"Conscripts, persons in non-military service",7_8,0
+11,F,65-,"Conscripts, persons in non-military service",7_8,0
+11,M,18-64,"Conscripts, persons in non-military service",9_X,36
+11,M,65-,"Conscripts, persons in non-military service",9_X,0
+11,F,18-64,"Conscripts, persons in non-military service",9_X,1
+11,F,65-,"Conscripts, persons in non-military service",9_X,0
+11,M,18-64,Pensioners,3_4,2974
+11,M,65-,Pensioners,3_4,12246
+11,F,18-64,Pensioners,3_4,2487
+11,F,65-,Pensioners,3_4,15244
+11,M,18-64,Pensioners,5_6,515
+11,M,65-,Pensioners,5_6,5636
+11,F,18-64,Pensioners,5_6,788
+11,F,65-,Pensioners,5_6,7818
+11,M,18-64,Pensioners,7_8,148
+11,M,65-,Pensioners,7_8,1833
+11,F,18-64,Pensioners,7_8,201
+11,F,65-,Pensioners,7_8,1901
+11,M,18-64,Pensioners,9_X,1817
+11,M,65-,Pensioners,9_X,10146
+11,F,18-64,Pensioners,9_X,1110
+11,F,65-,Pensioners,9_X,11036
+11,M,18-64,Other persons outside the labour force,3_4,1175
+11,M,65-,Other persons outside the labour force,3_4,20
+11,F,18-64,Other persons outside the labour force,3_4,1082
+11,F,65-,Other persons outside the labour force,3_4,19
+11,M,18-64,Other persons outside the labour force,5_6,175
+11,M,65-,Other persons outside the labour force,5_6,5
+11,F,18-64,Other persons outside the labour force,5_6,385
+11,F,65-,Other persons outside the labour force,5_6,8
+11,M,18-64,Other persons outside the labour force,7_8,126
+11,M,65-,Other persons outside the labour force,7_8,2
+11,F,18-64,Other persons outside the labour force,7_8,181
+11,F,65-,Other persons outside the labour force,7_8,8
+11,M,18-64,Other persons outside the labour force,9_X,1318
+11,M,65-,Other persons outside the labour force,9_X,45
+11,F,18-64,Other persons outside the labour force,9_X,953
+11,F,65-,Other persons outside the labour force,9_X,84
+12,M,18-64,Employed,3_4,16800
+12,M,65-,Employed,3_4,321
+12,F,18-64,Employed,3_4,13428
+12,F,65-,Employed,3_4,344
+12,M,18-64,Employed,5_6,6123
+12,M,65-,Employed,5_6,160
+12,F,18-64,Employed,5_6,9485
+12,F,65-,Employed,5_6,246
+12,M,18-64,Employed,7_8,3207
+12,M,65-,Employed,7_8,92
+12,F,18-64,Employed,7_8,5477
+12,F,65-,Employed,7_8,82
+12,M,18-64,Employed,9_X,2986
+12,M,65-,Employed,9_X,97
+12,F,18-64,Employed,9_X,1742
+12,F,65-,Employed,9_X,61
+12,M,18-64,Unemployed,3_4,4431
+12,M,65-,Unemployed,3_4,0
+12,F,18-64,Unemployed,3_4,2278
+12,F,65-,Unemployed,3_4,0
+12,M,18-64,Unemployed,5_6,663
+12,M,65-,Unemployed,5_6,0
+12,F,18-64,Unemployed,5_6,698
+12,F,65-,Unemployed,5_6,0
+12,M,18-64,Unemployed,7_8,303
+12,M,65-,Unemployed,7_8,0
+12,F,18-64,Unemployed,7_8,349
+12,F,65-,Unemployed,7_8,0
+12,M,18-64,Unemployed,9_X,1660
+12,M,65-,Unemployed,9_X,0
+12,F,18-64,Unemployed,9_X,953
+12,F,65-,Unemployed,9_X,0
+12,M,18-64,0-14 years old,3_4,0
+12,M,65-,0-14 years old,3_4,0
+12,F,18-64,0-14 years old,3_4,0
+12,F,65-,0-14 years old,3_4,0
+12,M,18-64,0-14 years old,5_6,0
+12,M,65-,0-14 years old,5_6,0
+12,F,18-64,0-14 years old,5_6,0
+12,F,65-,0-14 years old,5_6,0
+12,M,18-64,0-14 years old,7_8,0
+12,M,65-,0-14 years old,7_8,0
+12,F,18-64,0-14 years old,7_8,0
+12,F,65-,0-14 years old,7_8,0
+12,M,18-64,0-14 years old,9_X,0
+12,M,65-,0-14 years old,9_X,0
+12,F,18-64,0-14 years old,9_X,0
+12,F,65-,0-14 years old,9_X,0
+12,M,18-64,"Students, pupils",3_4,2120
+12,M,65-,"Students, pupils",3_4,0
+12,F,18-64,"Students, pupils",3_4,2335
+12,F,65-,"Students, pupils",3_4,1
+12,M,18-64,"Students, pupils",5_6,370
+12,M,65-,"Students, pupils",5_6,2
+12,F,18-64,"Students, pupils",5_6,778
+12,F,65-,"Students, pupils",5_6,3
+12,M,18-64,"Students, pupils",7_8,80
+12,M,65-,"Students, pupils",7_8,6
+12,F,18-64,"Students, pupils",7_8,153
+12,F,65-,"Students, pupils",7_8,11
+12,M,18-64,"Students, pupils",9_X,1494
+12,M,65-,"Students, pupils",9_X,1
+12,F,18-64,"Students, pupils",9_X,1368
+12,F,65-,"Students, pupils",9_X,0
+12,M,18-64,"Conscripts, persons in non-military service",3_4,130
+12,M,65-,"Conscripts, persons in non-military service",3_4,0
+12,F,18-64,"Conscripts, persons in non-military service",3_4,9
+12,F,65-,"Conscripts, persons in non-military service",3_4,0
+12,M,18-64,"Conscripts, persons in non-military service",5_6,3
+12,M,65-,"Conscripts, persons in non-military service",5_6,0
+12,F,18-64,"Conscripts, persons in non-military service",5_6,0
+12,F,65-,"Conscripts, persons in non-military service",5_6,0
+12,M,18-64,"Conscripts, persons in non-military service",7_8,2
+12,M,65-,"Conscripts, persons in non-military service",7_8,0
+12,F,18-64,"Conscripts, persons in non-military service",7_8,0
+12,F,65-,"Conscripts, persons in non-military service",7_8,0
+12,M,18-64,"Conscripts, persons in non-military service",9_X,18
+12,M,65-,"Conscripts, persons in non-military service",9_X,0
+12,F,18-64,"Conscripts, persons in non-military service",9_X,0
+12,F,65-,"Conscripts, persons in non-military service",9_X,0
+12,M,18-64,Pensioners,3_4,1801
+12,M,65-,Pensioners,3_4,9295
+12,F,18-64,Pensioners,3_4,1396
+12,F,65-,Pensioners,3_4,10530
+12,M,18-64,Pensioners,5_6,286
+12,M,65-,Pensioners,5_6,3650
+12,F,18-64,Pensioners,5_6,443
+12,F,65-,Pensioners,5_6,4617
+12,M,18-64,Pensioners,7_8,103
+12,M,65-,Pensioners,7_8,1061
+12,F,18-64,Pensioners,7_8,134
+12,F,65-,Pensioners,7_8,1180
+12,M,18-64,Pensioners,9_X,995
+12,M,65-,Pensioners,9_X,7344
+12,F,18-64,Pensioners,9_X,592
+12,F,65-,Pensioners,9_X,8131
+12,M,18-64,Other persons outside the labour force,3_4,832
+12,M,65-,Other persons outside the labour force,3_4,10
+12,F,18-64,Other persons outside the labour force,3_4,725
+12,F,65-,Other persons outside the labour force,3_4,13
+12,M,18-64,Other persons outside the labour force,5_6,116
+12,M,65-,Other persons outside the labour force,5_6,7
+12,F,18-64,Other persons outside the labour force,5_6,230
+12,F,65-,Other persons outside the labour force,5_6,13
+12,M,18-64,Other persons outside the labour force,7_8,176
+12,M,65-,Other persons outside the labour force,7_8,3
+12,F,18-64,Other persons outside the labour force,7_8,224
+12,F,65-,Other persons outside the labour force,7_8,6
+12,M,18-64,Other persons outside the labour force,9_X,900
+12,M,65-,Other persons outside the labour force,9_X,27
+12,F,18-64,Other persons outside the labour force,9_X,720
+12,F,65-,Other persons outside the labour force,9_X,37
+16,M,18-64,Employed,3_4,8504
+16,M,65-,Employed,3_4,123
+16,F,18-64,Employed,3_4,6163
+16,F,65-,Employed,3_4,172
+16,M,18-64,Employed,5_6,2807
+16,M,65-,Employed,5_6,52
+16,F,18-64,Employed,5_6,4497
+16,F,65-,Employed,5_6,81
+16,M,18-64,Employed,7_8,1127
+16,M,65-,Employed,7_8,41
+16,F,18-64,Employed,7_8,2025
+16,F,65-,Employed,7_8,33
+16,M,18-64,Employed,9_X,1517
+16,M,65-,Employed,9_X,72
+16,F,18-64,Employed,9_X,771
+16,F,65-,Employed,9_X,25
+16,M,18-64,Unemployed,3_4,1100
+16,M,65-,Unemployed,3_4,0
+16,F,18-64,Unemployed,3_4,673
+16,F,65-,Unemployed,3_4,0
+16,M,18-64,Unemployed,5_6,161
+16,M,65-,Unemployed,5_6,0
+16,F,18-64,Unemployed,5_6,179
+16,F,65-,Unemployed,5_6,0
+16,M,18-64,Unemployed,7_8,29
+16,M,65-,Unemployed,7_8,0
+16,F,18-64,Unemployed,7_8,49
+16,F,65-,Unemployed,7_8,0
+16,M,18-64,Unemployed,9_X,437
+16,M,65-,Unemployed,9_X,0
+16,F,18-64,Unemployed,9_X,219
+16,F,65-,Unemployed,9_X,0
+16,M,18-64,0-14 years old,3_4,0
+16,M,65-,0-14 years old,3_4,0
+16,F,18-64,0-14 years old,3_4,0
+16,F,65-,0-14 years old,3_4,0
+16,M,18-64,0-14 years old,5_6,0
+16,M,65-,0-14 years old,5_6,0
+16,F,18-64,0-14 years old,5_6,0
+16,F,65-,0-14 years old,5_6,0
+16,M,18-64,0-14 years old,7_8,0
+16,M,65-,0-14 years old,7_8,0
+16,F,18-64,0-14 years old,7_8,0
+16,F,65-,0-14 years old,7_8,0
+16,M,18-64,0-14 years old,9_X,0
+16,M,65-,0-14 years old,9_X,0
+16,F,18-64,0-14 years old,9_X,0
+16,F,65-,0-14 years old,9_X,0
+16,M,18-64,"Students, pupils",3_4,534
+16,M,65-,"Students, pupils",3_4,0
+16,F,18-64,"Students, pupils",3_4,482
+16,F,65-,"Students, pupils",3_4,1
+16,M,18-64,"Students, pupils",5_6,52
+16,M,65-,"Students, pupils",5_6,1
+16,F,18-64,"Students, pupils",5_6,108
+16,F,65-,"Students, pupils",5_6,0
+16,M,18-64,"Students, pupils",7_8,11
+16,M,65-,"Students, pupils",7_8,1
+16,F,18-64,"Students, pupils",7_8,31
+16,F,65-,"Students, pupils",7_8,2
+16,M,18-64,"Students, pupils",9_X,544
+16,M,65-,"Students, pupils",9_X,0
+16,F,18-64,"Students, pupils",9_X,516
+16,F,65-,"Students, pupils",9_X,0
+16,M,18-64,"Conscripts, persons in non-military service",3_4,63
+16,M,65-,"Conscripts, persons in non-military service",3_4,0
+16,F,18-64,"Conscripts, persons in non-military service",3_4,6
+16,F,65-,"Conscripts, persons in non-military service",3_4,0
+16,M,18-64,"Conscripts, persons in non-military service",5_6,1
+16,M,65-,"Conscripts, persons in non-military service",5_6,0
+16,F,18-64,"Conscripts, persons in non-military service",5_6,1
+16,F,65-,"Conscripts, persons in non-military service",5_6,0
+16,M,18-64,"Conscripts, persons in non-military service",7_8,0
+16,M,65-,"Conscripts, persons in non-military service",7_8,0
+16,F,18-64,"Conscripts, persons in non-military service",7_8,0
+16,F,65-,"Conscripts, persons in non-military service",7_8,0
+16,M,18-64,"Conscripts, persons in non-military service",9_X,2
+16,M,65-,"Conscripts, persons in non-military service",9_X,0
+16,F,18-64,"Conscripts, persons in non-military service",9_X,0
+16,F,65-,"Conscripts, persons in non-military service",9_X,0
+16,M,18-64,Pensioners,3_4,596
+16,M,65-,Pensioners,3_4,2728
+16,F,18-64,Pensioners,3_4,484
+16,F,65-,Pensioners,3_4,3405
+16,M,18-64,Pensioners,5_6,92
+16,M,65-,Pensioners,5_6,1285
+16,F,18-64,Pensioners,5_6,158
+16,F,65-,Pensioners,5_6,1652
+16,M,18-64,Pensioners,7_8,25
+16,M,65-,Pensioners,7_8,325
+16,F,18-64,Pensioners,7_8,44
+16,F,65-,Pensioners,7_8,329
+16,M,18-64,Pensioners,9_X,404
+16,M,65-,Pensioners,9_X,3117
+16,F,18-64,Pensioners,9_X,254
+16,F,65-,Pensioners,9_X,3447
+16,M,18-64,Other persons outside the labour force,3_4,302
+16,M,65-,Other persons outside the labour force,3_4,2
+16,F,18-64,Other persons outside the labour force,3_4,389
+16,F,65-,Other persons outside the labour force,3_4,4
+16,M,18-64,Other persons outside the labour force,5_6,75
+16,M,65-,Other persons outside the labour force,5_6,3
+16,F,18-64,Other persons outside the labour force,5_6,145
+16,F,65-,Other persons outside the labour force,5_6,1
+16,M,18-64,Other persons outside the labour force,7_8,21
+16,M,65-,Other persons outside the labour force,7_8,1
+16,F,18-64,Other persons outside the labour force,7_8,45
+16,F,65-,Other persons outside the labour force,7_8,0
+16,M,18-64,Other persons outside the labour force,9_X,290
+16,M,65-,Other persons outside the labour force,9_X,7
+16,F,18-64,Other persons outside the labour force,9_X,269
+16,F,65-,Other persons outside the labour force,9_X,11
+17,M,18-64,Employed,3_4,46911
+17,M,65-,Employed,3_4,650
+17,F,18-64,Employed,3_4,35810
+17,F,65-,Employed,3_4,785
+17,M,18-64,Employed,5_6,18952
+17,M,65-,Employed,5_6,354
+17,F,18-64,Employed,5_6,26098
+17,F,65-,Employed,5_6,526
+17,M,18-64,Employed,7_8,12327
+17,M,65-,Employed,7_8,241
+17,F,18-64,Employed,7_8,16904
+17,F,65-,Employed,7_8,233
+17,M,18-64,Employed,9_X,8087
+17,M,65-,Employed,9_X,207
+17,F,18-64,Employed,9_X,4092
+17,F,65-,Employed,9_X,145
+17,M,18-64,Unemployed,3_4,9395
+17,M,65-,Unemployed,3_4,0
+17,F,18-64,Unemployed,3_4,5420
+17,F,65-,Unemployed,3_4,0
+17,M,18-64,Unemployed,5_6,1864
+17,M,65-,Unemployed,5_6,0
+17,F,18-64,Unemployed,5_6,1720
+17,F,65-,Unemployed,5_6,0
+17,M,18-64,Unemployed,7_8,725
+17,M,65-,Unemployed,7_8,0
+17,F,18-64,Unemployed,7_8,931
+17,F,65-,Unemployed,7_8,0
+17,M,18-64,Unemployed,9_X,2883
+17,M,65-,Unemployed,9_X,0
+17,F,18-64,Unemployed,9_X,1737
+17,F,65-,Unemployed,9_X,0
+17,M,18-64,0-14 years old,3_4,0
+17,M,65-,0-14 years old,3_4,0
+17,F,18-64,0-14 years old,3_4,0
+17,F,65-,0-14 years old,3_4,0
+17,M,18-64,0-14 years old,5_6,0
+17,M,65-,0-14 years old,5_6,0
+17,F,18-64,0-14 years old,5_6,0
+17,F,65-,0-14 years old,5_6,0
+17,M,18-64,0-14 years old,7_8,0
+17,M,65-,0-14 years old,7_8,0
+17,F,18-64,0-14 years old,7_8,0
+17,F,65-,0-14 years old,7_8,0
+17,M,18-64,0-14 years old,9_X,0
+17,M,65-,0-14 years old,9_X,0
+17,F,18-64,0-14 years old,9_X,0
+17,F,65-,0-14 years old,9_X,0
+17,M,18-64,"Students, pupils",3_4,5734
+17,M,65-,"Students, pupils",3_4,4
+17,F,18-64,"Students, pupils",3_4,4948
+17,F,65-,"Students, pupils",3_4,3
+17,M,18-64,"Students, pupils",5_6,827
+17,M,65-,"Students, pupils",5_6,4
+17,F,18-64,"Students, pupils",5_6,1433
+17,F,65-,"Students, pupils",5_6,12
+17,M,18-64,"Students, pupils",7_8,167
+17,M,65-,"Students, pupils",7_8,14
+17,F,18-64,"Students, pupils",7_8,367
+17,F,65-,"Students, pupils",7_8,8
+17,M,18-64,"Students, pupils",9_X,3836
+17,M,65-,"Students, pupils",9_X,2
+17,F,18-64,"Students, pupils",9_X,3709
+17,F,65-,"Students, pupils",9_X,2
+17,M,18-64,"Conscripts, persons in non-military service",3_4,571
+17,M,65-,"Conscripts, persons in non-military service",3_4,0
+17,F,18-64,"Conscripts, persons in non-military service",3_4,60
+17,F,65-,"Conscripts, persons in non-military service",3_4,0
+17,M,18-64,"Conscripts, persons in non-military service",5_6,6
+17,M,65-,"Conscripts, persons in non-military service",5_6,0
+17,F,18-64,"Conscripts, persons in non-military service",5_6,0
+17,F,65-,"Conscripts, persons in non-military service",5_6,0
+17,M,18-64,"Conscripts, persons in non-military service",7_8,1
+17,M,65-,"Conscripts, persons in non-military service",7_8,0
+17,F,18-64,"Conscripts, persons in non-military service",7_8,2
+17,F,65-,"Conscripts, persons in non-military service",7_8,0
+17,M,18-64,"Conscripts, persons in non-military service",9_X,55
+17,M,65-,"Conscripts, persons in non-military service",9_X,0
+17,F,18-64,"Conscripts, persons in non-military service",9_X,2
+17,F,65-,"Conscripts, persons in non-military service",9_X,0
+17,M,18-64,Pensioners,3_4,4203
+17,M,65-,Pensioners,3_4,16256
+17,F,18-64,Pensioners,3_4,3308
+17,F,65-,Pensioners,3_4,18804
+17,M,18-64,Pensioners,5_6,799
+17,M,65-,Pensioners,5_6,7621
+17,F,18-64,Pensioners,5_6,1184
+17,F,65-,Pensioners,5_6,10217
+17,M,18-64,Pensioners,7_8,245
+17,M,65-,Pensioners,7_8,2836
+17,F,18-64,Pensioners,7_8,388
+17,F,65-,Pensioners,7_8,2708
+17,M,18-64,Pensioners,9_X,2809
+17,M,65-,Pensioners,9_X,12972
+17,F,18-64,Pensioners,9_X,1736
+17,F,65-,Pensioners,9_X,15293
+17,M,18-64,Other persons outside the labour force,3_4,2013
+17,M,65-,Other persons outside the labour force,3_4,28
+17,F,18-64,Other persons outside the labour force,3_4,2095
+17,F,65-,Other persons outside the labour force,3_4,21
+17,M,18-64,Other persons outside the labour force,5_6,300
+17,M,65-,Other persons outside the labour force,5_6,7
+17,F,18-64,Other persons outside the labour force,5_6,636
+17,F,65-,Other persons outside the labour force,5_6,13
+17,M,18-64,Other persons outside the labour force,7_8,315
+17,M,65-,Other persons outside the labour force,7_8,6
+17,F,18-64,Other persons outside the labour force,7_8,445
+17,F,65-,Other persons outside the labour force,7_8,4
+17,M,18-64,Other persons outside the labour force,9_X,1799
+17,M,65-,Other persons outside the labour force,9_X,61
+17,F,18-64,Other persons outside the labour force,9_X,1451
+17,F,65-,Other persons outside the labour force,9_X,74
+18,M,18-64,Employed,3_4,8041
+18,M,65-,Employed,3_4,176
+18,F,18-64,Employed,3_4,5910
+18,F,65-,Employed,3_4,200
+18,M,18-64,Employed,5_6,2635
+18,M,65-,Employed,5_6,70
+18,F,18-64,Employed,5_6,4308
+18,F,65-,Employed,5_6,139
+18,M,18-64,Employed,7_8,1067
+18,M,65-,Employed,7_8,38
+18,F,18-64,Employed,7_8,1835
+18,F,65-,Employed,7_8,49
+18,M,18-64,Employed,9_X,1432
+18,M,65-,Employed,9_X,53
+18,F,18-64,Employed,9_X,745
+18,F,65-,Employed,9_X,30
+18,M,18-64,Unemployed,3_4,1535
+18,M,65-,Unemployed,3_4,0
+18,F,18-64,Unemployed,3_4,713
+18,F,65-,Unemployed,3_4,0
+18,M,18-64,Unemployed,5_6,260
+18,M,65-,Unemployed,5_6,0
+18,F,18-64,Unemployed,5_6,184
+18,F,65-,Unemployed,5_6,0
+18,M,18-64,Unemployed,7_8,51
+18,M,65-,Unemployed,7_8,0
+18,F,18-64,Unemployed,7_8,55
+18,F,65-,Unemployed,7_8,0
+18,M,18-64,Unemployed,9_X,490
+18,M,65-,Unemployed,9_X,0
+18,F,18-64,Unemployed,9_X,334
+18,F,65-,Unemployed,9_X,0
+18,M,18-64,0-14 years old,3_4,0
+18,M,65-,0-14 years old,3_4,0
+18,F,18-64,0-14 years old,3_4,0
+18,F,65-,0-14 years old,3_4,0
+18,M,18-64,0-14 years old,5_6,0
+18,M,65-,0-14 years old,5_6,0
+18,F,18-64,0-14 years old,5_6,0
+18,F,65-,0-14 years old,5_6,0
+18,M,18-64,0-14 years old,7_8,0
+18,M,65-,0-14 years old,7_8,0
+18,F,18-64,0-14 years old,7_8,0
+18,F,65-,0-14 years old,7_8,0
+18,M,18-64,0-14 years old,9_X,0
+18,M,65-,0-14 years old,9_X,0
+18,F,18-64,0-14 years old,9_X,0
+18,F,65-,0-14 years old,9_X,0
+18,M,18-64,"Students, pupils",3_4,679
+18,M,65-,"Students, pupils",3_4,1
+18,F,18-64,"Students, pupils",3_4,450
+18,F,65-,"Students, pupils",3_4,3
+18,M,18-64,"Students, pupils",5_6,52
+18,M,65-,"Students, pupils",5_6,5
+18,F,18-64,"Students, pupils",5_6,80
+18,F,65-,"Students, pupils",5_6,4
+18,M,18-64,"Students, pupils",7_8,15
+18,M,65-,"Students, pupils",7_8,1
+18,F,18-64,"Students, pupils",7_8,42
+18,F,65-,"Students, pupils",7_8,2
+18,M,18-64,"Students, pupils",9_X,514
+18,M,65-,"Students, pupils",9_X,2
+18,F,18-64,"Students, pupils",9_X,498
+18,F,65-,"Students, pupils",9_X,0
+18,M,18-64,"Conscripts, persons in non-military service",3_4,57
+18,M,65-,"Conscripts, persons in non-military service",3_4,0
+18,F,18-64,"Conscripts, persons in non-military service",3_4,7
+18,F,65-,"Conscripts, persons in non-military service",3_4,0
+18,M,18-64,"Conscripts, persons in non-military service",5_6,0
+18,M,65-,"Conscripts, persons in non-military service",5_6,0
+18,F,18-64,"Conscripts, persons in non-military service",5_6,0
+18,F,65-,"Conscripts, persons in non-military service",5_6,0
+18,M,18-64,"Conscripts, persons in non-military service",7_8,0
+18,M,65-,"Conscripts, persons in non-military service",7_8,0
+18,F,18-64,"Conscripts, persons in non-military service",7_8,0
+18,F,65-,"Conscripts, persons in non-military service",7_8,0
+18,M,18-64,"Conscripts, persons in non-military service",9_X,5
+18,M,65-,"Conscripts, persons in non-military service",9_X,0
+18,F,18-64,"Conscripts, persons in non-military service",9_X,0
+18,F,65-,"Conscripts, persons in non-military service",9_X,0
+18,M,18-64,Pensioners,3_4,962
+18,M,65-,Pensioners,3_4,4260
+18,F,18-64,Pensioners,3_4,715
+18,F,65-,Pensioners,3_4,4849
+18,M,18-64,Pensioners,5_6,171
+18,M,65-,Pensioners,5_6,1707
+18,F,18-64,Pensioners,5_6,218
+18,F,65-,Pensioners,5_6,2094
+18,M,18-64,Pensioners,7_8,38
+18,M,65-,Pensioners,7_8,417
+18,F,18-64,Pensioners,7_8,49
+18,F,65-,Pensioners,7_8,473
+18,M,18-64,Pensioners,9_X,596
+18,M,65-,Pensioners,9_X,3397
+18,F,18-64,Pensioners,9_X,308
+18,F,65-,Pensioners,9_X,3749
+18,M,18-64,Other persons outside the labour force,3_4,368
+18,M,65-,Other persons outside the labour force,3_4,7
+18,F,18-64,Other persons outside the labour force,3_4,328
+18,F,65-,Other persons outside the labour force,3_4,3
+18,M,18-64,Other persons outside the labour force,5_6,60
+18,M,65-,Other persons outside the labour force,5_6,2
+18,F,18-64,Other persons outside the labour force,5_6,100
+18,F,65-,Other persons outside the labour force,5_6,0
+18,M,18-64,Other persons outside the labour force,7_8,14
+18,M,65-,Other persons outside the labour force,7_8,1
+18,F,18-64,Other persons outside the labour force,7_8,41
+18,F,65-,Other persons outside the labour force,7_8,2
+18,M,18-64,Other persons outside the labour force,9_X,450
+18,M,65-,Other persons outside the labour force,9_X,13
+18,F,18-64,Other persons outside the labour force,9_X,272
+18,F,65-,Other persons outside the labour force,9_X,19
+19,M,18-64,Employed,3_4,21349
+19,M,65-,Employed,3_4,489
+19,F,18-64,Employed,3_4,16373
+19,F,65-,Employed,3_4,526
+19,M,18-64,Employed,5_6,6931
+19,M,65-,Employed,5_6,225
+19,F,18-64,Employed,5_6,11717
+19,F,65-,Employed,5_6,335
+19,M,18-64,Employed,7_8,2945
+19,M,65-,Employed,7_8,96
+19,F,18-64,Employed,7_8,6134
+19,F,65-,Employed,7_8,115
+19,M,18-64,Employed,9_X,4312
+19,M,65-,Employed,9_X,167
+19,F,18-64,Employed,9_X,2498
+19,F,65-,Employed,9_X,94
+19,M,18-64,Unemployed,3_4,3395
+19,M,65-,Unemployed,3_4,0
+19,F,18-64,Unemployed,3_4,1497
+19,F,65-,Unemployed,3_4,0
+19,M,18-64,Unemployed,5_6,565
+19,M,65-,Unemployed,5_6,0
+19,F,18-64,Unemployed,5_6,502
+19,F,65-,Unemployed,5_6,0
+19,M,18-64,Unemployed,7_8,119
+19,M,65-,Unemployed,7_8,0
+19,F,18-64,Unemployed,7_8,235
+19,F,65-,Unemployed,7_8,0
+19,M,18-64,Unemployed,9_X,1256
+19,M,65-,Unemployed,9_X,0
+19,F,18-64,Unemployed,9_X,620
+19,F,65-,Unemployed,9_X,0
+19,M,18-64,0-14 years old,3_4,0
+19,M,65-,0-14 years old,3_4,0
+19,F,18-64,0-14 years old,3_4,0
+19,F,65-,0-14 years old,3_4,0
+19,M,18-64,0-14 years old,5_6,0
+19,M,65-,0-14 years old,5_6,0
+19,F,18-64,0-14 years old,5_6,0
+19,F,65-,0-14 years old,5_6,0
+19,M,18-64,0-14 years old,7_8,0
+19,M,65-,0-14 years old,7_8,0
+19,F,18-64,0-14 years old,7_8,0
+19,F,65-,0-14 years old,7_8,0
+19,M,18-64,0-14 years old,9_X,0
+19,M,65-,0-14 years old,9_X,0
+19,F,18-64,0-14 years old,9_X,0
+19,F,65-,0-14 years old,9_X,0
+19,M,18-64,"Students, pupils",3_4,1222
+19,M,65-,"Students, pupils",3_4,5
+19,F,18-64,"Students, pupils",3_4,1474
+19,F,65-,"Students, pupils",3_4,2
+19,M,18-64,"Students, pupils",5_6,148
+19,M,65-,"Students, pupils",5_6,5
+19,F,18-64,"Students, pupils",5_6,430
+19,F,65-,"Students, pupils",5_6,3
+19,M,18-64,"Students, pupils",7_8,44
+19,M,65-,"Students, pupils",7_8,11
+19,F,18-64,"Students, pupils",7_8,110
+19,F,65-,"Students, pupils",7_8,15
+19,M,18-64,"Students, pupils",9_X,1122
+19,M,65-,"Students, pupils",9_X,0
+19,F,18-64,"Students, pupils",9_X,1009
+19,F,65-,"Students, pupils",9_X,0
+19,M,18-64,"Conscripts, persons in non-military service",3_4,176
+19,M,65-,"Conscripts, persons in non-military service",3_4,0
+19,F,18-64,"Conscripts, persons in non-military service",3_4,16
+19,F,65-,"Conscripts, persons in non-military service",3_4,0
+19,M,18-64,"Conscripts, persons in non-military service",5_6,0
+19,M,65-,"Conscripts, persons in non-military service",5_6,0
+19,F,18-64,"Conscripts, persons in non-military service",5_6,1
+19,F,65-,"Conscripts, persons in non-military service",5_6,0
+19,M,18-64,"Conscripts, persons in non-military service",7_8,0
+19,M,65-,"Conscripts, persons in non-military service",7_8,0
+19,F,18-64,"Conscripts, persons in non-military service",7_8,0
+19,F,65-,"Conscripts, persons in non-military service",7_8,0
+19,M,18-64,"Conscripts, persons in non-military service",9_X,20
+19,M,65-,"Conscripts, persons in non-military service",9_X,0
+19,F,18-64,"Conscripts, persons in non-military service",9_X,1
+19,F,65-,"Conscripts, persons in non-military service",9_X,0
+19,M,18-64,Pensioners,3_4,2089
+19,M,65-,Pensioners,3_4,9518
+19,F,18-64,Pensioners,3_4,1483
+19,F,65-,Pensioners,3_4,10492
+19,M,18-64,Pensioners,5_6,429
+19,M,65-,Pensioners,5_6,4238
+19,F,18-64,Pensioners,5_6,524
+19,F,65-,Pensioners,5_6,5360
+19,M,18-64,Pensioners,7_8,120
+19,M,65-,Pensioners,7_8,1051
+19,F,18-64,Pensioners,7_8,131
+19,F,65-,Pensioners,7_8,1138
+19,M,18-64,Pensioners,9_X,1347
+19,M,65-,Pensioners,9_X,7117
+19,F,18-64,Pensioners,9_X,775
+19,F,65-,Pensioners,9_X,7662
+19,M,18-64,Other persons outside the labour force,3_4,879
+19,M,65-,Other persons outside the labour force,3_4,39
+19,F,18-64,Other persons outside the labour force,3_4,731
+19,F,65-,Other persons outside the labour force,3_4,30
+19,M,18-64,Other persons outside the labour force,5_6,142
+19,M,65-,Other persons outside the labour force,5_6,8
+19,F,18-64,Other persons outside the labour force,5_6,255
+19,F,65-,Other persons outside the labour force,5_6,15
+19,M,18-64,Other persons outside the labour force,7_8,64
+19,M,65-,Other persons outside the labour force,7_8,2
+19,F,18-64,Other persons outside the labour force,7_8,130
+19,F,65-,Other persons outside the labour force,7_8,5
+19,M,18-64,Other persons outside the labour force,9_X,963
+19,M,65-,Other persons outside the labour force,9_X,58
+19,F,18-64,Other persons outside the labour force,9_X,660
+19,F,65-,Other persons outside the labour force,9_X,47
+21,M,18-64,Employed,3_4,3417
+21,M,65-,Employed,3_4,80
+21,F,18-64,Employed,3_4,2917
+21,F,65-,Employed,3_4,158
+21,M,18-64,Employed,5_6,1507
+21,M,65-,Employed,5_6,57
+21,F,18-64,Employed,5_6,2142
+21,F,65-,Employed,5_6,81
+21,M,18-64,Employed,7_8,683
+21,M,65-,Employed,7_8,31
+21,F,18-64,Employed,7_8,1066
+21,F,65-,Employed,7_8,35
+21,M,18-64,Employed,9_X,1434
+21,M,65-,Employed,9_X,55
+21,F,18-64,Employed,9_X,872
+21,F,65-,Employed,9_X,69
+21,M,18-64,Unemployed,3_4,177
+21,M,65-,Unemployed,3_4,0
+21,F,18-64,Unemployed,3_4,108
+21,F,65-,Unemployed,3_4,0
+21,M,18-64,Unemployed,5_6,38
+21,M,65-,Unemployed,5_6,0
+21,F,18-64,Unemployed,5_6,55
+21,F,65-,Unemployed,5_6,0
+21,M,18-64,Unemployed,7_8,21
+21,M,65-,Unemployed,7_8,0
+21,F,18-64,Unemployed,7_8,25
+21,F,65-,Unemployed,7_8,0
+21,M,18-64,Unemployed,9_X,193
+21,M,65-,Unemployed,9_X,0
+21,F,18-64,Unemployed,9_X,148
+21,F,65-,Unemployed,9_X,0
+21,M,18-64,0-14 years old,3_4,0
+21,M,65-,0-14 years old,3_4,0
+21,F,18-64,0-14 years old,3_4,0
+21,F,65-,0-14 years old,3_4,0
+21,M,18-64,0-14 years old,5_6,0
+21,M,65-,0-14 years old,5_6,0
+21,F,18-64,0-14 years old,5_6,0
+21,F,65-,0-14 years old,5_6,0
+21,M,18-64,0-14 years old,7_8,0
+21,M,65-,0-14 years old,7_8,0
+21,F,18-64,0-14 years old,7_8,0
+21,F,65-,0-14 years old,7_8,0
+21,M,18-64,0-14 years old,9_X,0
+21,M,65-,0-14 years old,9_X,0
+21,F,18-64,0-14 years old,9_X,0
+21,F,65-,0-14 years old,9_X,0
+21,M,18-64,"Students, pupils",3_4,186
+21,M,65-,"Students, pupils",3_4,0
+21,F,18-64,"Students, pupils",3_4,94
+21,F,65-,"Students, pupils",3_4,0
+21,M,18-64,"Students, pupils",5_6,17
+21,M,65-,"Students, pupils",5_6,0
+21,F,18-64,"Students, pupils",5_6,32
+21,F,65-,"Students, pupils",5_6,0
+21,M,18-64,"Students, pupils",7_8,3
+21,M,65-,"Students, pupils",7_8,1
+21,F,18-64,"Students, pupils",7_8,7
+21,F,65-,"Students, pupils",7_8,0
+21,M,18-64,"Students, pupils",9_X,201
+21,M,65-,"Students, pupils",9_X,0
+21,F,18-64,"Students, pupils",9_X,165
+21,F,65-,"Students, pupils",9_X,0
+21,M,18-64,"Conscripts, persons in non-military service",3_4,10
+21,M,65-,"Conscripts, persons in non-military service",3_4,0
+21,F,18-64,"Conscripts, persons in non-military service",3_4,1
+21,F,65-,"Conscripts, persons in non-military service",3_4,0
+21,M,18-64,"Conscripts, persons in non-military service",5_6,1
+21,M,65-,"Conscripts, persons in non-military service",5_6,0
+21,F,18-64,"Conscripts, persons in non-military service",5_6,0
+21,F,65-,"Conscripts, persons in non-military service",5_6,0
+21,M,18-64,"Conscripts, persons in non-military service",7_8,0
+21,M,65-,"Conscripts, persons in non-military service",7_8,0
+21,F,18-64,"Conscripts, persons in non-military service",7_8,0
+21,F,65-,"Conscripts, persons in non-military service",7_8,0
+21,M,18-64,"Conscripts, persons in non-military service",9_X,1
+21,M,65-,"Conscripts, persons in non-military service",9_X,0
+21,F,18-64,"Conscripts, persons in non-military service",9_X,0
+21,F,65-,"Conscripts, persons in non-military service",9_X,0
+21,M,18-64,Pensioners,3_4,117
+21,M,65-,Pensioners,3_4,1082
+21,F,18-64,Pensioners,3_4,140
+21,F,65-,Pensioners,3_4,1365
+21,M,18-64,Pensioners,5_6,68
+21,M,65-,Pensioners,5_6,787
+21,F,18-64,Pensioners,5_6,69
+21,F,65-,Pensioners,5_6,747
+21,M,18-64,Pensioners,7_8,9
+21,M,65-,Pensioners,7_8,225
+21,F,18-64,Pensioners,7_8,10
+21,F,65-,Pensioners,7_8,167
+21,M,18-64,Pensioners,9_X,159
+21,M,65-,Pensioners,9_X,1101
+21,F,18-64,Pensioners,9_X,108
+21,F,65-,Pensioners,9_X,1360
+21,M,18-64,Other persons outside the labour force,3_4,176
+21,M,65-,Other persons outside the labour force,3_4,24
+21,F,18-64,Other persons outside the labour force,3_4,189
+21,F,65-,Other persons outside the labour force,3_4,25
+21,M,18-64,Other persons outside the labour force,5_6,48
+21,M,65-,Other persons outside the labour force,5_6,9
+21,F,18-64,Other persons outside the labour force,5_6,99
+21,F,65-,Other persons outside the labour force,5_6,14
+21,M,18-64,Other persons outside the labour force,7_8,25
+21,M,65-,Other persons outside the labour force,7_8,6
+21,F,18-64,Other persons outside the labour force,7_8,39
+21,F,65-,Other persons outside the labour force,7_8,5
+21,M,18-64,Other persons outside the labour force,9_X,239
+21,M,65-,Other persons outside the labour force,9_X,17
+21,F,18-64,Other persons outside the labour force,9_X,231
+21,F,65-,Other persons outside the labour force,9_X,18

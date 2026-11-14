@@ -32,5 +32,10 @@ check("gap arithmetic", abs(gap["attended"] + gap["missing_per_year"] - 0.8 * ga
 a = c.get("/api/actions?goal=3").json()["actions"]
 check("roadmap goal 3 actions parsed with pages", len(a) >= 15 and all(x["page"] > 0 for x in a))
 check("grounding flags an invented number", grounding.unverified("74.3 % and 1234 more", [{"r": 74.3}]) == [1234.0])
+s = c.get("/api/sim").json()
+check("simulation summaries for 3 programmes, each with validation", len(s["programmes"]) == 3 and all("validation" in p for p in s["programmes"]))
+h = c.get("/api/sim/breast/region/90").json()
+check("Helsinki breast gap splits into composition + other",
+      abs(h["composition_gap"] + h["other_gap"] - (h["real"] - h["national_real"])) < 0.05 and len(h["scenarios"]) == 4)
 print(f"\n{len(fails)} failed" if fails else "\nall passed")
 sys.exit(1 if fails else 0)

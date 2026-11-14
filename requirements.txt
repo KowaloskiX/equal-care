@@ -5,5 +5,6 @@ pandas
 pyarrow
 requests
 pypdf
+typesafe-sdk==0.7.2   # Jev, the decision model of the simulated residents (src/jev_sim.py)
 google-genai   # Gemini analyst (next step)
 python-dotenv

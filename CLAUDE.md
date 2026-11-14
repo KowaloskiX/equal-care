@@ -14,3 +14,10 @@ a working demo.
 - Say what the data cannot show. Survival rates in Sotkanet have no case counts, so small counties (Åland) are noisy; screening attendance counts only the public programme (private mammography counts as absence).
 - Run from the repo root: `make app`, `make web`, `make findings`, `make check`. Data is committed under `data/`; the demo never calls Sotkanet live. `data/raw/` is a cache and is not committed.
 - Do not commit `.env`.
+
+## Simulated residents (Jev)
+- `src/population.py` builds Finland's 30-74 year olds as weighted cells from Statistics Finland tables; `src/jev_sim.py` asks Jev (TypeSafe) once per archetype whether the person takes part in screening and why not; `src/simulate.py` anchors, aggregates and runs the what-if scenarios into `data/sim/*.json`.
+- Simulation is never shown as data. Every simulated number carries `note`/validation, and the UI labels it "simulation".
+- Report validation with every claim from the simulation (2024, real vs simulated attendance): breast r = 0.75 by county, colorectal 0.58, cervical 0.24 (weak: much cervical testing happens outside the programme). Use breast and colorectal for the story.
+- The useful output is the split of a county's gap into what its population explains (`composition_gap`) and what it does not (`other_gap`), plus scenario effects in people per year.
+- Jev answers are cached in `data/jev/` and committed, so the demo needs no TypeSafe key. Changing a state or question changes the cache hash and triggers new calls.
