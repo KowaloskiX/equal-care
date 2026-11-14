@@ -14,7 +14,7 @@ import residents as _residents   # noqa: F401 — its load_env() populates .env 
 ROOT = Path(__file__).resolve().parent.parent
 MODEL = os.environ.get("ANTHROPIC_MODEL", "claude-haiku-5-5")
 MAX_TURNS = 6
-MAX_TOKENS = 600
+MAX_TOKENS = 1500   # Haiku's thinking blocks share this budget — 600 truncated mid-sentence
 
 SYSTEM = """
 You are the analyst inside Equal Care Finland, a decision-support tool for Finnish wellbeing services counties and national cancer-care planners. You answer questions about regional gaps in cancer screening and in the later cancer-care pathway.
@@ -160,9 +160,12 @@ def ask(question, prog=None, code=None, client=None):
     tools_used, results, focus, run = [], [], None, None
     usage = {"input_tokens": 0, "output_tokens": 0}
     text = ""
-    for _ in range(MAX_TURNS):
-        r = client.messages.create(model=MODEL, max_tokens=MAX_TOKENS, system=SYSTEM,
-                                   tools=TOOLS, messages=messages)
+    for turn in range(MAX_TURNS):
+        kwargs = {"model": MODEL, "max_tokens": MAX_TOKENS, "system": SYSTEM,
+                  "tools": TOOLS, "messages": messages}
+        if turn == MAX_TURNS - 1:
+            kwargs["tool_choice"] = {"type": "none"}   # last turn must produce final text
+        r = client.messages.create(**kwargs)
         usage["input_tokens"] += getattr(r.usage, "input_tokens", 0)
         usage["output_tokens"] += getattr(r.usage, "output_tokens", 0)
         calls = [b for b in r.content if getattr(b, "type", None) == "tool_use"]
