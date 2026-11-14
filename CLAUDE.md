@@ -15,9 +15,10 @@ a working demo.
 - Run from the repo root: `make app`, `make web`, `make findings`, `make check`. Data is committed under `data/`; the demo never calls Sotkanet live. `data/raw/` is a cache and is not committed.
 - Do not commit `.env`.
 
-## Simulated residents (Jev)
-- `src/population.py` builds Finland's 30-74 year olds as weighted cells from Statistics Finland tables; `src/jev_sim.py` asks Jev (TypeSafe) once per archetype whether the person takes part in screening and why not; `src/simulate.py` anchors, aggregates and runs the what-if scenarios into `data/sim/*.json`.
-- Simulation is never shown as data. Every simulated number carries `note`/validation, and the UI labels it "simulation".
-- Report validation with every claim from the simulation (2024, real vs simulated attendance): breast r = 0.75 by county, colorectal 0.58, cervical 0.24 (weak: much cervical testing happens outside the programme). Use breast and colorectal for the story.
+## Simulated residents (switchable engine)
+- `src/population.py` builds Finland's 30-74 year olds as weighted cells from Statistics Finland tables; `src/residents.py` asks a decision engine once per archetype whether the person takes part in screening and why not; `src/simulate.py` anchors, aggregates and runs the what-if scenarios into `data/sim/*.json`.
+- Engine switch: `SIM_ENGINE` in `.env` or environment (`jev` | `gemini`), or `--engine`. `jev` = Jev (TypeSafe), cache `data/jev/`, `TYPESAFE_API_KEY`; `gemini` = Gemini Decisions API (`gemini-decision-1`), cache `data/decisions/`, `GEMINI_API_KEY`. Prompt wording is shared; only the client call differs.
+- Simulation is never shown as data. Every simulated number carries `note`/validation, and the UI labels it "Simulation" with the engine name.
+- Report validation with every claim from the simulation (2024, real vs simulated attendance, Gemini Decisions): breast r = 0.87 by county, colorectal 0.62, cervical not simulated. Use breast and colorectal for the story. Model-dependence caveat: under Jev the same split flipped (breast r = 0.75, Helsinki mostly "services" instead of "population"); committed caches exist for both engines.
 - The useful output is the split of a county's gap into what its population explains (`composition_gap`) and what it does not (`other_gap`), plus scenario effects in people per year.
-- Jev answers are cached in `data/jev/` and committed, so the demo needs no TypeSafe key. Changing a state or question changes the cache hash and triggers new calls.
+- Answers are cached in `data/<engine cache>/` and committed, so the demo needs no key. Changing a state or question changes the cache hash and triggers new calls.

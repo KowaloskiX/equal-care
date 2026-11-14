@@ -10,10 +10,30 @@ from fastapi.middleware.cors import CORSMiddleware
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
-import datastore as ds, strategy
+import datastore as ds, strategy, recommend as rec, decompose
 from indicators import INDICATORS, GOALS, STAGES
 
 app = FastAPI(title="Equal Care Across Finland")
+
+
+@app.on_event("startup")
+def _warm():
+    """Precompute the decompositions (municipality bootstrap takes a few seconds) so the first
+    /api/decompose call is instant; lru_cache shares the result with the endpoint."""
+    import threading
+    threading.Thread(target=lambda: [decompose.decompose(p) for p in decompose.PROG_KEY], daemon=True).start()
+    # Warm the replay memo for the demo path (breast/Helsinki + the pitch combos, bowel baseline):
+    # a cold scenario replay rebuilds the population frame in ~5 s, a warm one answers in ms.
+    def warm_replays():
+        import replay
+        for prog, code, s in [("breast", "90", None), ("breast", "90", ["own_language"]),
+                              ("breast", "90", ["own_language", "evening_slots"]),
+                              ("bowel", "07", None), ("bowel", "07", ["own_language"])]:
+            try:
+                replay.replay(prog, code, s)
+            except Exception:
+                pass
+    threading.Thread(target=warm_replays, daemon=True).start()
 app.add_middleware(CORSMiddleware, allow_origins=os.environ.get("EC_ORIGINS", "*").split(","), allow_methods=["*"],
                    allow_headers=["*"])
 
@@ -46,6 +66,14 @@ def series(key: str, code: str):
     return ds.series(key, code)
 
 
+@app.get("/api/timeline")
+def timeline(key: str):
+    """Every published period of a care-queue indicator, all counties + Finland (YYYYMM periods)."""
+    if key not in ("onc_wait_90", "onc_ref_21"):
+        raise HTTPException(404, f"no timeline for {key!r}")
+    return ds.timeline(key)
+
+
 @app.get("/api/region/{code}")
 def region(code: str, year: int | None = None):
     try:
@@ -57,6 +85,23 @@ def region(code: str, year: int | None = None):
 @app.get("/api/region/{code}/municipalities")
 def municipalities(code: str, key: str, year: int | None = None):
     return ds.municipalities(code, key, year)
+
+
+@app.get("/api/decompose/{prog}/{code}")
+def decompose_endpoint(prog: str, code: str):
+    """How much of a county's screening gap its population explains — data only (municipality WLS),
+    no simulation. See src/decompose.py."""
+    if prog not in decompose.PROG_KEY:
+        raise HTTPException(404, f"no decomposition for {prog!r}")
+    d = decompose.decompose(prog)
+    row = d["rows"].get(code)
+    if not row:
+        raise HTTPException(404, f"no decomposition for county {code!r}")
+    return {"programme": prog, "code": code, "name": ds.short_names().get(code, code), **row,
+            "national_real": d["national_real"], "r2": d["r2"], "r2_pct": round(100 * d["r2"]),
+            "n_municipalities": d["n_municipalities"], "predictors": d["predictors"],
+            "coefficients": d["coefficients"], "method": d["method"], "source": d["source"],
+            "note": "Data · municipality WLS on composition"}
 
 
 @app.get("/api/gap")
@@ -88,9 +133,17 @@ def strategy_search(q: str, doc: str | None = None):
     return {"hits": strategy.search(q, doc)}
 
 
-# ---------------- simulation (Jev residents; precomputed by src/simulate.py, never computed per request)
-SIM_NOTE = ("Simulation, not data: synthetic residents built from Statistics Finland tables answer through Jev "
-            "(TypeSafe). Anchored so Finland matches the real national rate. See validation for how well it tracks reality.")
+# ---------------- simulation (synthetic residents; precomputed by src/simulate.py, never computed per request)
+ENGINE_WHO = {"jev": "Jev (TypeSafe)", "gemini-decision-1": "the Gemini Decisions API (gemini-decision-1)"}
+
+
+def sim_note(engine):
+    who = ENGINE_WHO.get(engine, engine or "the decision model")
+    return ("Simulation, not data: synthetic residents built from Statistics Finland tables answer through "
+            f"{who}. Anchored so Finland matches the real national rate. See validation for how well it tracks reality.")
+
+
+SIM_NOTE = sim_note("jev")   # fallback when a sim file predates the engine field
 
 
 def _sim(prog):
@@ -102,16 +155,20 @@ def _sim(prog):
 
 @app.get("/api/sim")
 def sim_index():
-    import jev_sim
+    import residents
     out = []
-    for prog, P in jev_sim.PROGRAMMES.items():
+    engine = None
+    for prog, P in residents.PROGRAMMES.items():
+        if prog == "cervix":            # cervix simulation is out of the story (weak validation)
+            continue
         try:
             s = _sim(prog)
         except HTTPException:
             continue
+        engine = engine or s.get("engine")
         out.append({"programme": prog, "indicator": P["indicator"], "label": s["label"], "validation": s["validation"],
                     "scenarios": {k: v["label"] for k, v in s["scenarios"].items()}})
-    return {"note": SIM_NOTE, "programmes": out}
+    return {"note": sim_note(engine or "jev"), "programmes": out}
 
 
 @app.get("/api/sim/{prog}")
@@ -123,9 +180,13 @@ def sim_level(prog: str, level: str = "county", scenario: str | None = None):
         if not sc:
             raise HTTPException(404, f"no scenario {scenario!r}")
         rows = {c: {**r, **sc["levels"][level].get(c, {})} for c, r in rows.items()}
-    return {"programme": prog, "label": s["label"], "level": level, "year": L["year"], "national_real": L["national_real"],
+    import simulate
+    eng_id = "gemini" if s.get("engine") == "gemini-decision-1" else "jev"   # match the engine the sim file was built with
+    return {"programme": prog, "engine": s.get("engine"), "label": s["label"], "level": level, "year": L["year"], "national_real": L["national_real"],
             "national_expected": L["national_expected"], "rows": rows, "validation": s["validation"], "anchor": s["anchor"],
-            "scenario": scenario, "note": SIM_NOTE, "source": L["source"]}
+            "group_validation": simulate.group_validation(prog, eng_id),
+            "group_validation_source": simulate.group_validation_source(prog),
+            "scenario": scenario, "note": sim_note(s.get("engine")), "source": L["source"]}
 
 
 @app.get("/api/sim/{prog}/region/{code}")
@@ -134,6 +195,99 @@ def sim_region(prog: str, code: str, level: str = "county"):
     if r is None:
         raise HTTPException(404, f"no simulated row for {code!r}")
     sc = {k: {"label": v["label"], **v["levels"][level].get(code, {})} for k, v in s["scenarios"].items()}
-    return {"programme": prog, "code": code, "name": ds.short_names().get(code, code), **r, "scenarios": sc,
-            "national_real": s["levels"][level]["national_real"], "validation": s["validation"], "note": SIM_NOTE,
+    return {"programme": prog, "engine": s.get("engine"), "code": code, "name": ds.short_names().get(code, code), **r, "scenarios": sc,
+            "national_real": s["levels"][level]["national_real"], "validation": s["validation"], "note": sim_note(s.get("engine")),
             "source": s["levels"][level]["source"]}
+
+
+# ---------------- recommendations (cited roadmap actions; see src/recommend.py)
+
+
+@app.get("/api/whatif")
+def whatif_endpoint(prog: str, code: str, s: str):
+    """Live combined-intervention run over the simulated residents for one county (503 when answers are not cached
+    and the engine key is not set — never fakes a result)."""
+    import whatif
+    try:
+        return whatif.whatif(prog, code, [x.strip() for x in s.split(",") if x.strip()])
+    except whatif.Unavailable as e:
+        raise HTTPException(503, str(e))
+    except KeyError as e:
+        raise HTTPException(404, str(e))
+
+
+@app.get("/api/residents/{prog}/answer")
+def resident_answer(prog: str, key: str, s: str | None = None):
+    """The exact state, questions and raw cache line behind one recorded engine answer (replay popover)."""
+    import replay
+    try:
+        return replay.answer(prog, json.loads(key),
+                             [x.strip() for x in s.split(",") if x.strip()] if s else None)
+    except (KeyError, json.JSONDecodeError) as e:
+        raise HTTPException(404, str(e))
+
+
+@app.get("/api/residents/{prog}/{code}")
+def residents_replay(prog: str, code: str, s: str | None = None):
+    """Recorded engine answers for one county, one row per archetype, for the run animation.
+    Baseline replay is pure cache (0 calls); a scenario goes through /api/whatif first (503 if uncached)."""
+    import replay, whatif
+    try:
+        return replay.replay(prog, code, [x.strip() for x in s.split(",") if x.strip()] if s else None)
+    except whatif.Unavailable as e:
+        raise HTTPException(503, str(e))
+    except KeyError as e:
+        raise HTTPException(404, str(e))
+
+
+@app.get("/api/focus/{prog}/{code}")
+def focus_endpoint(prog: str, code: str):
+    """Step-4 stage pick: the engine ranks which pathway stage the county should address first —
+    a choice over five fixed stages grounded in the county's real stats. Cached; SIMULATION, not data."""
+    import focus
+    try:
+        return focus.focus(prog, code)
+    except KeyError as e:
+        raise HTTPException(404, str(e))
+
+
+@app.get("/api/recommend/{prog}/{code}")
+def recommend_endpoint(prog: str, code: str):
+    if prog not in rec.PROGRAMMES:
+        raise HTTPException(404, f"unknown programme {prog!r}")
+    if code not in ds.values(rec.PROGRAMMES[prog], "county")["values"]:
+        raise HTTPException(404, f"unknown county {code!r}")
+    return rec.recommend(prog, code)
+
+
+@app.get("/api/brief")
+def brief_endpoint(prog: str | None = None, n: int = 3):
+    progs = (prog,) if prog else ("breast", "bowel")   # cervix is out of the story: much testing happens privately
+    for p in progs:
+        if p not in rec.PROGRAMMES:
+            raise HTTPException(404, f"unknown programme {p!r}")
+    return rec.brief(progs, max(1, min(n, 23)))
+
+
+# ---------------- analyst drawer (Claude over the app's own tool functions)
+
+
+@app.post("/api/ask")
+def ask_endpoint(body: dict):
+    """The analyst: Claude picks which backend tools to call and explains the results. Numbers are only
+    ever copied from tool results — grounding.unverified() flags any it invented. 503 without a key, 502
+    on an Anthropic API error (the model id included)."""
+    import analyst
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        raise HTTPException(503, "ANTHROPIC_API_KEY is not set")
+    try:
+        return analyst.ask(body.get("question", ""), body.get("prog"), body.get("code"))
+    except Exception as e:                       # Anthropic APIError, network, bad model id — surface it, no fake text
+        raise HTTPException(502, str(e))
+
+
+# ---------------- generated briefing (src/report.py)
+
+from app.report_api import router as report_router
+
+app.include_router(report_router)

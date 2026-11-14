@@ -1,6 +1,6 @@
-"""Turn Jev answers into the numbers the app shows, and save them (data/sim/<programme>.json, committed).
+"""Turn Decisions answers into the numbers the app shows, and save them (data/sim/<programme>.json, committed).
 
-Usage: python src/simulate.py [breast cervix bowel] [--scenarios]   (--scenarios asks Jev for the what-if runs first)
+Usage: python src/simulate.py [breast cervix bowel] [--scenarios]   (--scenarios asks the Decisions API for the what-if runs first)
 
 For each programme, county and municipality:
 - real:      attendance from Sotkanet (data)
@@ -9,16 +9,17 @@ For each programme, county and municipality:
 - composition_gap = expected - national: how far the county should sit from Finland given its population alone
 - other_gap       = (real - national) - composition_gap: the part of the gap its population does NOT explain,
                     i.e. where local services, access or organisation are the likelier cause
-- reasons:   share of eligible people by Jev's main reason (among those the simulation expects to skip)
+- reasons:   share of eligible people by the model's main reason (among those the simulation expects to skip)
 - scenarios: change of the expected rate when one fact changes (own-language invitation, evening slots, SMS
              reminder, mobile unit) and the extra people per year that means, using the real number invited
 """
 import json, sys
+from functools import lru_cache
 from pathlib import Path
 import numpy as np, pandas as pd
 
 sys.path.insert(0, str(Path(__file__).parent))
-import jev_sim as js
+import residents as js
 import datastore as ds
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -56,20 +57,29 @@ def summarise(prog, scenarios=True):
     c, target, raw = js.anchor_shift(prog)
     E = frame(prog, "baseline", c, county_of)
     nat_sim = 100 * float(np.average(E.pa, weights=E.w))
-    out = {"programme": prog, "indicator": ind, "label": ds.BY_KEY[ind].label, "anchor": {"logit_shift": round(c, 3),
+    out = {"programme": prog, "engine": js.engine_name(), "indicator": ind, "label": ds.BY_KEY[ind].label, "anchor": {"logit_shift": round(c, 3),
            "raw_national": round(100 * raw, 1), "real_national": round(100 * target, 1)},
            "validation": js.validate(prog)[0], "levels": {}}
     out["validation"].pop("source", None)
     for level, by in (("county", "county"), ("municipality", "muni")):
         real = ds.values(ind, level)
         exp = rate(E, by)
-        skip = E.assign(s=(1 - E.pa) * E.w)
-        reasons = (skip.groupby([by, "reason"]).s.sum() / skip.groupby(by).s.sum()).round(3)
+        # ASSUMPTION: displayed reasons are barriers only — the engine's full reason
+        # distribution restricted to BARRIERS and renormalised, weighted by expected
+        # non-attendance; motivators ("habit", "health_duty") are excluded by design.
+        sw = (1 - E.pa) * E.w
+        bm = E.reasons.map(lambda q: sum((q or {}).get(b, 0.0) for b in js.BARRIERS))
+        reasons = {}
+        for code, g in E.groupby(by):
+            den = float((sw[g.index] * bm[g.index]).sum())
+            reasons[code] = ({r: round(float((sw[g.index] * g.reasons.map(
+                                  lambda q: (q or {}).get(r, 0.0))).sum()) / den, 3)
+                              for r in js.BARRIERS} if den > 0 else {})
         rows = {}
         for code, e in exp.items():
             rv = real["values"].get(code)
             r = {"expected": float(e), "composition_gap": round(float(e) - nat_sim, 2),
-                 "reasons": {k: float(v) for k, v in reasons[code].sort_values(ascending=False).items()} if code in reasons.index.get_level_values(0) else {}}
+                 "reasons": dict(sorted(reasons.get(code, {}).items(), key=lambda kv: -kv[1]))}
             if rv:
                 r["real"] = rv["value"]; r["attended"] = rv["abs_value"]
                 r["invited"] = round(rv["abs_value"] * 100 / rv["value"]) if rv["abs_value"] and rv["value"] else None
@@ -97,6 +107,61 @@ def summarise(prog, scenarios=True):
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / f"{prog}.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
     return out
+
+
+GROUP_LABELS = {
+    "domestic": "native language Finnish or Swedish",
+    "other_or_missing": "another or missing native language",
+    "basic_or_unknown": "basic education or unknown",
+    "primary_or_unknown": "primary education or unknown",
+    "secondary": "secondary education",
+    "intermediate_secondary": "intermediate or secondary education",
+    "tertiary": "tertiary or higher education",
+    "tertiary_higher": "tertiary or higher education",
+}
+# ASSUMPTION: registry group -> archetype mapping.
+#   language: "domestic" = lang in {fi, sv}; "other/missing" = every other native language.
+#   education: StatFin edu codes map to the registry bands as 9_X -> basic/primary-or-unknown,
+#   3_4 -> secondary, and 5_6 + 7_8 -> tertiary (bachelor's and master's merge into the registry's
+#   single higher-education band).
+EDU_GROUP = {"basic_or_unknown": ("9_X",), "primary_or_unknown": ("9_X",),
+             "secondary": ("3_4",), "intermediate_secondary": ("3_4",),
+             "tertiary": ("5_6", "7_8"), "tertiary_higher": ("5_6", "7_8")}
+
+
+def registry_groups():
+    return json.loads((ROOT / "data/registry_groups.json").read_text())
+
+
+@lru_cache(maxsize=None)
+def group_validation(prog, engine=None):
+    """Simulated national attendance per population group vs the Cancer Registry's 2024 crude rates
+    (data/registry_groups.json). Display only — the registry figures are never used for calibration."""
+    R = registry_groups()[prog]
+    c, _, _ = js.anchor_shift(prog, engine)
+    E = js.answers(prog, engine=engine)
+    E = E[E.p.notna()].copy()
+    E["pa"] = anchored(E, c)
+
+    def sim_rate(mask):
+        d = E[mask]
+        return round(100 * float((d.pa * d.w).sum() / d.w.sum()), 1)
+
+    rows = []
+    for dim, groups in R["groups"].items():
+        for gname, rec in groups.items():
+            if dim == "language":
+                mask = E.lang.isin(("fi", "sv")) if gname == "domestic" else ~E.lang.isin(("fi", "sv"))
+            else:
+                mask = E.edu.isin(EDU_GROUP[gname])
+            rows.append({"dim": dim, "key": gname, "group": GROUP_LABELS[gname],
+                         "registry": round(100 * rec["attended"] / rec["invited"], 1),
+                         "simulated": sim_rate(mask)})
+    return rows
+
+
+def group_validation_source(prog):
+    return registry_groups()[prog]["source"]
 
 
 def main():

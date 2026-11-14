@@ -5,6 +5,7 @@ pandas
 pyarrow
 requests
 pypdf
-typesafe-sdk==0.7.2   # Jev, the decision model of the simulated residents (src/jev_sim.py)
-google-genai   # Gemini analyst (next step)
+typesafe-sdk==0.7.2   # Jev, one decision engine for the simulated residents (src/residents.py, SIM_ENGINE=jev)
+google-genai>=3.2   # Gemini Decisions API, the other engine (SIM_ENGINE=gemini)
+anthropic==2.4.0    # Claude for the analyst drawer (src/analyst.py, /api/ask)
 python-dotenv
