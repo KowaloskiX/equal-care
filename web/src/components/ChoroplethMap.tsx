@@ -173,7 +173,7 @@ export default function ChoroplethMap(props: {
       getRadius: (d: CrowdDot) => (d.row < crowd.revealed ? 3 : 0), radiusUnits: "pixels",
       getFillColor: (d: CrowdDot) => (d.u < crowd.pRow[d.row] ? [74, 222, 128, 235] : [248, 113, 113, 235]),
       stroked: true, getLineColor: [255, 255, 255, 90], getLineWidth: 0.5, lineWidthUnits: "pixels",
-      transitions: { getRadius: 400 },     // dots grow from zero as their row is revealed
+      transitions: { getRadius: 400, getFillColor: 300 },   // grow on reveal, fade on scenario flip
       updateTriggers: { getRadius: [crowd.revealed], getFillColor: [crowd.pRow, crowd.flip] },
       onHover: (info: PickingInfo) => {
         const d = info.object as CrowdDot | undefined;

@@ -500,17 +500,44 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCro
   const toggle = (id: string) => setSel((s) => {
     const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n;
   });
+  // baseline replay is prefetched on mount so Run starts raining dots in the same frame —
+  // the ~1.2 s fetch otherwise leaves the map silent before the reveal can begin
+  const baseRef = useRef<Replay | null>(null);
+  useEffect(() => {
+    let live = true;
+    getBaselineReplay(prog, code).then((b) => { if (live) baseRef.current = b; }).catch(() => null);
+    return () => { live = false; };
+  }, [prog, code]);
+  // baseline crowd must exist before the scenario flips dots — but raining the dots in over
+  // ~1.8 s is the visible "the residents are answering" beat, so reveal them progressively
+  const revealRef = useRef(0);
+  useEffect(() => () => cancelAnimationFrame(revealRef.current), []);
+  const revealBaseline = (b: Replay) => {
+    const instant = reduced();
+    cancelAnimationFrame(revealRef.current);
+    onCrowd?.((p) => {
+      const base = p && p.prog === b.programme && p.code === b.code
+        ? { ...p, flip: {}, scenarios: [...sel],
+            pRow: b.rows.map((r) => r.p_cal ?? r.jev_attend) }
+        : { ...buildCrowd(b, munis ?? null, who, engineName(b.engine) ?? b.engine),
+            scenarios: [...sel] };
+      return { ...base, revealed: instant ? b.rows.length : 0 };
+    });
+    if (instant) return;
+    const t0 = performance.now();
+    const sweep = (t: number) => {
+      const x = Math.min(1, (t - t0) / 1800);
+      const n = Math.round(Math.pow(x, 0.8) * b.rows.length);   // fast start, settles at the end
+      onCrowd?.((p) => (p ? { ...p, revealed: Math.max(p.revealed, n) } : p));
+      if (x < 1) revealRef.current = requestAnimationFrame(sweep);
+    };
+    revealRef.current = requestAnimationFrame(sweep);
+  };
   const run = () => {
     if (!sel.size || busy) return;
     setBusy(true); setErr(null); setDone(false);
-    // baseline crowd must exist before the scenario flips dots — show it fully revealed at once
-    getBaselineReplay(prog, code).then((b) => onCrowd?.((p) => {
-      if (p && p.prog === b.programme && p.code === b.code)
-        return { ...p, revealed: b.rows.length, flip: {}, scenarios: [...sel],
-                 pRow: b.rows.map((r) => r.p_cal ?? r.jev_attend) };
-      return { ...buildCrowd(b, munis ?? null, who, engineName(b.engine) ?? b.engine),
-               revealed: b.rows.length, scenarios: [...sel] };
-    })).catch(() => null);
+    (baseRef.current ? Promise.resolve(baseRef.current) : getBaselineReplay(prog, code))
+      .then(revealBaseline).catch(() => null);
     getResidents(prog, code, [...sel])
       .then((r) => { setReplay(r); setRunId((x) => x + 1);
                      onRanCombo?.(`${prog}:${code}:${[...sel].sort().join("+")}`); })

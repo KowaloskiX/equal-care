@@ -22,6 +22,18 @@ def _warm():
     /api/decompose call is instant; lru_cache shares the result with the endpoint."""
     import threading
     threading.Thread(target=lambda: [decompose.decompose(p) for p in decompose.PROG_KEY], daemon=True).start()
+    # Warm the replay memo for the demo path (breast/Helsinki + the pitch combos, bowel baseline):
+    # a cold scenario replay rebuilds the population frame in ~5 s, a warm one answers in ms.
+    def warm_replays():
+        import replay
+        for prog, code, s in [("breast", "90", None), ("breast", "90", ["own_language"]),
+                              ("breast", "90", ["own_language", "evening_slots"]),
+                              ("bowel", "07", None), ("bowel", "07", ["own_language"])]:
+            try:
+                replay.replay(prog, code, s)
+            except Exception:
+                pass
+    threading.Thread(target=warm_replays, daemon=True).start()
 app.add_middleware(CORSMiddleware, allow_origins=os.environ.get("EC_ORIGINS", "*").split(","), allow_methods=["*"],
                    allow_headers=["*"])
 

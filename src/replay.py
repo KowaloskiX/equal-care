@@ -125,11 +125,20 @@ def _row(k, g, akey, idx, file_rel, people, cum_people, cum_rate, extra=None):
             "cum_people": cum_people, "cum_rate": cum_rate, **(extra or {})}
 
 
+# Replays are deterministic reads of the committed caches — memoise them so re-running a combo
+# (and the step-3 prefetch) doesn't rebuild the population frame on every request. Only pure-cache
+# replays are memoised: a run that asked the engine live keeps reporting asked_live truthfully.
+_REPLAY_CACHE: dict = {}
+
+
 def replay(prog, code, scenarios=None, engine=None):
     e = engine or js.ENGINE
     if prog not in REPLAY_PROGS:
         raise KeyError(f"no resident replay for {prog!r}")
     scenarios = sorted(set(scenarios or []))
+    ck = (prog, code, tuple(scenarios), e)
+    if ck in _REPLAY_CACHE:
+        return _REPLAY_CACHE[ck]
     unknown = [s for s in scenarios if s not in js.SCENARIOS or s == "baseline"]
     if unknown:
         raise KeyError(f"unknown scenario(s) {unknown}")
@@ -192,6 +201,7 @@ def replay(prog, code, scenarios=None, engine=None):
                                "group_validation": simulate.group_validation(prog, e),
                                "group_validation_source": simulate.group_validation_source(prog)},
                      "reason_labels": js.REASONS, "reason_shorts": REASON_SHORT})
+        _REPLAY_CACHE[ck] = base
         return base
 
     # scenario: compare baseline vs combo anchored p cell by cell (per key group), keep the changed groups
@@ -223,6 +233,8 @@ def replay(prog, code, scenarios=None, engine=None):
                            "group_validation_source": simulate.group_validation_source(prog)},
                  "reason_labels": js.REASONS, "reason_shorts": REASON_SHORT,
                  "whatif": wres})
+    if not wres["asked_live"]:
+        _REPLAY_CACHE[ck] = base
     return base
 
 
