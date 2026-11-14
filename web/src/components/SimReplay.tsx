@@ -132,7 +132,7 @@ export function ReplayPlayer({ replay, who, onLive, onProgress, onDone, duration
     let raf = 0; const t0 = performance.now();
     const tick = (t: number) => {
       const x = Math.min(1, (t - t0) / duration);
-      const n = Math.round(Math.pow(x, 1.5) * rows.length);   // ease — faster at the tail
+      const n = Math.round(x * rows.length);   // linear — the counter, tiles and map stay in sync
       iRef.current = n; setI(n); progRef.current?.(n);
       const r = n ? rows[n - 1] : null;                     // live map rate emitted from the tick —
       liveRef.current?.(r ? { code: replay.code, value: r.cum_rate } : null);   // not an effect, so no nested updates
@@ -527,11 +527,12 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCro
     if (instant) return;
     const t0 = performance.now();
     const sweep = (t: number) => {
-      const x = Math.min(1, (t - t0) / 1800);
-      const n = Math.round(Math.pow(x, 0.8) * b.rows.length);   // fast start, settles at the end
+      // cover the fetch wait only — once the scenario replay starts, its own progress drives the rain
+      const x = Math.min(1, (t - t0) / 2200) * 0.45;
+      const n = Math.round(x * b.rows.length);
       onCrowd?.((p) => (p ? { ...p, revealed: Math.max(p.revealed, n),
-                                  revealFrac: Math.max(p.revealFrac, Math.pow(x, 0.8)) } : p));
-      if (x < 1) revealRef.current = requestAnimationFrame(sweep);
+                                  revealFrac: Math.max(p.revealFrac, x) } : p));
+      if (x < 0.45) revealRef.current = requestAnimationFrame(sweep);
     };
     revealRef.current = requestAnimationFrame(sweep);
   };
@@ -543,7 +544,9 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCro
     getResidents(prog, code, [...sel])
       .then((r) => { setReplay(r); setRunId((x) => x + 1);
                      onRanCombo?.(`${prog}:${code}:${[...sel].sort().join("+")}`); })
-      .catch((e) => setErr(String(e instanceof Error ? e.message : e)))
+      .catch((e) => { setErr(String(e instanceof Error ? e.message : e));
+                      // the wait-cover sweep caps at 45% — finish the reveal so the map isn't left half-empty
+                      onCrowd?.((p) => (p ? { ...p, revealed: p.rows.length, revealFrac: 1 } : p)); })
       .finally(() => setBusy(false));
   };
   const ranOnce = useRef(false);
@@ -558,7 +561,8 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCro
         ? { ...c, revealed: p.revealed, revealFrac: p.revealFrac, scenarios: p.scenarios, flip: p.flip, pRow: p.pRow } : p));
     }).catch(() => null);
   }, [crowd, munis, prog, code]);   // eslint-disable-line react-hooks/exhaustive-deps
-  // scenario progress n -> flip the dots of revealed scenario rows to their new p_cal
+  // scenario progress n -> rain the baseline dots in with the counter AND flip revealed scenario
+  // rows to their new p_cal — one shared pace, so the map never stalls mid-run
   const onProgress = (n: number) => onCrowd?.((p) => {
     if (!p || !replay) return p;
     const idx = scenarioRowIndex(p);
@@ -567,7 +571,9 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCro
       const i = idx.get(rowKey(replay.rows[j]));
       if (i != null) { pRow[i] = replay.rows[j].p_cal ?? pRow[i]; flip[i] = replay.rows[j]; }
     }
-    return { ...p, pRow, flip };
+    const frac = n / replay.rows.length;
+    return { ...p, pRow, flip, revealed: Math.max(p.revealed, Math.round(frac * p.rows.length)),
+                   revealFrac: Math.max(p.revealFrac, frac) };
   });
   const w = done ? replay?.whatif : null;
   const onDone = () => {
