@@ -50,6 +50,23 @@ in `.env` (`gemini` or `jev`, default `gemini`) or `--engine`; `TYPESAFE_API_KEY
 questions or resident states change (the cache invalidates and new calls run). A what-if combination outside the cache
 needs the active engine's key or the API returns 503 — simulated numbers are never fabricated.
 
+## Deploy on Render
+
+One Docker web service (see `Dockerfile`, `render.yaml`, `deploy/start.sh`): uvicorn serves the API on
+`127.0.0.1:8010` inside the container, `next start` serves the app on `$PORT` and proxies `/api` to it.
+
+1. Render dashboard → **New > Blueprint** → point it at the public repo
+   `https://github.com/KowaloskiX/equal-care` (or **New > Web Service** → same repo, runtime *Docker*).
+2. Set `GEMINI_API_KEY` when prompted — needed only for live calls outside the committed caches
+   (new report generations and never-run what-if combinations; cached results always work).
+3. Deploy. `render.yaml` pins the free plan, health-checks `/api/meta` and sets the spend-guard limits
+   (`REPORT_LIVE_PER_DAY=20`, `REPORT_LIVE_PER_IP_HOUR=3`, `DECISIONS_LIVE_PER_DAY=2000`,
+   `WHATIF_LIVE_PER_IP_HOUR=2`; `src/budget.py` answers 429 when a window is spent).
+
+Notes: Render services on a **public** URL must be redeployed manually (no auto-deploy for public repos).
+The free plan sleeps after ~15 min idle — the first request is slow while it wakes. Budget counters are
+in-memory, so they reset on every restart or redeploy.
+
 ## API
 
 `GET /api/meta` · `/api/values?key=` · `/api/series?key=&code=` · `/api/region/{code}` · `/api/gap` ·

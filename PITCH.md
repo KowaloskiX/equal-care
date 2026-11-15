@@ -26,7 +26,7 @@ Simulated figures are always explicitly labelled **SIMULATION** (upper bounds / 
 *(Screen: Step 4 → stage waffles cascade → click `Satakunta 37.5 %` → `Treatment` → press `▶` to animate monthly queues.)*
 
 **1:38 — Grounded briefing, slide deck & close.**
-"Finally, one click compiles the counties and interventions you explored into a cited **Briefing** and **16:9 Slide Deck** (`/report`). Gemini writes the narrative using `{fact}` placeholders while deterministic backend code inserts and verifies every figure (*0 grounding flags*). For live Q&A, **Ask the analyst** queries the same verified tools. Public data, honest limits, and procurement-ready roadmap actions — Equal Care Across Finland."
+"Finally, one click compiles the counties and interventions you explored into a cited **Briefing** and **16:9 Slide Deck** (`/report`). Gemini writes the narrative using `{fact}` placeholders while deterministic backend code inserts and verifies every figure (*0 grounding flags*). Public data, honest limits, and procurement-ready roadmap actions — Equal Care Across Finland."
 *(Screen: `Generate report` → `Slides` → visual Where / What slides.)*
 
 ## Slide Deck Summary (`/story` & `/report?view=slides`)

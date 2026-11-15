@@ -888,6 +888,16 @@ SCENE_SUFFIX = {"where": " Scene: a quiet overview of Finnish towns and lakes fr
                 "next": " Scene: a sunrise over a Finnish town, a sense of a first step."}
 
 
+def cover_cached(scene=None):
+    """True when asking cover(scene) would hit the process cache (or no image model exists, so nothing
+    is ever paid for). Used by the API's budget check."""
+    m = pick_image_model()
+    if not m:
+        return True
+    scene = scene if scene in SCENE_SUFFIX else None
+    return (m, scene) in _COVER
+
+
 def cover(scene=None):
     """{image: data URL | None, model, error?}; cached per process per scene.
     scene: None for the cover, 'where'/'next' for the two slide backdrops (same style prompt + a scene line)."""
@@ -953,3 +963,15 @@ def report(items, with_image=False):
             out = dict(out, image={"image": None, "error": str(e)})
         ex.shutdown(wait=False)
     return out
+
+
+def report_is_cached(items, with_image=False):
+    """True when report(items, with_image) would be served entirely from the process cache —
+    the API's budget check only charges uncached generations."""
+    items = validate_items(items)
+    model, _ = pick_text_model()
+    if _hash(items, model) not in _CACHE:
+        return False
+    if with_image and not cover_cached():
+        return False
+    return True

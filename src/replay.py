@@ -131,7 +131,7 @@ def _row(k, g, akey, idx, file_rel, people, cum_people, cum_rate, extra=None):
 _REPLAY_CACHE: dict = {}
 
 
-def replay(prog, code, scenarios=None, engine=None):
+def replay(prog, code, scenarios=None, engine=None, ip=None):
     e = engine or js.ENGINE
     if prog not in REPLAY_PROGS:
         raise KeyError(f"no resident replay for {prog!r}")
@@ -148,7 +148,7 @@ def replay(prog, code, scenarios=None, engine=None):
 
     wres = None
     if scenarios:                                   # fills any missing combo answers (or raises Unavailable)
-        wres = wi.whatif(prog, code, scenarios, engine=e)
+        wres = wi.whatif(prog, code, scenarios, engine=e, ip=ip)
     name = js.combo_name(scenarios) if scenarios else "baseline"
 
     c, _, _ = js.anchor_shift(prog, e)

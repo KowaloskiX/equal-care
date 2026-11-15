@@ -5,7 +5,7 @@ Every response that carries a number carries its source.
 """
 import json, os, sys
 from pathlib import Path
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -203,13 +203,23 @@ def sim_region(prog: str, code: str, level: str = "county"):
 # ---------------- recommendations (cited roadmap actions; see src/recommend.py)
 
 
+def _client_ip(request: Request) -> str:
+    xff = request.headers.get("x-forwarded-for")
+    if xff:
+        return xff.split(",")[0].strip()
+    return request.client.host if request.client else ""
+
+
 @app.get("/api/whatif")
-def whatif_endpoint(prog: str, code: str, s: str):
+def whatif_endpoint(request: Request, prog: str, code: str, s: str):
     """Live combined-intervention run over the simulated residents for one county (503 when answers are not cached
-    and the engine key is not set — never fakes a result)."""
-    import whatif
+    and the engine key is not set — never fakes a result). 429 when the live-call budget is spent."""
+    import budget, whatif
     try:
-        return whatif.whatif(prog, code, [x.strip() for x in s.split(",") if x.strip()])
+        return whatif.whatif(prog, code, [x.strip() for x in s.split(",") if x.strip()],
+                             ip=_client_ip(request))
+    except budget.Exceeded as e:
+        raise HTTPException(429, str(e))
     except whatif.Unavailable as e:
         raise HTTPException(503, str(e))
     except KeyError as e:
@@ -228,12 +238,15 @@ def resident_answer(prog: str, key: str, s: str | None = None):
 
 
 @app.get("/api/residents/{prog}/{code}")
-def residents_replay(prog: str, code: str, s: str | None = None):
+def residents_replay(request: Request, prog: str, code: str, s: str | None = None):
     """Recorded engine answers for one county, one row per archetype, for the run animation.
     Baseline replay is pure cache (0 calls); a scenario goes through /api/whatif first (503 if uncached)."""
-    import replay, whatif
+    import budget, replay, whatif
     try:
-        return replay.replay(prog, code, [x.strip() for x in s.split(",") if x.strip()] if s else None)
+        return replay.replay(prog, code, [x.strip() for x in s.split(",") if x.strip()] if s else None,
+                             ip=_client_ip(request))
+    except budget.Exceeded as e:
+        raise HTTPException(429, str(e))
     except whatif.Unavailable as e:
         raise HTTPException(503, str(e))
     except KeyError as e:
@@ -241,12 +254,15 @@ def residents_replay(prog: str, code: str, s: str | None = None):
 
 
 @app.get("/api/focus/{prog}/{code}")
-def focus_endpoint(prog: str, code: str):
+def focus_endpoint(request: Request, prog: str, code: str):
     """Step-4 stage pick: the engine ranks which pathway stage the county should address first —
-    a choice over five fixed stages grounded in the county's real stats. Cached; SIMULATION, not data."""
-    import focus
+    a choice over five fixed stages grounded in the county's real stats. Cached; SIMULATION, not data.
+    429 when the live-call budget is spent (a miss costs one Decisions call)."""
+    import budget, focus
     try:
-        return focus.focus(prog, code)
+        return focus.focus(prog, code, ip=_client_ip(request))
+    except budget.Exceeded as e:
+        raise HTTPException(429, str(e))
     except KeyError as e:
         raise HTTPException(404, str(e))
 
@@ -267,23 +283,6 @@ def brief_endpoint(prog: str | None = None, n: int = 3):
         if p not in rec.PROGRAMMES:
             raise HTTPException(404, f"unknown programme {p!r}")
     return rec.brief(progs, max(1, min(n, 23)))
-
-
-# ---------------- analyst drawer (Claude over the app's own tool functions)
-
-
-@app.post("/api/ask")
-def ask_endpoint(body: dict):
-    """The analyst: Claude picks which backend tools to call and explains the results. Numbers are only
-    ever copied from tool results — grounding.unverified() flags any it invented. 503 without a key, 502
-    on an Anthropic API error (the model id included)."""
-    import analyst
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        raise HTTPException(503, "ANTHROPIC_API_KEY is not set")
-    try:
-        return analyst.ask(body.get("question", ""), body.get("prog"), body.get("code"))
-    except Exception as e:                       # Anthropic APIError, network, bad model id — surface it, no fake text
-        raise HTTPException(502, str(e))
 
 
 # ---------------- generated briefing (src/report.py)

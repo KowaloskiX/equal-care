@@ -1,0 +1,20 @@
+# Render blueprint — one Docker web service on the free plan (deploy/start.sh runs uvicorn + next start)
+services:
+  - type: web
+    name: equal-care
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/meta
+    envVars:
+      - key: GEMINI_API_KEY      # set in the dashboard; needed only for uncached live calls
+        sync: false
+      - key: SIM_ENGINE
+        value: gemini
+      - key: REPORT_LIVE_PER_DAY
+        value: "20"
+      - key: REPORT_LIVE_PER_IP_HOUR
+        value: "3"
+      - key: DECISIONS_LIVE_PER_DAY
+        value: "2000"
+      - key: WHATIF_LIVE_PER_IP_HOUR
+        value: "2"

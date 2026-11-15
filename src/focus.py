@@ -11,6 +11,7 @@ import json, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+import budget
 import datastore as ds
 import residents as js
 
@@ -57,7 +58,7 @@ def focus_state(prog, code):
     return state
 
 
-def focus(prog, code, engine=None):
+def focus(prog, code, engine=None, ip=None):
     """The engine's stage pick for one county: {top, probabilities, confidence} — cached, labelled simulation."""
     e = engine or js.ENGINE
     if prog not in PROG_SCREEN:
@@ -68,6 +69,7 @@ def focus(prog, code, engine=None):
     if path.exists():
         return {**json.loads(path.read_text()), "asked_live": 0}
 
+    budget.take("decisions", ip)            # one live call — charged only on a cache miss
     state = focus_state(prog, code)
     if e == "jev":
         from typesafe_sdk import Choice, TypeSafeClient

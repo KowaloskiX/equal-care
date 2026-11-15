@@ -1,0 +1,14 @@
+# build context stays small; the image rebuilds everything it needs
+node_modules
+web/node_modules
+web/.next
+.venv
+.env
+demo/out
+media
+shots-v3
+out
+data/raw
+.chrome-profile
+.*            # scratch dot-files and .git — never shipped
+!.dockerignore

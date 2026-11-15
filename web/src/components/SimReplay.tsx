@@ -470,17 +470,15 @@ export function BaselineStep({ prog, code, rec, who, onLive, munis, onCrowd }: {
 }
 
 // Step 3 — "What would help?": pick interventions, run the residents again, compare attempts.
-export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCrowd, preselect, autoRun, onRanCombo }: {
+export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCrowd, onRanCombo }: {
   prog: string; code: string; rec: Recommend | null; who: string;
   onLive?: (v: { code: string; value: number } | null) => void;
   munis?: FC | null;
   crowd?: Crowd | null;
   onCrowd?: (c: Crowd | null | ((p: Crowd | null) => Crowd | null)) => void;
-  preselect?: string[];                                  // analyst "Play it on the map"
-  autoRun?: boolean;
   onRanCombo?: (item: string) => void;                   // "prog:code:scen+scen" for the report entry point
 }) {
-  const [sel, setSel] = useState<Set<string>>(new Set(preselect ?? []));
+  const [sel, setSel] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
   const [replay, setReplay] = useState<Replay | null>(null);
   const [runId, setRunId] = useState(0);
@@ -546,10 +544,6 @@ export function ScenarioStep({ prog, code, rec, who, onLive, munis, crowd, onCro
                       onCrowd?.((p) => (p ? { ...p, revealed: p.rows.length, revealFrac: 1 } : p)); })
       .finally(() => setBusy(false));
   };
-  const ranOnce = useRef(false);
-  useEffect(() => {   // analyst drawer "Play it on the map" starts the run immediately
-    if (autoRun && !ranOnce.current && sel.size && !busy) { ranOnce.current = true; run(); }
-  });
   useEffect(() => {   // a crowd built before municipalities loaded has zero dots — rebuild it once
     if (!munis || !crowd || crowd.dots.length || crowd.prog !== prog || crowd.code !== code) return;
     getBaselineReplay(prog, code).then((b) => {

@@ -12,6 +12,7 @@ import asyncio, os
 from pathlib import Path
 import pandas as pd
 
+import budget
 import residents as js
 import simulate
 import datastore as ds
@@ -34,9 +35,10 @@ def _county_frame(prog, scenario, c, county_of, code):
     return E[E.county == code]
 
 
-def whatif(prog, code, scenarios, engine=None, cache_only=False):
+def whatif(prog, code, scenarios, engine=None, cache_only=False, ip=None):
     """cache_only=True -> return None instead of asking when the combo is not fully cached
-    (used to attach the other engine's cached result without ever calling it live)."""
+    (used to attach the other engine's cached result without ever calling it live).
+    ip = the requesting client, for the live-call budget (src/budget.py)."""
     e = engine or js.ENGINE
     scenarios = sorted(set(scenarios))
     if prog not in js.PROGRAMMES:
@@ -69,6 +71,8 @@ def whatif(prog, code, scenarios, engine=None, cache_only=False):
             return None
         if not os.environ.get(js.API_KEY[e]):
             raise Unavailable(f"{len(todo)} archetype answers are not cached and {js.API_KEY[e]} is not set")
+        # live calls only — a fully cached combo never reaches the budget check
+        budget.take("decisions", ip, units=len(todo))
         asyncio.run(js.ask(todo, prog, path, engine=e))
 
     c, _, _ = js.anchor_shift(prog, e)

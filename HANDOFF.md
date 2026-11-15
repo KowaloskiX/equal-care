@@ -10,19 +10,19 @@ Najpierw przeczytaj `README.md` i `CLAUDE.md`; szczegóły narracji prezentacyjn
 | **Actionability** | 30 % | Każda rekomendacja cytuje konkretne działanie z rządowego planu wdrożenia (`id + strona` + pełny angielski tytuł) i podaje zakres efektu z dwóch niezależnych modeli jako górną granicę pod pilotaż |
 | **Insight** | 25 % | Dwuwarstwowe wyjaśnienie luki: regresja WLS na 291 gminach oddziela demografię od czynników lokalnych (bez AI), a 771 archetypów mieszkańców w Gemini Decisions wskazuje konkretne bariery (język 54 %, praca/czas 17 %) |
 | **Data quality & transparency** | 20 % | Każda liczba ma klikalne źródło; rygorystyczne odznaki `DATA` / `SIMULATION` / `ROADMAP` / `ASSUMPTION`; ostrzeżenia `small numbers` przy `n < 30`; jawne pokazanie luki pomiarowej (brak stadium przy diagnozie per region) |
-| **Execution** | 15 % | Działa na żywo bez kluczy z zapisanych cache’y (`data/`), ma interaktywną mapę kropek mieszkańców, film kolejek THL, analityka z weryfikacją liczb i generator briefingu/slajdów 16:9 |
+| **Execution** | 15 % | Działa na żywo bez kluczy z zapisanych cache’y (`data/`), ma interaktywną mapę kropek mieszkańców, film kolejek THL i generator briefingu/slajdów 16:9 |
 | **Clarity** | 10 % | 4-krokowy przewodnik wokół jednego wybranego regionu + samogrający `? Walkthrough` (22 karty spotlight z automatycznymi kliknięciami symulacji) |
 
 ## Szybki start
 
 ```bash
 make setup            # Python 3.12 venv + npm install w web/
-make check            # 76 testów danych, rozbicia WLS, symulacji, replaya, matchera i analityka
+make check            # testy danych, rozbicia WLS, symulacji, replaya, matchera i budżetu
 make demo             # API (:8010) + frontend (:3010); Ctrl-C zatrzymuje oba
 make stop             # zwalnia porty 8010 i 3010
 ```
 
-Wszystkie dane źródłowe oraz cache odpowiedzi **Gemini Decisions** (`data/decisions/`, w tym `data/decisions/focus/`) i **Jev** (`data/jev/`) są w repozytorium — ścieżka demo nie wymaga żadnych kluczy API. Klucze w `.env` (`GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `TYPESAFE_API_KEY`) są potrzebne wyłącznie przy generowaniu nowych kombinacji spoza cache’u, świeżego briefingu `/report` lub pytań na żywo w `Ask the analyst`.
+Wszystkie dane źródłowe oraz cache odpowiedzi **Gemini Decisions** (`data/decisions/`, w tym `data/decisions/focus/`) i **Jev** (`data/jev/`) są w repozytorium — ścieżka demo nie wymaga żadnych kluczy API. Klucze w `.env` (`GEMINI_API_KEY`, `TYPESAFE_API_KEY`) są potrzebne wyłącznie przy generowaniu nowych kombinacji spoza cache’u lub świeżego briefingu `/report`; budżety wywołań na żywo pilnuje `src/budget.py` (limity z env, HTTP 429 po wyczerpaniu).
 
 ## Aktualne liczby z danych i modeli (spójne z API)
 
