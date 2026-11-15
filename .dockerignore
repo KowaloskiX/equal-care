@@ -10,5 +10,6 @@ shots-v3
 out
 data/raw
 .chrome-profile
-.*            # scratch dot-files and .git — never shipped
+# scratch dot-files and .git — never shipped
+.*
 !.dockerignore
