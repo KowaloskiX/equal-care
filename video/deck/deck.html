@@ -1,0 +1,173 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@page { size: 1280px 720px; margin: 0; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; background:#0b0d10; color:#e8eaed; }
+.slide { width:1280px; height:720px; padding:64px 72px; page-break-after:always; display:flex; flex-direction:column; position:relative; overflow:hidden;
+  background:radial-gradient(1200px 700px at 85% -10%, #16303a 0%, #0b0d10 55%); }
+.slide:nth-child(odd) { background:radial-gradient(1200px 700px at 15% -10%, #2a1a24 0%, #0b0d10 55%); }
+.kick { font-size:15px; letter-spacing:.22em; text-transform:uppercase; color:#7dd3e8; font-weight:700; margin-bottom:14px; }
+h1 { font-size:64px; line-height:1.05; font-weight:800; letter-spacing:-.02em; }
+h2 { font-size:44px; line-height:1.08; font-weight:800; letter-spacing:-.02em; margin-bottom:26px; }
+.sub { font-size:22px; color:#aeb6bf; max-width:860px; line-height:1.45; }
+.row { display:flex; gap:56px; align-items:flex-start; flex:1; }
+.col { flex:1; min-width:0; }
+img.shot { width:100%; border-radius:14px; border:1px solid #ffffff22; box-shadow:0 24px 60px #000a; }
+.big { font-size:84px; font-weight:800; letter-spacing:-.03em; color:#f472a0; }
+.big.cyan { color:#7dd3e8; } .big.green { color:#6ee7a0; } .big.amber { color:#fbbf24; }
+.stat { margin-bottom:30px; }
+.stat .lbl { font-size:18px; color:#aeb6bf; line-height:1.4; max-width:520px; }
+.src { font-size:13px; color:#79828c; margin-top:4px; }
+.chips { display:flex; gap:10px; flex-wrap:wrap; margin-top:26px; }
+.chip { font-size:14px; padding:7px 14px; border-radius:999px; border:1px solid #ffffff2a; color:#cfd6dd; }
+.chip b { color:#fff; }
+.bar-wrap { margin:18px 0 6px; }
+.bar { display:flex; height:44px; border-radius:10px; overflow:hidden; font-size:15px; font-weight:700; }
+.bar div { display:flex; align-items:center; padding-left:14px; }
+.b1 { background:#3b82f6aa; width:64%; color:#fff; }
+.b2 { background:#f472a0aa; width:36%; color:#fff; }
+.foot { position:absolute; bottom:30px; left:72px; right:72px; display:flex; justify-content:space-between; font-size:13px; color:#5f6870; }
+ul { list-style:none; } li { font-size:21px; color:#cfd6dd; line-height:1.5; margin-bottom:16px; padding-left:26px; position:relative; }
+li::before { content:""; position:absolute; left:0; top:12px; width:9px; height:9px; border-radius:3px; background:#7dd3e8; }
+li.warn::before { background:#fbbf24; } li b { color:#fff; }
+table.v { width:100%; border-collapse:collapse; font-size:16px; margin-top:10px; }
+table.v td, table.v th { padding:9px 12px; border-bottom:1px solid #ffffff14; text-align:left; }
+table.v th { color:#79828c; font-weight:600; font-size:13px; text-transform:uppercase; letter-spacing:.08em; }
+td.r { text-align:right; font-variant-numeric:tabular-nums; }
+.tag { display:inline-block; font-size:12px; font-weight:800; letter-spacing:.12em; padding:4px 10px; border-radius:6px; margin-right:8px; vertical-align:middle;}
+.t-data { background:#3b82f633; color:#93c5fd; } .t-sim { background:#f472a033; color:#f9a8c4; }
+.t-road { background:#fbbf2433; color:#fcd34d; } .t-ass { background:#ffffff22; color:#cfd6dd; }
+h1 .accent { color:#f472a0; }
+</style></head><body>
+
+<!-- 1 · TITLE -->
+<div class="slide">
+  <div class="kick">AstraZeneca · Equal Care Across Finland · Junction 2026</div>
+  <h1>Equal Care <span class="accent">Finland</span></h1>
+  <p class="sub" style="margin-top:22px">Where cancer care falls behind in Finland's 23 wellbeing services counties,
+  why the gap exists — and which national-roadmap action would help, tested on simulated residents.</p>
+  <div class="chips">
+    <span class="chip"><b>Demo</b>&nbsp; equal-care.vercel.app</span>
+    <span class="chip"><b>Code</b>&nbsp; github.com/KowaloskiX/equal-care</span>
+    <span class="chip"><b>Video</b>&nbsp; 2-min pitch</span>
+  </div>
+  <div style="margin-top:auto; display:flex; gap:16px;">
+    <div class="tag t-data">DATA</div><div class="tag t-sim">SIMULATION</div>
+    <div class="tag t-road">ROADMAP</div><div class="tag t-ass">ASSUMPTION</div>
+    <span style="font-size:15px;color:#79828c;align-self:center">— every number on screen carries a source and a label</span>
+  </div>
+  <div class="foot"><span>Equal Care Finland — Junction 2026</span><span>1 / 7</span></div>
+</div>
+
+<!-- 2 · WHERE -->
+<div class="slide">
+  <div class="kick">Step 1 · Where is the gap?</div>
+  <h2>The county furthest behind is not rural — it's <span style="color:#f472a0">Helsinki</span></h2>
+  <div class="row">
+    <div class="col" style="flex:0 0 400px">
+      <div class="stat"><div class="big">74.3%</div>
+        <div class="lbl">breast screening attendance in Helsinki, vs the <b>80%</b> national target and <b>81.6%</b> across Finland</div>
+        <div class="src">DATA · THL Sotkanet #3621, 2024</div></div>
+      <div class="stat"><div class="big amber" style="font-size:56px">~2,201</div>
+        <div class="lbl">women a year missing from screening — the largest absolute shortfall in the country</div>
+        <div class="src">computed in code from invited counts</div></div>
+    </div>
+    <div class="col"><img class="shot" src="../deck_stills/t15.jpg"></div>
+  </div>
+  <div class="foot"><span>All 23 counties, three screening programmes + Goal-3 indicators — click any county</span><span>2 / 7</span></div>
+</div>
+
+<!-- 3 · WHY (data) -->
+<div class="slide">
+  <div class="kick">Step 2 · Why does the gap exist? — the data half</div>
+  <h2>7.3-point gap = <span style="color:#93c5fd">4.7 who lives there</span> + <span style="color:#f472a0">2.6 not explained</span></h2>
+  <div class="row">
+    <div class="col" style="flex:0 0 560px">
+      <ul>
+        <li><b>No AI needed for this split.</b> Invited-weighted regression over <b>291 municipalities</b> (R² = 60%) on real attendance.</li>
+        <li><b>4.7 pts</b> (90% CI 1.3–5.8) from population composition — language, education, age, municipality size.</li>
+        <li><b>2.6 pts</b> unexplained by composition — local access, services, or private mammography we can't see.</li>
+      </ul>
+      <div class="bar-wrap"><div class="bar"><div class="b1">composition · 4.7 pts</div><div class="b2">local · 2.6 pts</div></div></div>
+      <div class="src">DATA · arithmetic in Python, Sotkanet + Statistics Finland · no model writes numbers</div>
+    </div>
+    <div class="col"><img class="shot" src="../deck_stills/t62.jpg"></div>
+  </div>
+  <div class="foot"><span>Honest split: what demographics explains vs what it doesn't</span><span>3 / 7</span></div>
+</div>
+
+<!-- 4 · WHO (simulation) -->
+<div class="slide">
+  <div class="kick">Step 2 · Why — the simulation half (the core)</div>
+  <h2>771 representative residents, asked by <span class="accent">two engines</span></h2>
+  <div class="row">
+    <div class="col" style="flex:0 0 520px">
+      <ul>
+        <li>Statistics Finland tables → <b>771 weighted resident archetypes</b> for Helsinki (age × language × education × work). No invented people.</li>
+        <li><b>Gemini Decisions API</b> answers one question per type: <i>will she attend, what stops her?</i> → probability + barrier. <b>Jev</b> answers the same — a range, not a point.</li>
+        <li>Validated: <b>r = 0.84</b> vs real county rates. It <b>overstates the language gap</b> (60.8% real vs 48% sim) — shown in-app, not hidden.</li>
+        <li>Every dot on the map opens the <b>exact prompt and recorded answer</b>.</li>
+      </ul>
+      <div class="src">SIMULATION · replayed from checked-in answers — top barriers: language 54%, work/time 17%</div>
+    </div>
+    <div class="col"><img class="shot" src="../deck_stills/t45.jpg" style="margin-bottom:14px"><img class="shot" src="../deck_stills/t30.jpg" style="height:150px;object-fit:cover;object-position:top"></div>
+  </div>
+  <div class="foot"><span>Simulation is always labelled — never shown as observed data</span><span>4 / 7</span></div>
+</div>
+
+<!-- 5 · WHAT HELPS -->
+<div class="slide">
+  <div class="kick">Step 3 · What would help?</div>
+  <h2>Same residents, new answers — <span class="accent">+992 to +2,093</span> women/yr</h2>
+  <div class="row">
+    <div class="col" style="flex:0 0 480px">
+      <ul>
+        <li>Re-ask the same archetypes under a counterfactual: <b>invitations &amp; outreach in her own language</b>.</li>
+        <li>Two independent engines disagree → we report a range: <b>Jev +992 · Gemini +2,093</b> = 45–95% of Helsinki's gap. <i>Simulated upper bound, not a forecast.</i></li>
+        <li>Every intervention is <b>matched to roadmap text</b> and cited: <b>Action 1.3.1, p. 33</b> (+1.1.1, p. 26) — procurement-ready, not a generic "raise awareness".</li>
+      </ul>
+      <div class="src">SIMULATION + ROADMAP · National Cancer Strategy Implementation Roadmap 2026–2031</div>
+    </div>
+    <div class="col"><img class="shot" src="../deck_stills/t78.jpg"></div>
+  </div>
+  <div class="foot"><span>Four roadmap-backed interventions per programme — cached &amp; combined runs</span><span>5 / 7</span></div>
+</div>
+
+<!-- 6 · PATHWAY -->
+<div class="slide">
+  <div class="kick">Step 4 · The rest of the pathway — Strategy Goal 3</div>
+  <h2>Beyond screening: <span class="accent">Satakunta</span> waits 37.5% vs 3.5%</h2>
+  <div class="row">
+    <div class="col" style="flex:0 0 480px">
+      <ul>
+        <li>Five-stage pathway per county: detection → referral → diagnosis → treatment → outcome, from real THL queue data month by month.</li>
+        <li><b>Satakunta: 37.5%</b> of oncology patients waited &gt;90 days (Finland 3.5%) — shown with an explicit <b>n = 8 · small numbers</b> warning, not as a headline.</li>
+        <li>Gemini ranks <b>which stage to fix first</b> from county stats — a prioritisation aid, labelled as such.</li>
+        <li class="warn"><b>Data gap exposed:</b> stage at diagnosis is recorded for only ~42% of cancers nationally — itself Roadmap action <b>3.2.1</b>.</li>
+      </ul>
+      <div class="src">DATA · THL Hoitoon pääsy, oncology 09/2026 · ROADMAP 3.1.2 p. 56</div>
+    </div>
+    <div class="col"><img class="shot" src="../deck_stills/t100.jpg"></div>
+  </div>
+  <div class="foot"><span>Goal 3: equal &amp; effective care — survival, mortality, time to treatment</span><span>6 / 7</span></div>
+</div>
+
+<!-- 7 · TRUST + STACK -->
+<div class="slide">
+  <div class="kick">Honest AI · built for decision-makers</div>
+  <h2>Gemini reasons. <span class="accent">Code counts.</span></h2>
+  <div class="row">
+    <div class="col" style="flex:0 0 500px">
+      <ul>
+        <li><b>LLMs never do arithmetic.</b> Every figure comes from deterministic Python over THL Sotkanet, Statistics Finland, THL queues &amp; the roadmap's 73 parsed actions.</li>
+        <li>Gemini's roles: Decisions per archetype, roadmap semantic matching, stage prioritisation, briefing/slides + illustration — and the TTS narration of our video.</li>
+        <li>Generated text is <b>grounding-checked</b>: numbers not in the data get flagged. Hosted demo replays recorded answers (<i>"0 new calls"</i>); reports are live within a budget.</li>
+        <li class="warn"><b>Limits out loud:</b> private mammography counts as absence; simulation ≠ observed data.</li>
+      </ul>
+
+    </div>
+    <div class="col"><img class="shot" src="../deck_stills/t110.jpg"></div>
+  </div>
+  <div class="foot"><span>equal-care.vercel.app · github.com/KowaloskiX/equal-care</span><span>7 / 7</span></div>
+</div>
+
+</body></html>
