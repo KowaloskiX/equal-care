@@ -1,0 +1,94 @@
+{
+  "journey": {
+    "file": "footage/journey.mp4",
+    "width": 2880,
+    "height": 1620,
+    "duration": 99.253,
+    "t0": 1794705860.747,
+    "viewport": {
+      "width": 2880,
+      "height": 1620
+    },
+    "events": {
+      "s1": 0,
+      "s1-row": 6.072,
+      "s1-map": 13.906,
+      "s2": 16.345,
+      "ask": 22.886,
+      "groups": 29.683,
+      "dot": 34.507,
+      "asked": 37.156,
+      "s2-end": 41.063,
+      "s3": 43.025,
+      "pick": 46.09,
+      "run": 48.631,
+      "result": 55.453,
+      "roadmap": 60.019,
+      "s4": 64.515,
+      "focus": 71.037,
+      "satakunta": 74.646,
+      "treatment": 78.343,
+      "play": 82.388,
+      "played": 95.869
+    }
+  },
+  "report": {
+    "file": "footage/report.mp4",
+    "width": 2880,
+    "height": 1620,
+    "duration": 32.789,
+    "t0": 1794705962.103,
+    "viewport": {
+      "width": 2880,
+      "height": 1620
+    },
+    "events": {
+      "picker": 0,
+      "generate": 3.363,
+      "ready": 3.367,
+      "briefing": 8.922,
+      "slide:title": 14.128,
+      "slide:where": 17.774,
+      "slide:why": 20.777,
+      "slide:who": 23.781,
+      "slide:what": 26.784,
+      "slide:pathway": 29.788
+    }
+  },
+  "tour": {
+    "file": "footage/tour.mp4",
+    "width": 2880,
+    "height": 1620,
+    "duration": 24.262,
+    "t0": 1794705725.23,
+    "viewport": {
+      "width": 2880,
+      "height": 1620
+    },
+    "events": {
+      "home": 0,
+      "tour-open": 5.362,
+      "tour-map": 9.396,
+      "tour-steps": 13.51,
+      "tour-programme": 17.543,
+      "tour-ranking": 21.661
+    }
+  },
+  "valid": {
+    "file": "footage/valid.mp4",
+    "width": 2880,
+    "height": 1620,
+    "duration": 12.457,
+    "t0": 1794708746.799,
+    "viewport": {
+      "width": 2880,
+      "height": 1620
+    },
+    "events": {
+      "groups": 0,
+      "open": 3.259,
+      "table": 5.555,
+      "lang-row": 8.456
+    }
+  }
+}

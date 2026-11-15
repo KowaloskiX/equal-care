@@ -1,0 +1,132 @@
+{
+ "title": "Equal Care Finland — 120-second pitch",
+ "voice": "Charon",
+ "speed": 1.0,
+ "vocabulary": "Equal Care Finland, Helsinki, Satakunta, Gemini, Decisions API, Jev, Statistics Finland, roadmap.",
+ "sections": {
+  "hook": "0:00 · Hook & problem",
+  "solution": "0:12 · The solution",
+  "core": "0:22 · The core — a simulated population",
+  "trust": "0:52 · Can you trust it",
+  "feature2": "1:11 · What would help",
+  "feature3": "1:29 · The rest of the pathway",
+  "difference": "1:46 · What is real",
+  "ending": "1:53 · Ending"
+ },
+ "lines": [
+  {
+   "id": "hook-1",
+   "section": "hook",
+   "text": "Finland invites every woman to free breast screening, and aims for eighty percent attendance.",
+   "say": "Finland invites every woman to free breast screening, and aims for eighty percent attendance."
+  },
+  {
+   "id": "hook-2",
+   "section": "hook",
+   "text": "The county furthest behind is not rural. It is Helsinki.",
+   "say": "The county furthest behind is not rural. It is Helsinki."
+  },
+  {
+   "id": "sol-1",
+   "section": "solution",
+   "text": "Equal Care Finland shows where cancer care falls behind, why, and what the national roadmap says to do.",
+   "say": "Equal Care Finland shows where cancer care falls behind, why, and what the national roadmap says to do."
+  },
+  {
+   "id": "c-1",
+   "section": "core",
+   "text": "The core is a simulated population.",
+   "say": "The core is a simulated population."
+  },
+  {
+   "id": "c-2",
+   "section": "core",
+   "text": "From Statistics Finland tables, we rebuild Helsinki's women as 771 resident types: age, language, education, work.",
+   "say": "From Statistics Finland tables, we rebuild Helsinki's women as seven hundred seventy-one resident types: age, language, education, work."
+  },
+  {
+   "id": "c-3",
+   "section": "core",
+   "text": "Gemini's Decisions API judges each type once: will she attend, and what stops her?",
+   "say": "Gemini's Decisions API judges each type once: will she attend, and what stops her?"
+  },
+  {
+   "id": "c-4",
+   "section": "core",
+   "text": "It returns a probability and a barrier, and any dot opens the exact question behind it.",
+   "say": "It returns a probability and a barrier, and any dot opens the exact question behind it."
+  },
+  {
+   "id": "t-1",
+   "section": "trust",
+   "text": "Can you trust it?",
+   "say": "Can you trust it?"
+  },
+  {
+   "id": "t-2",
+   "section": "trust",
+   "text": "Against real attendance in 22 counties, it correlates at 0.84.",
+   "say": "Against real attendance in twenty-two counties, it correlates at zero point eight four."
+  },
+  {
+   "id": "t-3",
+   "section": "trust",
+   "text": "It overstates the language gap, and the app shows that.",
+   "say": "It overstates the language gap, and the app shows that."
+  },
+  {
+   "id": "t-4",
+   "section": "trust",
+   "text": "A second engine, Jev, answers the same questions, so effects come as a range.",
+   "say": "A second engine, Jev, answers the same questions, so effects come as a range."
+  },
+  {
+   "id": "f2-1",
+   "section": "feature2",
+   "text": "So, what would help?",
+   "say": "So, what would help?"
+  },
+  {
+   "id": "f2-3",
+   "section": "feature2",
+   "text": "Invitations in a person's own language bring 992 to 2,093 more women a year, across two models.",
+   "say": "Invitations in a person's own language bring nine hundred ninety-two to two thousand ninety-three more women a year, across two models."
+  },
+  {
+   "id": "f2-4",
+   "section": "feature2",
+   "text": "And it cites the roadmap: action 1.3.1, page 33.",
+   "say": "And it cites the roadmap: action one point three point one, page thirty-three."
+  },
+  {
+   "id": "f3-1",
+   "section": "feature3",
+   "text": "And beyond screening: the rest of the pathway.",
+   "say": "And beyond screening: the rest of the pathway."
+  },
+  {
+   "id": "f3-3",
+   "section": "feature3",
+   "text": "In Satakunta, 37.5 percent of oncology patients wait over ninety days, against 3.5 nationally.",
+   "say": "In Satakunta, thirty-seven point five percent of oncology patients wait over ninety days, against three point five nationally."
+  },
+  {
+   "id": "f3-4",
+   "section": "feature3",
+   "text": "That is eight patients, so the app warns about small numbers.",
+   "say": "That is eight patients, so the app warns about small numbers."
+  },
+  {
+   "id": "diff-2",
+   "section": "difference",
+   "text": "Gemini writes the words. Code inserts and checks every number.",
+   "say": "Gemini writes the words. Code inserts and checks every number."
+  },
+  {
+   "id": "end-1",
+   "section": "ending",
+   "text": "Equal Care Finland. Where the gap is, why, and what to do next.",
+   "say": "Equal Care Finland. Where the gap is, why, and what to do next."
+  }
+ ]
+}

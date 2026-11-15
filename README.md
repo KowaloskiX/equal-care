@@ -94,3 +94,5 @@ in-memory, so they reset on every restart or redeploy.
 | `src/grounding.py` | Flags numbers in generated text that do not come from the data |
 | `app/server.py` | FastAPI |
 | `web/` | Next.js, deck.gl and MapLibre map; `/story` presentation route |
+| `video/` | Remotion project for the 120 s pitch video (`video/equal-care-demo.mp4`); see `video/README.md` |
+| `Dockerfile`, `deploy/start.sh`, `render.yaml`, `src/budget.py` | One-container Render deploy and the live Gemini spend guard |

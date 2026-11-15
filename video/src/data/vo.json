@@ -1,0 +1,137 @@
+{
+  "lines": [
+    {
+      "id": "hook-1",
+      "section": "hook",
+      "text": "Finland invites every woman to free breast screening, and aims for eighty percent attendance.",
+      "start": 0.6,
+      "duration": 5.11
+    },
+    {
+      "id": "hook-2",
+      "section": "hook",
+      "text": "The county furthest behind is not rural. It is Helsinki.",
+      "start": 6.7,
+      "duration": 4.06
+    },
+    {
+      "id": "sol-1",
+      "section": "solution",
+      "text": "Equal Care Finland shows where cancer care falls behind, why, and what the national roadmap says to do.",
+      "start": 12.5,
+      "duration": 6.2
+    },
+    {
+      "id": "c-1",
+      "section": "core",
+      "text": "The core is a simulated population.",
+      "start": 22.6,
+      "duration": 2.97
+    },
+    {
+      "id": "c-2",
+      "section": "core",
+      "text": "From Statistics Finland tables, we rebuild Helsinki's women as 771 resident types: age, language, education, work.",
+      "start": 26.5,
+      "duration": 10.13
+    },
+    {
+      "id": "c-3",
+      "section": "core",
+      "text": "Gemini's Decisions API judges each type once: will she attend, and what stops her?",
+      "start": 37.6,
+      "duration": 5.95
+    },
+    {
+      "id": "c-4",
+      "section": "core",
+      "text": "It returns a probability and a barrier, and any dot opens the exact question behind it.",
+      "start": 44.6,
+      "duration": 5.8
+    },
+    {
+      "id": "t-1",
+      "section": "trust",
+      "text": "Can you trust it?",
+      "start": 52.6,
+      "duration": 1.34
+    },
+    {
+      "id": "t-2",
+      "section": "trust",
+      "text": "Against real attendance in 22 counties, it correlates at 0.84.",
+      "start": 54.9,
+      "duration": 5.18
+    },
+    {
+      "id": "t-3",
+      "section": "trust",
+      "text": "It overstates the language gap, and the app shows that.",
+      "start": 61.1,
+      "duration": 3.01
+    },
+    {
+      "id": "t-4",
+      "section": "trust",
+      "text": "A second engine, Jev, answers the same questions, so effects come as a range.",
+      "start": 65,
+      "duration": 5.2
+    },
+    {
+      "id": "f2-1",
+      "section": "feature2",
+      "text": "So, what would help?",
+      "start": 71.5,
+      "duration": 1.21
+    },
+    {
+      "id": "f2-3",
+      "section": "feature2",
+      "text": "Invitations in a person's own language bring 992 to 2,093 more women a year, across two models.",
+      "start": 73.5,
+      "duration": 8.24
+    },
+    {
+      "id": "f2-4",
+      "section": "feature2",
+      "text": "And it cites the roadmap: action 1.3.1, page 33.",
+      "start": 82.5,
+      "duration": 5.13
+    },
+    {
+      "id": "f3-1",
+      "section": "feature3",
+      "text": "And beyond screening: the rest of the pathway.",
+      "start": 89.4,
+      "duration": 2.9
+    },
+    {
+      "id": "f3-3",
+      "section": "feature3",
+      "text": "In Satakunta, 37.5 percent of oncology patients wait over ninety days, against 3.5 nationally.",
+      "start": 92.9,
+      "duration": 7.63
+    },
+    {
+      "id": "f3-4",
+      "section": "feature3",
+      "text": "That is eight patients, so the app warns about small numbers.",
+      "start": 101.2,
+      "duration": 3.82
+    },
+    {
+      "id": "diff-2",
+      "section": "difference",
+      "text": "Gemini writes the words. Code inserts and checks every number.",
+      "start": 106.8,
+      "duration": 4.43
+    },
+    {
+      "id": "end-1",
+      "section": "ending",
+      "text": "Equal Care Finland. Where the gap is, why, and what to do next.",
+      "start": 113.8,
+      "duration": 5.49
+    }
+  ]
+}

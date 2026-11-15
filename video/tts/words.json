@@ -1,0 +1,1217 @@
+{
+ "hook-1": [
+  {
+   "word": "Finland",
+   "start": 0.0,
+   "end": 0.54
+  },
+  {
+   "word": "invites",
+   "start": 0.54,
+   "end": 1.0
+  },
+  {
+   "word": "every",
+   "start": 1.0,
+   "end": 1.48
+  },
+  {
+   "word": "woman",
+   "start": 1.48,
+   "end": 1.78
+  },
+  {
+   "word": "to",
+   "start": 1.78,
+   "end": 2.08
+  },
+  {
+   "word": "free",
+   "start": 2.08,
+   "end": 2.32
+  },
+  {
+   "word": "breast",
+   "start": 2.32,
+   "end": 2.56
+  },
+  {
+   "word": "screening",
+   "start": 2.56,
+   "end": 2.96
+  },
+  {
+   "word": "and",
+   "start": 2.96,
+   "end": 3.42
+  },
+  {
+   "word": "aims",
+   "start": 3.42,
+   "end": 3.68
+  },
+  {
+   "word": "for",
+   "start": 3.68,
+   "end": 3.9
+  },
+  {
+   "word": "80",
+   "start": 3.9,
+   "end": 4.16
+  },
+  {
+   "word": "%",
+   "start": 4.16,
+   "end": 4.48
+  },
+  {
+   "word": "attendance.",
+   "start": 4.48,
+   "end": 4.88
+  }
+ ],
+ "hook-2": [
+  {
+   "word": "The",
+   "start": 0.0,
+   "end": 0.32
+  },
+  {
+   "word": "county",
+   "start": 0.32,
+   "end": 0.64
+  },
+  {
+   "word": "furthest",
+   "start": 0.64,
+   "end": 1.2
+  },
+  {
+   "word": "behind",
+   "start": 1.2,
+   "end": 1.52
+  },
+  {
+   "word": "is",
+   "start": 1.52,
+   "end": 1.96
+  },
+  {
+   "word": "not",
+   "start": 1.96,
+   "end": 2.24
+  },
+  {
+   "word": "rural,",
+   "start": 2.24,
+   "end": 2.68
+  },
+  {
+   "word": "it",
+   "start": 3.14,
+   "end": 3.2
+  },
+  {
+   "word": "is",
+   "start": 3.2,
+   "end": 3.34
+  },
+  {
+   "word": "Helsinki.",
+   "start": 3.34,
+   "end": 3.78
+  }
+ ],
+ "sol-1": [
+  {
+   "word": "Equal",
+   "start": 0.0,
+   "end": 0.52
+  },
+  {
+   "word": "Care",
+   "start": 0.52,
+   "end": 0.78
+  },
+  {
+   "word": "Finland",
+   "start": 0.78,
+   "end": 1.16
+  },
+  {
+   "word": "shows",
+   "start": 1.16,
+   "end": 1.6
+  },
+  {
+   "word": "where",
+   "start": 1.6,
+   "end": 1.84
+  },
+  {
+   "word": "cancer",
+   "start": 1.84,
+   "end": 2.14
+  },
+  {
+   "word": "care",
+   "start": 2.14,
+   "end": 2.4
+  },
+  {
+   "word": "falls",
+   "start": 2.4,
+   "end": 2.68
+  },
+  {
+   "word": "behind,",
+   "start": 2.68,
+   "end": 3.1
+  },
+  {
+   "word": "why,",
+   "start": 3.46,
+   "end": 3.8
+  },
+  {
+   "word": "and",
+   "start": 4.22,
+   "end": 4.32
+  },
+  {
+   "word": "what",
+   "start": 4.32,
+   "end": 4.44
+  },
+  {
+   "word": "the",
+   "start": 4.44,
+   "end": 4.62
+  },
+  {
+   "word": "national",
+   "start": 4.62,
+   "end": 4.96
+  },
+  {
+   "word": "roadmap",
+   "start": 4.96,
+   "end": 5.36
+  },
+  {
+   "word": "says",
+   "start": 5.36,
+   "end": 5.68
+  },
+  {
+   "word": "to",
+   "start": 5.68,
+   "end": 5.88
+  },
+  {
+   "word": "do.",
+   "start": 5.88,
+   "end": 6.08
+  }
+ ],
+ "c-1": [
+  {
+   "word": "The",
+   "start": 0.0,
+   "end": 0.48
+  },
+  {
+   "word": "core",
+   "start": 0.48,
+   "end": 0.8
+  },
+  {
+   "word": "is",
+   "start": 0.8,
+   "end": 1.24
+  },
+  {
+   "word": "a",
+   "start": 1.24,
+   "end": 1.4
+  },
+  {
+   "word": "simulated",
+   "start": 1.4,
+   "end": 1.94
+  },
+  {
+   "word": "population.",
+   "start": 1.94,
+   "end": 2.76
+  }
+ ],
+ "c-2": [
+  {
+   "word": "From",
+   "start": 0.0,
+   "end": 0.38
+  },
+  {
+   "word": "Statistics",
+   "start": 0.38,
+   "end": 0.84
+  },
+  {
+   "word": "Finland",
+   "start": 0.84,
+   "end": 1.32
+  },
+  {
+   "word": "tables,",
+   "start": 1.32,
+   "end": 1.76
+  },
+  {
+   "word": "we",
+   "start": 2.2,
+   "end": 2.3
+  },
+  {
+   "word": "rebuild",
+   "start": 2.3,
+   "end": 2.72
+  },
+  {
+   "word": "Helsinki's",
+   "start": 2.72,
+   "end": 3.46
+  },
+  {
+   "word": "women",
+   "start": 3.46,
+   "end": 3.66
+  },
+  {
+   "word": "as",
+   "start": 3.66,
+   "end": 4.04
+  },
+  {
+   "word": "771",
+   "start": 4.04,
+   "end": 5.42
+  },
+  {
+   "word": "resident",
+   "start": 5.42,
+   "end": 5.82
+  },
+  {
+   "word": "types.",
+   "start": 5.82,
+   "end": 6.36
+  },
+  {
+   "word": "Age.",
+   "start": 7.14,
+   "end": 7.16
+  },
+  {
+   "word": "Language.",
+   "start": 7.76,
+   "end": 8.0
+  },
+  {
+   "word": "Education.",
+   "start": 8.68,
+   "end": 9.0
+  },
+  {
+   "word": "Work.",
+   "start": 9.82,
+   "end": 10.0
+  }
+ ],
+ "c-3": [
+  {
+   "word": "Gemini's",
+   "start": 0.0,
+   "end": 0.86
+  },
+  {
+   "word": "Decisions",
+   "start": 0.86,
+   "end": 1.38
+  },
+  {
+   "word": "API",
+   "start": 1.38,
+   "end": 1.9
+  },
+  {
+   "word": "judges",
+   "start": 1.9,
+   "end": 2.32
+  },
+  {
+   "word": "each",
+   "start": 2.32,
+   "end": 2.7
+  },
+  {
+   "word": "type",
+   "start": 2.7,
+   "end": 2.96
+  },
+  {
+   "word": "once,",
+   "start": 2.96,
+   "end": 3.36
+  },
+  {
+   "word": "will",
+   "start": 3.88,
+   "end": 4.18
+  },
+  {
+   "word": "she",
+   "start": 4.18,
+   "end": 4.34
+  },
+  {
+   "word": "attend",
+   "start": 4.34,
+   "end": 4.64
+  },
+  {
+   "word": "and",
+   "start": 4.64,
+   "end": 5.22
+  },
+  {
+   "word": "what",
+   "start": 5.22,
+   "end": 5.36
+  },
+  {
+   "word": "stops",
+   "start": 5.36,
+   "end": 5.62
+  },
+  {
+   "word": "her?",
+   "start": 5.62,
+   "end": 5.86
+  }
+ ],
+ "c-4": [
+  {
+   "word": "It",
+   "start": 0.0,
+   "end": 0.44
+  },
+  {
+   "word": "returns",
+   "start": 0.44,
+   "end": 0.84
+  },
+  {
+   "word": "a",
+   "start": 0.84,
+   "end": 1.06
+  },
+  {
+   "word": "probability",
+   "start": 1.06,
+   "end": 1.52
+  },
+  {
+   "word": "and",
+   "start": 1.52,
+   "end": 2.16
+  },
+  {
+   "word": "a",
+   "start": 2.16,
+   "end": 2.26
+  },
+  {
+   "word": "barrier,",
+   "start": 2.26,
+   "end": 2.64
+  },
+  {
+   "word": "and",
+   "start": 3.0,
+   "end": 3.2
+  },
+  {
+   "word": "any",
+   "start": 3.2,
+   "end": 3.46
+  },
+  {
+   "word": "dot",
+   "start": 3.46,
+   "end": 3.72
+  },
+  {
+   "word": "opens",
+   "start": 3.72,
+   "end": 4.08
+  },
+  {
+   "word": "the",
+   "start": 4.08,
+   "end": 4.3
+  },
+  {
+   "word": "exact",
+   "start": 4.3,
+   "end": 4.68
+  },
+  {
+   "word": "question",
+   "start": 4.68,
+   "end": 5.18
+  },
+  {
+   "word": "behind",
+   "start": 5.18,
+   "end": 5.56
+  },
+  {
+   "word": "it.",
+   "start": 5.56,
+   "end": 5.78
+  }
+ ],
+ "t-1": [
+  {
+   "word": "Can",
+   "start": 0.0,
+   "end": 0.46
+  },
+  {
+   "word": "you",
+   "start": 0.46,
+   "end": 0.62
+  },
+  {
+   "word": "trust",
+   "start": 0.62,
+   "end": 1.02
+  },
+  {
+   "word": "it?",
+   "start": 1.02,
+   "end": 1.28
+  }
+ ],
+ "t-2": [
+  {
+   "word": "Against",
+   "start": 0.0,
+   "end": 0.66
+  },
+  {
+   "word": "real",
+   "start": 0.66,
+   "end": 1.12
+  },
+  {
+   "word": "attendance",
+   "start": 1.12,
+   "end": 1.6
+  },
+  {
+   "word": "in",
+   "start": 1.6,
+   "end": 1.92
+  },
+  {
+   "word": "22",
+   "start": 1.92,
+   "end": 2.34
+  },
+  {
+   "word": "counties,",
+   "start": 2.34,
+   "end": 2.82
+  },
+  {
+   "word": "it",
+   "start": 3.16,
+   "end": 3.2
+  },
+  {
+   "word": "correlates",
+   "start": 3.2,
+   "end": 3.66
+  },
+  {
+   "word": "at",
+   "start": 3.66,
+   "end": 3.94
+  },
+  {
+   "word": "0",
+   "start": 3.94,
+   "end": 4.3
+  },
+  {
+   "word": ".84.",
+   "start": 4.3,
+   "end": 4.9
+  }
+ ],
+ "t-3": [
+  {
+   "word": "It",
+   "start": 0.0,
+   "end": 0.4
+  },
+  {
+   "word": "overstates",
+   "start": 0.4,
+   "end": 0.92
+  },
+  {
+   "word": "the",
+   "start": 0.92,
+   "end": 1.16
+  },
+  {
+   "word": "language",
+   "start": 1.16,
+   "end": 1.42
+  },
+  {
+   "word": "gap,",
+   "start": 1.42,
+   "end": 1.7
+  },
+  {
+   "word": "and",
+   "start": 1.96,
+   "end": 2.08
+  },
+  {
+   "word": "the",
+   "start": 2.08,
+   "end": 2.24
+  },
+  {
+   "word": "app",
+   "start": 2.24,
+   "end": 2.4
+  },
+  {
+   "word": "shows",
+   "start": 2.4,
+   "end": 2.68
+  },
+  {
+   "word": "that.",
+   "start": 2.68,
+   "end": 3.0
+  }
+ ],
+ "t-4": [
+  {
+   "word": "A",
+   "start": 0.0,
+   "end": 0.38
+  },
+  {
+   "word": "second",
+   "start": 0.38,
+   "end": 0.76
+  },
+  {
+   "word": "engine",
+   "start": 0.76,
+   "end": 1.14
+  },
+  {
+   "word": "Jev",
+   "start": 1.14,
+   "end": 1.58
+  },
+  {
+   "word": "answers",
+   "start": 1.58,
+   "end": 2.36
+  },
+  {
+   "word": "the",
+   "start": 2.36,
+   "end": 2.58
+  },
+  {
+   "word": "same",
+   "start": 2.58,
+   "end": 2.8
+  },
+  {
+   "word": "questions,",
+   "start": 2.8,
+   "end": 3.26
+  },
+  {
+   "word": "so",
+   "start": 3.54,
+   "end": 3.8
+  },
+  {
+   "word": "effects",
+   "start": 3.8,
+   "end": 4.06
+  },
+  {
+   "word": "come",
+   "start": 4.06,
+   "end": 4.34
+  },
+  {
+   "word": "as",
+   "start": 4.34,
+   "end": 4.54
+  },
+  {
+   "word": "a",
+   "start": 4.54,
+   "end": 4.66
+  },
+  {
+   "word": "range.",
+   "start": 4.66,
+   "end": 4.96
+  }
+ ],
+ "f2-1": [
+  {
+   "word": "So",
+   "start": 0.0,
+   "end": 0.5
+  },
+  {
+   "word": "what",
+   "start": 0.5,
+   "end": 0.68
+  },
+  {
+   "word": "would",
+   "start": 0.68,
+   "end": 0.84
+  },
+  {
+   "word": "help?",
+   "start": 0.84,
+   "end": 1.1
+  }
+ ],
+ "f2-3": [
+  {
+   "word": "Invitations",
+   "start": 0.0,
+   "end": 0.8
+  },
+  {
+   "word": "in",
+   "start": 0.8,
+   "end": 1.06
+  },
+  {
+   "word": "a",
+   "start": 1.06,
+   "end": 1.18
+  },
+  {
+   "word": "person's",
+   "start": 1.18,
+   "end": 1.58
+  },
+  {
+   "word": "own",
+   "start": 1.58,
+   "end": 1.76
+  },
+  {
+   "word": "language",
+   "start": 1.76,
+   "end": 2.24
+  },
+  {
+   "word": "bring",
+   "start": 2.24,
+   "end": 2.76
+  },
+  {
+   "word": "992",
+   "start": 2.76,
+   "end": 4.0
+  },
+  {
+   "word": "to",
+   "start": 4.0,
+   "end": 4.52
+  },
+  {
+   "word": "2093",
+   "start": 4.52,
+   "end": 5.68
+  },
+  {
+   "word": "more",
+   "start": 5.68,
+   "end": 5.98
+  },
+  {
+   "word": "women",
+   "start": 5.98,
+   "end": 6.26
+  },
+  {
+   "word": "a",
+   "start": 6.26,
+   "end": 6.46
+  },
+  {
+   "word": "year",
+   "start": 6.46,
+   "end": 6.7
+  },
+  {
+   "word": "across",
+   "start": 6.7,
+   "end": 7.42
+  },
+  {
+   "word": "two",
+   "start": 7.42,
+   "end": 7.72
+  },
+  {
+   "word": "models.",
+   "start": 7.72,
+   "end": 8.1
+  }
+ ],
+ "f2-4": [
+  {
+   "word": "And",
+   "start": 0.0,
+   "end": 0.34
+  },
+  {
+   "word": "it",
+   "start": 0.34,
+   "end": 0.46
+  },
+  {
+   "word": "cites",
+   "start": 0.46,
+   "end": 0.8
+  },
+  {
+   "word": "the",
+   "start": 0.8,
+   "end": 1.0
+  },
+  {
+   "word": "roadmap.",
+   "start": 1.0,
+   "end": 1.46
+  },
+  {
+   "word": "Action",
+   "start": 2.14,
+   "end": 2.3
+  },
+  {
+   "word": "1",
+   "start": 2.3,
+   "end": 2.7
+  },
+  {
+   "word": ".3",
+   "start": 2.7,
+   "end": 3.32
+  },
+  {
+   "word": ".1,",
+   "start": 3.32,
+   "end": 3.98
+  },
+  {
+   "word": "page",
+   "start": 4.36,
+   "end": 4.4
+  },
+  {
+   "word": "33.",
+   "start": 4.4,
+   "end": 4.96
+  }
+ ],
+ "f3-1": [
+  {
+   "word": "And",
+   "start": 0.0,
+   "end": 0.44
+  },
+  {
+   "word": "beyond",
+   "start": 0.44,
+   "end": 0.78
+  },
+  {
+   "word": "screening,",
+   "start": 0.78,
+   "end": 1.24
+  },
+  {
+   "word": "the",
+   "start": 1.58,
+   "end": 1.74
+  },
+  {
+   "word": "rest",
+   "start": 1.74,
+   "end": 1.96
+  },
+  {
+   "word": "of",
+   "start": 1.96,
+   "end": 2.22
+  },
+  {
+   "word": "the",
+   "start": 2.22,
+   "end": 2.32
+  },
+  {
+   "word": "pathway.",
+   "start": 2.32,
+   "end": 2.7
+  }
+ ],
+ "f3-3": [
+  {
+   "word": "In",
+   "start": 0.0,
+   "end": 0.42
+  },
+  {
+   "word": "Satakunta,",
+   "start": 0.42,
+   "end": 1.06
+  },
+  {
+   "word": "37",
+   "start": 1.54,
+   "end": 1.84
+  },
+  {
+   "word": ".5",
+   "start": 1.84,
+   "end": 2.52
+  },
+  {
+   "word": "%",
+   "start": 2.52,
+   "end": 2.82
+  },
+  {
+   "word": "of",
+   "start": 2.82,
+   "end": 2.96
+  },
+  {
+   "word": "oncology",
+   "start": 2.96,
+   "end": 3.58
+  },
+  {
+   "word": "patients",
+   "start": 3.58,
+   "end": 4.0
+  },
+  {
+   "word": "wait",
+   "start": 4.0,
+   "end": 4.28
+  },
+  {
+   "word": "over",
+   "start": 4.28,
+   "end": 4.58
+  },
+  {
+   "word": "90",
+   "start": 4.58,
+   "end": 4.92
+  },
+  {
+   "word": "days",
+   "start": 4.92,
+   "end": 5.42
+  },
+  {
+   "word": "against",
+   "start": 5.42,
+   "end": 5.94
+  },
+  {
+   "word": "3",
+   "start": 5.94,
+   "end": 6.34
+  },
+  {
+   "word": ".5",
+   "start": 6.34,
+   "end": 6.9
+  },
+  {
+   "word": "nationally.",
+   "start": 6.9,
+   "end": 7.48
+  }
+ ],
+ "f3-4": [
+  {
+   "word": "That",
+   "start": 0.0,
+   "end": 0.42
+  },
+  {
+   "word": "is",
+   "start": 0.42,
+   "end": 0.66
+  },
+  {
+   "word": "eight",
+   "start": 0.66,
+   "end": 0.98
+  },
+  {
+   "word": "patients,",
+   "start": 0.98,
+   "end": 1.5
+  },
+  {
+   "word": "so",
+   "start": 1.8,
+   "end": 1.96
+  },
+  {
+   "word": "the",
+   "start": 1.96,
+   "end": 2.1
+  },
+  {
+   "word": "app",
+   "start": 2.1,
+   "end": 2.28
+  },
+  {
+   "word": "warns",
+   "start": 2.28,
+   "end": 2.64
+  },
+  {
+   "word": "about",
+   "start": 2.64,
+   "end": 2.92
+  },
+  {
+   "word": "small",
+   "start": 2.92,
+   "end": 3.24
+  },
+  {
+   "word": "numbers.",
+   "start": 3.24,
+   "end": 3.7
+  }
+ ],
+ "diff-1": [
+  {
+   "word": "One",
+   "start": 0.0,
+   "end": 0.44
+  },
+  {
+   "word": "click",
+   "start": 0.44,
+   "end": 0.66
+  },
+  {
+   "word": "turns",
+   "start": 0.66,
+   "end": 1.0
+  },
+  {
+   "word": "the",
+   "start": 1.0,
+   "end": 1.22
+  },
+  {
+   "word": "session",
+   "start": 1.22,
+   "end": 1.52
+  },
+  {
+   "word": "into",
+   "start": 1.52,
+   "end": 1.84
+  },
+  {
+   "word": "a",
+   "start": 1.84,
+   "end": 2.0
+  },
+  {
+   "word": "briefing",
+   "start": 2.0,
+   "end": 2.26
+  },
+  {
+   "word": "and",
+   "start": 2.26,
+   "end": 2.78
+  },
+  {
+   "word": "a",
+   "start": 2.78,
+   "end": 2.9
+  },
+  {
+   "word": "slide",
+   "start": 2.9,
+   "end": 3.12
+  },
+  {
+   "word": "deck.",
+   "start": 3.12,
+   "end": 3.4
+  }
+ ],
+ "diff-2": [
+  {
+   "word": "Gemini",
+   "start": 0.0,
+   "end": 0.4
+  },
+  {
+   "word": "writes",
+   "start": 0.4,
+   "end": 0.84
+  },
+  {
+   "word": "the",
+   "start": 0.84,
+   "end": 1.1
+  },
+  {
+   "word": "words.",
+   "start": 1.1,
+   "end": 1.44
+  },
+  {
+   "word": "Code",
+   "start": 2.26,
+   "end": 2.26
+  },
+  {
+   "word": "inserts",
+   "start": 2.26,
+   "end": 2.82
+  },
+  {
+   "word": "and",
+   "start": 2.82,
+   "end": 3.18
+  },
+  {
+   "word": "checks",
+   "start": 3.18,
+   "end": 3.54
+  },
+  {
+   "word": "every",
+   "start": 3.54,
+   "end": 3.92
+  },
+  {
+   "word": "number.",
+   "start": 3.92,
+   "end": 4.28
+  }
+ ],
+ "end-1": [
+  {
+   "word": "Equal",
+   "start": 0.0,
+   "end": 0.5
+  },
+  {
+   "word": "Care",
+   "start": 0.5,
+   "end": 0.78
+  },
+  {
+   "word": "Finland.",
+   "start": 0.78,
+   "end": 1.24
+  },
+  {
+   "word": "Where",
+   "start": 1.86,
+   "end": 2.06
+  },
+  {
+   "word": "the",
+   "start": 2.06,
+   "end": 2.22
+  },
+  {
+   "word": "gap",
+   "start": 2.22,
+   "end": 2.38
+  },
+  {
+   "word": "is,",
+   "start": 2.38,
+   "end": 2.8
+  },
+  {
+   "word": "why,",
+   "start": 3.18,
+   "end": 3.54
+  },
+  {
+   "word": "and",
+   "start": 3.96,
+   "end": 4.24
+  },
+  {
+   "word": "what",
+   "start": 4.24,
+   "end": 4.6
+  },
+  {
+   "word": "to",
+   "start": 4.6,
+   "end": 4.82
+  },
+  {
+   "word": "do",
+   "start": 4.82,
+   "end": 5.0
+  },
+  {
+   "word": "next.",
+   "start": 5.0,
+   "end": 5.32
+  }
+ ]
+}
