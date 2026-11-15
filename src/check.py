@@ -194,7 +194,7 @@ budget.reset()
 os.environ["DECISIONS_LIVE_PER_DAY"] = "0"          # 0 disables live decisions calls entirely
 r429 = c.get("/api/whatif?prog=breast&code=90&s=mobile_unit,sms_reminder,evening_slots")
 check("uncached what-if is 429 at budget 0 (no engine call made)",
-      r429.status_code == 429 and "budget" in r429.json()["detail"].lower())
+      r429.status_code == 429 and "switched off" in r429.json()["detail"])
 r200 = c.get("/api/whatif?prog=breast&code=90&s=own_language")
 check("fully cached what-if never touches the budget",
       r200.status_code == 200 and r200.json()["asked_live"] == 0)

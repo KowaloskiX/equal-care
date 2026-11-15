@@ -61,6 +61,9 @@ def take(kind: str, ip: str | None = None, units: int = 1):
              for name, limit, window, u, msg in _rules(kind, ip)]
     with _LOCK:
         for name, limit, window, n, msg in rules:
+            if limit <= 0:
+                raise Exceeded("Live report generation is switched off in the public demo." if kind == "report" else
+                               "Live simulation is switched off in the public demo — the cached interventions still work.")
             if _spent(name, now, window) + n > limit:
                 raise Exceeded(msg)
         for name, _, _, n, _ in rules:

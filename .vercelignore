@@ -1,0 +1,23 @@
+# Vercel API project (repo root, FastAPI in app/server.py). The web project deploys from web/ separately.
+web/
+video/
+demo/
+media/
+shots-v3/
+out/
+data/raw/
+.venv/
+node_modules/
+.chrome-profile/
+.env
+.env_append.cjs
+.extract_groups.cjs
+.fetchpdf.cjs
+.migrate.log
+.mk.tasks
+.probe_genai.py
+.report_*.json
+.sim_gen.cjs
+.sum_migrate.py
+Dockerfile
+deploy/

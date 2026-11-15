@@ -20,6 +20,8 @@ app = FastAPI(title="Equal Care Across Finland")
 def _warm():
     """Precompute the decompositions (municipality bootstrap takes a few seconds) so the first
     /api/decompose call is instant; lru_cache shares the result with the endpoint."""
+    if os.environ.get("VERCEL"):                    # serverless: no background warm-up, compute on first use
+        return
     import threading
     threading.Thread(target=lambda: [decompose.decompose(p) for p in decompose.PROG_KEY], daemon=True).start()
     # Warm the replay memo for the demo path (breast/Helsinki + the pitch combos, bowel baseline):

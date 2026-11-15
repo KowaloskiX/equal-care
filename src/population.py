@@ -80,8 +80,12 @@ def build():
     S["w"] *= S.p_ea
     S["muni_type"] = S.muni.map(municipality_type())
     S = S[S.w > 0.01][["muni", "region", "muni_type", "sex", "age5", "settlement", "lang", "edu", "activity", "w"]]
-    OUT.mkdir(exist_ok=True)
-    S.reset_index(drop=True).to_parquet(OUT / "cells.parquet")
+    S = S.reset_index(drop=True)
+    try:
+        OUT.mkdir(exist_ok=True)
+        S.to_parquet(OUT / "cells.parquet")
+    except OSError:                                  # read-only deploy (Vercel): keep the frame in memory only
+        pass
     return S
 
 
