@@ -13,3 +13,5 @@ web/tsconfig.tsbuildinfo
 media/
 shots-v3/
 demo/out/
+.vercel
+.env.local

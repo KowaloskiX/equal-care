@@ -50,6 +50,20 @@ in `.env` (`gemini` or `jev`, default `gemini`) or `--engine`; `TYPESAFE_API_KEY
 questions or resident states change (the cache invalidates and new calls run). A what-if combination outside the cache
 needs the active engine's key or the API returns 503 — simulated numbers are never fabricated.
 
+## Deploy on Vercel (live: https://equal-care.vercel.app)
+
+Two Hobby projects deployed with the CLI (`npx vercel@65.16.0 ... --scope <your hobby scope>`):
+
+- **API** `equal-care-api` from the repo root (FastAPI auto-detected in `app/server.py`, Python 3.12 via
+  `.python-version`, upload filtered by `.vercelignore`). Env: `GEMINI_API_KEY` (only for uncached live calls),
+  `SIM_ENGINE=gemini`, `DECISIONS_LIVE_PER_DAY=0`, `WHATIF_LIVE_PER_IP_HOUR=0`, `REPORT_LIVE_PER_DAY=20`,
+  `REPORT_LIVE_PER_IP_HOUR=3`. The filesystem is read-only, so live Decisions calls stay off; cached counties and
+  interventions work.
+- **Web** `equal-care` from `web/`. Env: `NEXT_PUBLIC_API` and `API_ORIGIN` = the API URL.
+
+Redeploy: `npx vercel@65.16.0 deploy --prod --yes --scope <scope>` in the repo root (API) and in `web/` (web).
+Budgets are per serverless instance; cold requests take several seconds (no warm-up on Vercel).
+
 ## Deploy on Render
 
 One Docker web service (see `Dockerfile`, `render.yaml`, `deploy/start.sh`): uvicorn serves the API on
