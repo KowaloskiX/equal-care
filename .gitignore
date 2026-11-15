@@ -11,3 +11,5 @@ web/tsconfig.tsbuildinfo
 .DS_Store
 .worktrees/
 media/
+shots-v3/
+demo/out/

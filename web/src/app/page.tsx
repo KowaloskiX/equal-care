@@ -183,7 +183,10 @@ export default function Home() {
     getMeta().then(setMeta).catch((e) => setErr(String(e)));
     Promise.all([getGeo("county"), getGeo("municipality")]).then(([c, m]) => setGeo({ county: c, municipality: m })).catch((e) => setErr(String(e)));
     getBrief(undefined, 5).then(setBrief).catch(() => setBriefErr(true));
-    const raf = requestAnimationFrame(() => { if (!localStorage.getItem("ec_tour_done")) setTour(true); });
+    const raf = requestAnimationFrame(() => {
+      const skip = new URLSearchParams(window.location.search).get("tour") === "0";
+      if (!skip && !localStorage.getItem("ec_tour_done")) setTour(true);
+    });
     return () => cancelAnimationFrame(raf);
   }, []);
 

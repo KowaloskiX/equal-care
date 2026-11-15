@@ -815,9 +815,10 @@ def generate(payload, model):
 
 def _resolve_action(ref, facts):
     k = (ref or "").strip().strip("{}")
-    f = facts.get(k)
-    if isinstance(f, dict) and f.get("kind") == "ROADMAP" and f.get("unit") == "id":
-        return k, f
+    for cand in (k, f"{k.removesuffix('_page')}_id", f"{k}_id"):
+        f = facts.get(cand)
+        if isinstance(f, dict) and f.get("kind") == "ROADMAP" and f.get("unit") == "id":
+            return cand, f
     for kk, ff in facts.items():                          # model gave the id itself instead of the key
         if isinstance(ff, dict) and ff.get("unit") == "id" and str(ff.get("value")) == k:
             return kk, ff
