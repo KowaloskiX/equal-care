@@ -1,6 +1,6 @@
-// Deterministic 30fps CFR recorder for Equal Care Finland using Chrome CDP Screencast -> ffmpeg.
-// Pipes the latest compositor frame into system ffmpeg at a rock-solid 30 Hz starting at exact t0=0,
-// eliminating both Playwright's missing internal ffmpeg binary and variable-framerate drift.
+// Lossless PNG 30fps CFR recorder for Equal Care Finland using Chrome CDP Screencast -> ffmpeg.
+// No synthetic FrameTicker is injected (which caused Chromium screencast adaptive-JPEG text shimmer);
+// instead, lossless PNG frames update whenever the UI animates and hold rock-steady (0.000 diff) when still.
 const fs = require("fs");
 const path = require("path");
 const { spawn } = require("child_process");
@@ -13,47 +13,25 @@ const pwPath = [
 const { chromium } = require(pwPath);
 
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
-const VP = { width: 1360, height: 880 };
+const VP = { width: 1420, height: 920 };
 const FPS = 30;
 const APP_URL = process.env.DEMO_APP_URL || "http://localhost:3011";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const TICKER_SCRIPT = () => {
-  localStorage.setItem("ec_tour_done", "1");
-  const mount = () => {
-    if (!document.body || document.getElementById("__frame_ticker")) return;
-    const c = document.createElement("canvas");
-    c.id = "__frame_ticker";
-    c.width = 2; c.height = 2;
-    c.style.cssText = "position:fixed;right:0;bottom:0;width:2px;height:2px;opacity:0.015;pointer-events:none;z-index:99999;";
-    document.body.appendChild(c);
-    const ctx = c.getContext("2d");
-    let k = 0;
-    const loop = () => {
-      k = (k + 1) & 255;
-      if (ctx) { ctx.fillStyle = `rgb(${k},${255 - k},128)`; ctx.fillRect(0, 0, 2, 2); }
-      requestAnimationFrame(loop);
-    };
-    requestAnimationFrame(loop);
-  };
-  if (document.readyState === "loading") window.addEventListener("DOMContentLoaded", mount);
-  else mount();
-  setInterval(mount, 500);
-};
-
-async function clickLoc(page, loc) {
+async function clickLoc(page, loc, parkMouse = true) {
   await loc.waitFor({ state: "visible", timeout: 8000 });
   const box = await loc.boundingBox();
   const cx = box ? box.x + box.width / 2 : VP.width / 2;
   const cy = box ? box.y + box.height / 2 : VP.height / 2;
   await loc.click();
+  if (parkMouse) await page.mouse.move(8, 8);
   return [+(cx / VP.width).toFixed(4), +(cy / VP.height).toFixed(4)];
 }
 
 async function clickResidentDot(page) {
-  const xs = [900, 875, 925, 850, 950, 890, 910, 860, 940];
-  const ys = [470, 445, 495, 425, 515, 460, 480];
+  const xs = [940, 915, 965, 890, 990, 930, 955, 875, 1005];
+  const ys = [490, 465, 515, 440, 540, 480, 505];
   for (const y of ys) {
     for (const x of xs) {
       await page.mouse.move(x, y);
@@ -61,16 +39,38 @@ async function clickResidentDot(page) {
       const hit = await page.locator("text=/simulation ·/i").isVisible().catch(() => false);
       if (hit) {
         await page.mouse.click(x, y);
+        await page.mouse.move(8, 8);
         return [+(x / VP.width).toFixed(4), +(y / VP.height).toFixed(4)];
       }
     }
   }
-  await page.mouse.click(895, 470);
-  return [+(895 / VP.width).toFixed(4), +(470 / VP.height).toFixed(4)];
+  await page.mouse.click(935, 490);
+  await page.mouse.move(8, 8);
+  return [+(935 / VP.width).toFixed(4), +(490 / VP.height).toFixed(4)];
+}
+
+async function sweepMapCounties(page) {
+  // Gently sweep across two counties on the Finland map so real Sotkanet tooltips & map interactivity shine,
+  // then park cursor cleanly so no tooltip lingers.
+  const pts = [[930, 560], [965, 650], [900, 725]];
+  for (const [x, y] of pts) {
+    await page.mouse.move(x, y, { steps: 8 });
+    await sleep(420);
+  }
+  await page.mouse.move(8, 8);
+  return null;
 }
 
 async function runAction(page, name) {
   switch (name) {
+    case "open_tour":
+      return clickLoc(page, page.locator('button[title="Show me around"]'));
+    case "tour_next":
+      return clickLoc(page, page.getByRole("button", { name: /^Next$/ }));
+    case "tour_skip":
+      return clickLoc(page, page.getByRole("button", { name: /^Skip$/ }));
+    case "sweep_map":
+      return sweepMapCounties(page);
     case "click_next":
       return clickLoc(page, page.getByRole("button", { name: /^Next:/ }));
     case "click_ask_residents":
@@ -79,6 +79,10 @@ async function runAction(page, name) {
       return clickResidentDot(page);
     case "click_see_asked":
       return clickLoc(page, page.getByRole("button", { name: /See what .* was asked/i }));
+    case "close_popover":
+      await page.keyboard.press("Escape");
+      await page.mouse.move(8, 8);
+      return null;
     case "click_own_language":
       return clickLoc(page, page.locator('[data-tour="s3-chip0"]'));
     case "click_run_sim":
@@ -126,40 +130,38 @@ async function runAction(page, name) {
   });
 
   const ctx = await browser.newContext({ viewport: VP, deviceScaleFactor: 1 });
-  await ctx.addInitScript(TICKER_SCRIPT);
+  await ctx.addInitScript(() => localStorage.setItem("ec_tour_done", "1"));
   const page = await ctx.newPage();
   page.on("pageerror", (e) => console.error("[pageerror]", String(e).slice(0, 240)));
 
   await page.goto(`${APP_URL}/?tour=0`, { waitUntil: "networkidle" });
   await page.waitForSelector("text=Step 1 of 4", { timeout: 20000 });
+  await page.mouse.move(8, 8);
   await sleep(3200);
 
-  // Grab initial JPEG frame so frame 0 is guaranteed non-empty before starting the 30fps clock
-  let latestFrame = await page.screenshot({ type: "jpeg", quality: 94 });
+  let latestFrame = await page.screenshot({ type: "png" });
   const cdp = await ctx.newCDPSession(page);
-  cdp.on("Page.screencastFrame", async (ev) => {
+  cdp.on("Page.screencastFrame", (ev) => {
     latestFrame = Buffer.from(ev.data, "base64");
     cdp.send("Page.screencastFrameAck", { sessionId: ev.sessionId }).catch(() => {});
   });
   await cdp.send("Page.startScreencast", {
-    format: "jpeg",
-    quality: 94,
+    format: "png",
     maxWidth: VP.width,
     maxHeight: VP.height,
     everyNthFrame: 1,
   });
   await sleep(250);
 
-  // Spawn system ffmpeg reading exact 30Hz JPEG frames from stdin
   const ff = spawn("ffmpeg", [
     "-y",
     "-f", "image2pipe",
-    "-vcodec", "mjpeg",
+    "-vcodec", "png",
     "-framerate", String(FPS),
     "-i", "-",
     "-c:v", "libx264",
     "-preset", "fast",
-    "-crf", "15",
+    "-crf", "14",
     "-pix_fmt", "yuv420p",
     dstMp4,
   ], { stdio: ["pipe", "ignore", "pipe"] });
@@ -170,14 +172,21 @@ async function runAction(page, name) {
   const t0 = performance.now();
   let framesWritten = 0;
   let recording = true;
+  let draining = false;
 
-  // Drift-compensated wall-clock 30fps feeder: frame N corresponds to exact wall-clock t0 + N / 30s
   const pump = () => {
     if (!recording) return;
-    const targetFrames = Math.floor(((performance.now() - t0) / 1000) * FPS) + 1;
-    while (framesWritten < targetFrames) {
-      ff.stdin.write(latestFrame);
-      framesWritten++;
+    if (!draining) {
+      const targetFrames = Math.floor(((performance.now() - t0) / 1000) * FPS) + 1;
+      while (framesWritten < targetFrames) {
+        const ok = ff.stdin.write(latestFrame);
+        framesWritten++;
+        if (!ok) {
+          draining = true;
+          ff.stdin.once("drain", () => { draining = false; });
+          break;
+        }
+      }
     }
     setTimeout(pump, 10);
   };
@@ -207,6 +216,12 @@ async function runAction(page, name) {
 
   await sleep(750);
   recording = false;
+  // Flush any remaining target frames before closing stdin
+  const finalTarget = Math.floor(((performance.now() - t0) / 1000) * FPS);
+  while (framesWritten < finalTarget) {
+    ff.stdin.write(latestFrame);
+    framesWritten++;
+  }
   await cdp.send("Page.stopScreencast").catch(() => {});
   ff.stdin.end();
   const code = await new Promise((res) => ff.on("close", res));
